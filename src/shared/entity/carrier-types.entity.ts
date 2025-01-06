@@ -43,10 +43,6 @@ export class CarrierTypes extends BaseEntity {
     @Column("int", { name: "updated_by", nullable: true })
     updatedBy: number | null;
 
-    @ManyToOne(() => User, (user) => user.carrierCreatedBy)
-    @JoinColumn([{ name: "created_by", referencedColumnName: "id" }])
-    createdByUser: User
-
     @ManyToOne(() => User)
     @JoinColumn({ name: "updated_by", referencedColumnName: "id" })
     updatedByUser: User;

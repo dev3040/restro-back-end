@@ -1,11 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, BaseEntity, CreateDateColumn, UpdateDateColumn, OneToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, BaseEntity, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { TitleStates } from './title-states.entity';
 import { User } from './user.entity';
-import { CountyProfile } from './county-profile.entity';
-import { CountyCheatSheet } from './county-cheetsheet.entity';
-import { SalesTaxMaster } from './sales-tax-master.entity';
-import { CountyProcessing } from './county-processing.entity';
-import { Batches } from './batch.entity';
 
 @Entity({ name: 'title_counties', schema: 'master' })
 export class TitleCounties extends BaseEntity {
@@ -53,19 +48,4 @@ export class TitleCounties extends BaseEntity {
     @ManyToOne(() => User)
     @JoinColumn([{ name: "updated_by", referencedColumnName: "id" }])
     updatedByUser: User
-
-    @OneToOne(() => CountyProfile, (countyProfile) => countyProfile.county)
-    countyProfile: CountyProfile;
-
-    @OneToOne(() => CountyCheatSheet, countyCheatSheet => countyCheatSheet.county)
-    countyCheatSheet: CountyCheatSheet;
-
-    @OneToOne(() => CountyProcessing, countyProcessing => countyProcessing.county)
-    countyProcessing: CountyProcessing;
-
-    @OneToOne(() => SalesTaxMaster, salesTaxMaster => salesTaxMaster.county)
-    salesTax: SalesTaxMaster;
-
-    @OneToOne(() => Batches, b => b.county)
-    countyBatch: Batches;
 }

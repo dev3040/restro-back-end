@@ -9,7 +9,6 @@ import {
     PrimaryGeneratedColumn,
     UpdateDateColumn,
 } from 'typeorm';
-import { User } from './user.entity';
 import { TransactionTypes } from './transaction-types.entity';
 import { Customers } from './customers.entity';
 
@@ -53,14 +52,6 @@ export class CustomerTransactionTypes extends BaseEntity {
 
     @Column("int", { name: "updated_by", nullable: true })
     updatedBy: number | null;
-
-    @ManyToOne(() => User, (user) => user.departmentCreatedBy)
-    @JoinColumn([{ name: "updated_by", referencedColumnName: "id" }])
-    updatedByUser: User
-
-    @ManyToOne(() => User, (user) => user.carrierCreatedBy)
-    @JoinColumn([{ name: "created_by", referencedColumnName: "id" }])
-    createdByUser: User
 
     @ManyToOne(() => TransactionTypes)
     @JoinColumn({ name: "transaction_types_id", referencedColumnName: "id" })

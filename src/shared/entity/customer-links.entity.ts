@@ -8,7 +8,6 @@ import {
     ManyToOne,
     PrimaryGeneratedColumn,
 } from 'typeorm';
-import { User } from './user.entity';
 import { Customers } from './customers.entity';
 
 @Index("customer_links_customer_id", ["customerId"], {})
@@ -39,10 +38,6 @@ export class CustomerLinks extends BaseEntity {
 
     @Column("int", { name: "created_by", nullable: false })
     createdBy: number;
-
-    @ManyToOne(() => User, (user) => user.departmentCreatedBy)
-    @JoinColumn([{ name: "created_by", referencedColumnName: "id" }])
-    createdByUser: User
 
     @ManyToOne(() => Customers, (customer) => customer.customerLinks)
     @JoinColumn({ name: "customer_id", referencedColumnName: "id" })

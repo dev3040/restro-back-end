@@ -1,8 +1,4 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, Index, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { User } from './user.entity';
-import { UserDepartments } from './user-departments.entity';
-import { FilterBookmarkTeams } from './filter-bookmark-teams.entity';
-import { TransactionTypesTeams } from './transaction-types-teams.entity';
+import { BaseEntity, Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { CommonConst } from '../constants/common.constant';
 
 @Index("departments_name", ["name"], {})
@@ -42,21 +38,4 @@ export class Departments extends BaseEntity {
 
     @Column("int", { name: "updated_by", nullable: true })
     updatedBy: number | null;
-
-    @ManyToOne(() => User, (user) => user.departmentCreatedBy)
-    @JoinColumn([{ name: "created_by", referencedColumnName: "id" }])
-    createdByUser: User
-
-    @ManyToOne(() => User, (user) => user.departmentCreatedBy)
-    @JoinColumn([{ name: "updated_by", referencedColumnName: "id" }])
-    updatedByUser: User
-
-    @OneToMany(() => UserDepartments, (ct) => ct.department)
-    userDepartment: UserDepartments[];
-
-    @OneToMany(() => FilterBookmarkTeams, (ct) => ct.team)
-    filterBookmarkTeams: FilterBookmarkTeams[];
-
-    @OneToMany(() => TransactionTypesTeams, (ct) => ct.team)
-    teamTransaction: TransactionTypesTeams[];
 }

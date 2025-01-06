@@ -3,12 +3,8 @@ import {
     Column,
     CreateDateColumn,
     Entity,
-    JoinColumn,
-    ManyToOne,
     PrimaryGeneratedColumn
 } from 'typeorm';
-import { User } from './user.entity';
-import { Departments } from './departments.entity';
 
 @Entity({ name: 'user_departments' })
 export class UserDepartments extends BaseEntity {
@@ -30,17 +26,5 @@ export class UserDepartments extends BaseEntity {
 
     @Column("int", { name: "created_by", nullable: true })
     createdBy: number | null;
-
-    @ManyToOne(() => User, (user) => user.departmentUserCreatedBy)
-    @JoinColumn([{ name: "created_by", referencedColumnName: "id" }])
-    createdByUser: User
-
-    @ManyToOne(() => Departments, (d) => d.userDepartment)
-    @JoinColumn({ name: "department_id", referencedColumnName: "id" })
-    department: Departments;
-
-    @ManyToOne(() => User, (u) => u.departmentUser)
-    @JoinColumn({ name: "user_id", referencedColumnName: "id" })
-    user: User;
 
 }

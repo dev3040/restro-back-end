@@ -1,6 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, UpdateDateColumn, ManyToOne, JoinColumn, CreateDateColumn, BaseEntity, OneToMany } from 'typeorm';
-import { User } from './user.entity';
-import { SellerInfo } from './seller-info.entity';
+import { Entity, Column, PrimaryGeneratedColumn, UpdateDateColumn, CreateDateColumn, BaseEntity } from 'typeorm';
 import { SellerTypeEnum } from '../enums/seller-info.enum';
 
 @Entity({ schema: 'master', name: 'dealer_master' })
@@ -49,16 +47,4 @@ export class DealerMaster extends BaseEntity {
 
     @Column("int", { name: "updated_by", nullable: true })
     updatedBy: number | null;
-
-    @ManyToOne(() => User, (user) => user.departmentCreatedBy)
-    @JoinColumn([{ name: "created_by", referencedColumnName: "id" }])
-    createdByUser: User
-
-
-    @ManyToOne(() => User, (user) => user.departmentCreatedBy)
-    @JoinColumn([{ name: "updated_by", referencedColumnName: "id" }])
-    updatedByUser: User
-
-    @OneToMany(() => SellerInfo, (seller) => seller.dealer)
-    dealerId: SellerInfo[];
 }

@@ -46,10 +46,6 @@ export class PriorityTypes extends BaseEntity {
     @Column("int", { name: "created_by", nullable: true })
     createdBy: number | null;
 
-    @ManyToOne(() => User, (user) => user.priorityCreatedBy)
-    @JoinColumn([{ name: "created_by", referencedColumnName: "id" }])
-    createdByUser: User
-
     @Column("int", { name: "updated_by", nullable: true })
     updatedBy: number;
 

@@ -4,14 +4,9 @@ import {
     CreateDateColumn,
     Entity,
     Index,
-    JoinColumn,
-    ManyToOne,
-    OneToMany,
     PrimaryGeneratedColumn,
     UpdateDateColumn,
 } from 'typeorm';
-import { User } from './user.entity';
-import { Tickets } from './tickets.entity';
 import { CommonConst } from '../constants/common.constant';
 
 @Index("tid_types_name", ["name"], {})
@@ -43,15 +38,4 @@ export class TidTypes extends BaseEntity {
     @Column("int", { name: "updated_by", nullable: true })
     updatedBy: number | null;
 
-
-    @ManyToOne(() => User, (user) => user.tidTypeCreatedBy)
-    @JoinColumn([{ name: "created_by", referencedColumnName: "id" }])
-    createdByUser: User
-
-    @ManyToOne(() => User, (user) => user.tidTypeUpdatedBy)
-    @JoinColumn([{ name: "updated_by", referencedColumnName: "id" }])
-    updatedByUser: User
-
-    @OneToMany(() => Tickets, (d) => d.tidTypeData)
-    ticket: Tickets[];
 }

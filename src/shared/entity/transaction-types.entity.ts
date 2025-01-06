@@ -1,7 +1,5 @@
-import { Column, Entity, Index, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, Unique } from 'typeorm';
-import { User } from './user.entity';
+import { Column, Entity, Index, PrimaryGeneratedColumn, Unique } from 'typeorm';
 import { BaseModifiableEntity } from '../base-entities/base-modifiable-entity';
-import { TransactionTypesTeams } from './transaction-types-teams.entity';
 import { CommonConst, TransactionTypeConst } from '../constants/common.constant';
 
 @Index("transaction_types_name", ["name"], {})
@@ -32,16 +30,5 @@ export class TransactionTypes extends BaseModifiableEntity {
 
     @Column('boolean', { name: 'is_deleted', default: false, comment: "true=deleted, false=not-deleted" })
     isDeleted: boolean;
-
-    @ManyToOne(() => User, (user) => user.transactionTypeCreatedBy)
-    @JoinColumn([{ name: "created_by", referencedColumnName: "id" }])
-    createdByUser: User
-
-    @ManyToOne(() => User, (user) => user.transactionTypeUpdatedBy)
-    @JoinColumn([{ name: "updated_by", referencedColumnName: "id" }])
-    updatedByUser: User
-
-    @OneToMany(() => TransactionTypesTeams, (ct) => ct.transactionType)
-    teamTransactionType: TransactionTypesTeams[];
 
 }

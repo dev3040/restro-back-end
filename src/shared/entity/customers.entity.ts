@@ -4,13 +4,10 @@ import {
     CreateDateColumn,
     Entity,
     Index,
-    JoinColumn,
-    ManyToOne,
     OneToMany,
     PrimaryGeneratedColumn,
     UpdateDateColumn,
 } from 'typeorm';
-import { User } from './user.entity';
 import { CustomerLinks } from './customer-links.entity';
 import { CustomerTransactionTypes } from './customer-transaction-types.entity';
 import { CustomerContacts } from './customer-contacts.entity';
@@ -76,15 +73,6 @@ export class Customers extends BaseEntity {
 
     @Column("int", { name: "updated_by", nullable: true })
     updatedBy: number | null;
-
-    @ManyToOne(() => User, (user) => user.departmentCreatedBy)
-    @JoinColumn([{ name: "created_by", referencedColumnName: "id" }])
-    createdByUser: User
-
-
-    @ManyToOne(() => User, (user) => user.departmentCreatedBy)
-    @JoinColumn([{ name: "updated_by", referencedColumnName: "id" }])
-    updatedByUser: User
 
     @OneToMany(() => CustomerLinks, (d) => d.customer)
     customerLinks: CustomerLinks[];

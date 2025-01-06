@@ -9,7 +9,6 @@ import {
     PrimaryGeneratedColumn,
     UpdateDateColumn,
 } from 'typeorm';
-import { User } from './user.entity';
 import { Customers } from './customers.entity';
 
 @Index("customer_contacts_name", ["name"], {})
@@ -68,15 +67,6 @@ export class CustomerContacts extends BaseEntity {
 
     @Column("int", { name: "updated_by", nullable: true })
     updatedBy: number | null;
-
-    @ManyToOne(() => User, (user) => user.departmentCreatedBy)
-    @JoinColumn([{ name: "created_by", referencedColumnName: "id" }])
-    createdByUser: User
-
-    @ManyToOne(() => User, (user) => user.departmentCreatedBy)
-    @JoinColumn([{ name: "updated_by", referencedColumnName: "id" }])
-    updatedByUser: User
-
 
     @ManyToOne(() => Customers, (c) => c.contact)
     @JoinColumn([{ name: "customer_id", referencedColumnName: "id" }])

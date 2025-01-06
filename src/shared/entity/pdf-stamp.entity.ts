@@ -3,13 +3,8 @@ import {
     Column,
     CreateDateColumn,
     Entity,
-    JoinColumn,
-    ManyToOne,
-    OneToMany,
     PrimaryGeneratedColumn,
 } from 'typeorm';
-import { User } from './user.entity';
-import { SelectedStampMapping } from './selected-stamp-mapping.entity';
 
 @Entity({ name: 'pdf_stamp', schema: 'master' })
 export class PdfStamp extends BaseEntity {
@@ -40,12 +35,5 @@ export class PdfStamp extends BaseEntity {
 
     @Column("int", { name: "updated_by", nullable: true })
     updatedBy: number | null;
-
-    @ManyToOne(() => User, (user) => user.departmentCreatedBy)
-    @JoinColumn([{ name: "created_by", referencedColumnName: "id" }])
-    createdByUser: User
-
-    @OneToMany(() => SelectedStampMapping, (stamp) => stamp.stamp)
-    selectedStamp: SelectedStampMapping[];
 
 }

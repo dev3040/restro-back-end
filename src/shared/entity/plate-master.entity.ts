@@ -1,6 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, UpdateDateColumn, CreateDateColumn, OneToMany, ManyToOne, JoinColumn, AfterLoad } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, UpdateDateColumn, CreateDateColumn, OneToMany, AfterLoad } from 'typeorm';
 import { CountySpecialForms } from './county-special-forms.entity';
-import { PlateType } from './plate-types.entity';
 
 @Entity({ name: 'plate_master', schema: 'master' })
 export class PlateMaster extends BaseEntity {
@@ -84,10 +83,6 @@ export class PlateMaster extends BaseEntity {
 
     @OneToMany(() => CountySpecialForms, (d) => d.countyForms)
     countyForms: CountySpecialForms[];
-
-    @ManyToOne(() => PlateType)
-    @JoinColumn({ name: "plate_type_id", referencedColumnName: "id" })
-    plateTypes: PlateType;
 
     @AfterLoad()
     parseBrands() {
