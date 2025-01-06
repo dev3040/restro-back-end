@@ -1,0 +1,96 @@
+<body>
+    <div class="pdf">
+        <div class="pdfwrapper">
+            <div class="pdfHeader">
+                <div class="title" style="padding-bottom: 0;">
+                    <div class="leftPart">
+                        <div class="pdfDetail" style="align-items: center;">
+                            <div class="img" style="max-width: 70px;">
+                                <img src="https://tags-and-titles-assets.oneclicksales.xyz/t&t-logo.webp" alt="Logo"
+                                    style="width: auto; height: auto; max-width: 100%;">
+                            </div>
+                            <h1 style="font-size: 34px;">Tags & Titles</h1>
+                        </div>
+                    </div>
+                    <div class="right_part" style="display: flex; width: auto; max-width: 350px;">
+                        <div class="rightPart">
+                            <p class="pdfNo" style="font-weight: 700;">Estimation Sheet (Customer_Total)</p>
+                            <p>info@tagstitles.com</p>
+                            <p>770-552-8227</p>
+                            <p class="address">200 North Point Center E, Suite #102 Alpharetta GA 30022</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="companyPolicy" style="display: flex; align-items: flex-start; gap: 8px;">
+                <svg width="14" height="15" viewBox="0 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g clip-path="url(#clip0_4525_53826)">
+                        <path
+                            d="M5.83317 11.3009V12.6667C5.83317 13.3111 6.3555 13.8334 6.99984 13.8334C7.64417 13.8334 8.1665 13.3111 8.1665 12.6667V11.3009M6.99984 2.16675V2.75008M1.74984 8.00008H1.1665M3.20817 4.20841L2.85811 3.85836M10.7915 4.20841L11.1416 3.85836M12.8332 8.00008H12.2498M10.4998 8.00008C10.4998 9.93308 8.93283 11.5001 6.99984 11.5001C5.06684 11.5001 3.49984 9.93308 3.49984 8.00008C3.49984 6.06708 5.06684 4.50008 6.99984 4.50008C8.93283 4.50008 10.4998 6.06708 10.4998 8.00008Z"
+                            stroke="#475467" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                    </g>
+                    <defs>
+                        <clipPath id="clip0_4525_53826">
+                            <rect width="14" height="14" fill="white" transform="translate(0 1)" />
+                        </clipPath>
+                    </defs>
+                </svg>
+                <div>
+                    <p>The estimated fees provided below are subject to change based on the actual charges incurred
+                        during
+                        the processing of your request. We will ensure transparency by promptly sending you an invoice
+                        along
+                        with a copy of the receipt detailing the final charges.</p>
+                </div>
+            </div>
+            <div class="vehicleInformation">
+                <div class="vehicleDetails" style="padding-top: 0;">
+                    <div class="vin">
+                        <p class="vehicleIdentify">VIN</p>
+                        <p class="vehicleIdentifier">{{vin}}</p>
+                    </div>
+                    <div class="year">
+                        <p class="vehicleIdentify">Year</p>
+                        <p class="vehicleIdentifier">{{year}}</p>
+                    </div>
+                    <div class="make">
+                        <p class="vehicleIdentify">Make</p>
+                        <p class="vehicleIdentifier">{{make}}</p>
+                    </div>
+                    <div class="model">
+                        <p class="vehicleIdentify">Model</p>
+                        <p class="vehicleIdentifier">{{model}}</p>
+                    </div>
+                    <div class="color">
+                        <p class="vehicleIdentify">Color</p>
+                        <p class="vehicleIdentifier">{{colorBoth}}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="companyPolicy" style="margin-top: 9px;">
+                <p style="text-align: center;">OK TO PAY MORE?</p>
+                <p style="text-align: center;">Do not charge more, Please call for approval</p>
+            </div>
+            <div class="parentTable">
+                <table class="feesDetail">
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th>Fees</th>
+                            <th>Fees</th>
+                            <th colspan="2">Comments</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{totalRetSellValueRaw}}
+                        {{totalTaxableValueRaw}}
+                        {{totalGATaxRaw}}
+                        {{totalTitleValueRaw}}
+                        {{totalLicenseValueRaw}}
+                        {{totalServiceSection}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>

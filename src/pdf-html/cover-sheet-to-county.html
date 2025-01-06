@@ -1,0 +1,238 @@
+<body>
+    <div class="pdf">
+        <div class="pdfwrapper">
+            <div class="pdfHeader">
+                <div class="title" style="padding-bottom: 0;">
+                    <div class="leftPart">
+                        <div class="pdfDetail" style="align-items: center;">
+                            <div class="img" style="max-width: 70px;">
+                                <img src="https://tags-and-titles-assets.oneclicksales.xyz/t&t-logo.webp" alt="t-logo"
+                                    style="width: auto; height: auto; max-width: 100%;">
+                            </div>
+                            <h1 style="font-size: 34px;">Tags & Titles</h1>
+                        </div>
+                        <p>770-552-8227</p>
+                        <p>info@tagstitles.com</p>
+                    </div>
+                    <div class="right_part" style="display: flex;">
+                        <div class="centerPart">
+                            <div class="appliedValue">
+                                <p style="font-weight: 700; display: flex; justify-content: space-between;">Taxable
+                                    Value <span style="padding-right: 8px;">=</span></p>
+                                <p>{{taxableValue}}</p>
+                            </div>
+                            <div class="appliedValue">
+                                <p style="font-weight: 700; display: flex; justify-content: space-between;">TAVT
+                                    &LT;{{tavtPercentSingle}}%&GT; <span style="padding-right: 8px;">=</span></p>
+                                <p>{{tavtValue}}</p>
+                            </div>
+                            <div class="appliedValue">
+                                <p style="font-weight: 700; display: flex; justify-content: space-between;">TAVT Penalty
+                                    &LT;{{tavtDealerPenaltyPer}}%&GT; <span style="padding-right: 8px;">=</span></p>
+                                <p>{{tavtDealerPenalty}}</p>
+                            </div>
+                            <div class="appliedValue">
+                                <p style="font-weight: 700; display: flex; justify-content: space-between;">TAVT Total
+                                    <span style="padding-right: 8px;">=</span>
+                                </p>
+                                <p>{{tavtTotal}}</p>
+                            </div>
+                            <div class="appliedValue">
+                                <p style="font-weight: 700; display: flex; justify-content: space-between;">Title
+                                    <span style="padding-right: 8px;">=</span>
+                                </p>
+                                <p>{{titleFees}}</p>
+                            </div>
+                            <div class="appliedValue">
+                                <p style="font-weight: 700; display: flex; justify-content: space-between;">Title
+                                    Penalty <span style="padding-right: 8px;">=</span></p>
+                                <p>{{titleLatePenalty}}</p>
+                            </div>
+                            <div class="appliedValue">
+                                <p style="font-weight: 700; display: flex; justify-content: space-between;">License Fee
+                                    <span style="padding-right: 8px;">=</span>
+                                </p>
+                                <p>{{licenseFees}}</p>
+                            </div>
+                        </div>
+                        <div class="rightPart">
+                            <p style="font-weight: 700;">{{transactionType}}</p>
+                            <p class="pdfNo">{{invoiceIdSingle}}</p>
+                            <p style="font-weight: 700;">{{customerName}}</p>
+                            <p class="address" style="padding-bottom: 0;">200 North Point Center E, Suite #102
+                                Alpharetta GA 30022</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="companyPolicy">
+                <p>All refunds must be issued back to <strong>Tags & Titles</strong> at the address above.</p>
+            </div>
+            <div class="vehicleInformation">
+                <p class="tagline">Vehicle Information</p>
+                <div class="vehicleDetails">
+                    <div class="vin">
+                        <p class="vehicleIdentify">VIN</p>
+                        <div class="min-h-text">
+                            <p class="vehicleIdentifier">{{vin}}</p>
+                        </div>
+                    </div>
+                    <div class="year">
+                        <p class="vehicleIdentify">Year</p>
+                        <div class="min-h-text">
+                            <p class="vehicleIdentifier">{{year}}</p>
+                        </div>
+                    </div>
+                    <div class="make">
+                        <p class="vehicleIdentify">Make</p>
+                        <div class="min-h-text">
+                            <p class="vehicleIdentifier">{{make}}</p>
+                        </div>
+                    </div>
+                    <div class="model">
+                        <p class="vehicleIdentify">Model</p>
+                        <div class="min-h-text">
+                            <p class="vehicleIdentifier">{{model}}</p>
+                        </div>
+                    </div>
+                    <div class="color">
+                        <p class="vehicleIdentify">Color</p>
+                        <div class="min-h-text">
+                            <p class="vehicleIdentifier">{{colorBoth}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ownerLessorInfo">
+                <div class="information">
+                    <h2><span>{{ownerOrLessor}}</span>&nbsp; 1</h2>
+                    <div class="name">
+                        <p class="vehicleIdentify"> Name</p>
+                        <div class="min-h-text">
+                            <p class="vehicleIdentifier">
+                                <span>{{firstNameOwner1}} </span>
+                                <span>{{middleNameOwner1}} </span>
+                                <span>{{lastNameOwner1}}</span>
+                                <span>{{firstOwnerBizName}}</span>
+                                <span>{{lessorFirstName}} </span>
+                                <span>{{lessorMiddleName}} </span>
+                                <span>{{lessorLastName}}</span>
+                                <span>{{lessorName}}</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="fien">
+                        <p class="vehicleIdentify"> FEIN </p>
+                        <div class="min-h-text">
+                            <p class="vehicleIdentifier"></p>
+                        </div>
+                    </div>
+                    <div class="address">
+                        <p class="vehicleIdentify">Address</p>
+                        <div class="min-h-text">
+                            <p class="vehicleIdentifier">
+                                <span>{{firstOwnerAddress}}</span><span>{{lessorAddress}}</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="mailingAddress">
+                        <p class="vehicleIdentify">Title Mailing Address</p>
+                        <div class="min-h-text">
+                            <p class="vehicleIdentifier">
+                                <span>{{firstOwnerMailingAddress}}</span><span>{{lessorMailingAddress}}</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="onetimeMail">
+                        <p class="vehicleIdentify">One-Time Title Mailing Address</p>
+                        <div class="min-h-text">
+                            <p class="vehicleIdentifier"></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="information">
+                    <h2><span>{{ownerOrLessor}}</span>&nbsp; 2</h2>
+                    <div class="name">
+                        <p class="vehicleIdentify">Name</p>
+                        <div class="min-h-text">
+                            <p class="vehicleIdentifier">
+                                <span>{{firstNameOwner2}} </span>
+                                <span>{{middleNameOwner2}} </span>
+                                <span>{{lastNameOwner2}} </span>
+                                <span>{{secondOwnerBizName}}</span>
+                                <span>{{secLessorFirstName}} </span>
+                                <span>{{secLessorMiddleName}} </span>
+                                <span>{{secLessorLastName}} </span>
+                                <span>{{secLessorName}}</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="fien">
+                        <p class="vehicleIdentify"> FEIN</p>
+                        <div class="min-h-text">
+                            <p class="vehicleIdentifier"></p>
+                        </div>
+                    </div>
+                    <div class="address">
+                        <p class="vehicleIdentify">Address</p>
+                        <div class="min-h-text">
+                            <p class="vehicleIdentifier">
+                                <span>{{secondOwnerAddress}}</span><span>{{secLessorAddress}}</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="mailingAddress">
+                        <p class="vehicleIdentify">Title Mailing Address</p>
+                        <div class="min-h-text">
+                            <p class="vehicleIdentifier">
+                                <span>{{secondOwnerMailingAddress}}</span><span>{{secLessorMailingAdd}}</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="onetimeMail">
+                        <p class="vehicleIdentify">One-Time Title Mailing Address</p>
+                        <div class="min-h-text">
+                            <p class="vehicleIdentifier"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{lesseeRender}}
+            <div class="lienInfo">
+                <h2>Lien Holder</h2>
+                <div class="lienHolder">
+                    <p>Lien Holder?</p>
+                    {{isLien}}
+                </div>
+                <div style="display: flex; flex-wrap: wrap; width: 100%;"> {{lienDetails}}</div>
+            </div>
+            <div class="specialInfo">
+                <h3>Special Instruction:</h3>
+                <div class="upperPart" style="display: flex; padding-bottom: 8px;">
+                    <div class="runnerNote" style="width: 50%; min-height: 135px;">
+                        <p style="font-weight: 700;">Runner Note</p>
+                        <p>{{runnerNote}}</p>
+                    </div>
+                    <div class="runnerNote" style="width: 50%; min-height: 135px;">
+                        <p style="font-weight: 700;">Customer Note</p>
+                        <p>{{customerNote}}</p>
+                    </div>
+                </div>
+                <div>
+                    <ul>
+                        <li style="font-weight: 700;">Check written should NOT Exceed
+                            <span
+                                style="border-bottom:1px solid #000 ; display: inline-block; min-width: 80px; padding-inline: 6px; ">{{finalTotalFeesCountySingle}}</span>
+                            w/out APPROVAL
+                            1st. Please call/email -
+                            add this line here in the special instruction
+                        </li>
+                        <li style="font-weight: 700;">Return any tags, registrations and all receipts using the enclosed
+                            envelope</li>
+                        <li style="font-weight: 700;">Return a copy of the completed blank check after filled out to the
+                            county with amount</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+</body>
