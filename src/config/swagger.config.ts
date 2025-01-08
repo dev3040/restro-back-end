@@ -1,7 +1,7 @@
 import { DocumentBuilder } from "@nestjs/swagger";
 
 export const SwaggerConfig = new DocumentBuilder()
-    .setTitle("Tags & Titles Backend")
+    .setTitle("Resto-Proj")
     .addBearerAuth()
     .addCookieAuth("auth")
     .setVersion("1.0")
