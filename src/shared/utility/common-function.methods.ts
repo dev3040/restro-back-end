@@ -17,7 +17,6 @@ import { ActiveDutyMilEnum, BusinessTypeEnum, IDOptionEnum } from '../enums/buye
 import { PlateMaster } from '../entity/plate-master.entity';
 import { TitleCounties } from '../entity/title-counties.entity';
 import { ColorMaster } from '../entity/color-master.entity';
-import { AddOnPrices } from '../entity/add-on-prices.entity';
 import { TransactionReturnTypeEnum } from '../enums/transaction-return-type.enum';
 import { BillingDepositTypesEnum } from '../enums/billing-deposit-type.enum';
 import { IdOptions } from '../enums/lien-info.enum';
@@ -426,18 +425,6 @@ function filterYearlyGraph(graphData) {
     return months;
 }
 
-
-async function getExpressMailFees() {
-    const data = await AddOnPrices.findOne({
-        select: ['price'],
-        where: {
-            code: 'EXPM', isDeleted: false, isActive: true
-        }
-    })
-    if (!data) { return "0" }
-    return `${data?.price}`;
-}
-
 async function getTransactionReturnType(type) {
     switch (type) {
         case TransactionReturnTypeEnum.CUS_PROVIDED_LABEL_BACK_TO_THEM:
@@ -748,7 +735,7 @@ export {
     checkStateExists, getInsuranceTypeName, getOdometerCodeName, getBuyerType,
     getIdOption, getActiveMil, plateTypeExist, checkCountyExists, checkColorExists, getProcessingDate,
     filterYearlyGraph, getIdOptionValue, getSellerType,
-    getExpressMailFees, getTransactionReturnType, getBillingDepositType, checkValidProcessingDate, commonDeleteHandler, getValue,
+    getTransactionReturnType, getBillingDepositType, checkValidProcessingDate, commonDeleteHandler, getValue,
     getAllUserIds, convertToNumberIfNumeric, getUserSpecificTeams, getTeamSpecificUsers, checkTicketNullValues,
     checkTicketTeamExists, getConfigVariables, checkValidSeller, fedExShipmentJson,
     getCarrierTypeEmail, checkTidTypeExists

@@ -1,27 +1,27 @@
-import { AddOnPrices } from 'src/shared/entity/add-on-prices.entity';
+import { Branches } from 'src/shared/entity/branches.entity';
 import { DataSource, Repository } from 'typeorm';
 import {
     ConflictException,
     Injectable, NotFoundException,
 } from '@nestjs/common';
-import { AddAddOnPricesDto, UpdateAddOnPricesDto } from './dto/add-add-on-prices.dto';
+import { BranchesDTO, UpdateBranchesDTO } from './dto/branch-master.dto';
 import { throwException } from "../../shared/utility/throw-exception";
 import { IsActive } from 'src/shared/enums/is-active.enum';
 import { User } from 'src/shared/entity/user.entity';
-import { commonDeleteHandler, formatPrice } from 'src/shared/utility/common-function.methods';
+import { commonDeleteHandler } from 'src/shared/utility/common-function.methods';
 import error from '../../i18n/en/error.json';
 import success from '../../i18n/en/success.json';
 
 
 @Injectable()
-export class AddOnPricesRepository extends Repository<AddOnPrices> {
+export class AddOnPricesRepository extends Repository<Branches> {
     constructor(readonly dataSource: DataSource) {
-        super(AddOnPrices, dataSource.createEntityManager());
+        super(Branches, dataSource.createEntityManager());
     }
 
-    async addAddOnPrices(addAddOnPrices: AddAddOnPricesDto, user: User): Promise<AddOnPrices> {
+    async addAddOnPrices(addAddOnPrices: BranchesDTO, user: User): Promise<Branches> {
         try {
-            const addOnPrice = await this.manager.createQueryBuilder(AddOnPrices, "addOnPrice")
+            const addOnPrice = await this.manager.createQueryBuilder(Branches, "addOnPrice")
                 .select(["addOnPrice.id", "addOnPrice.name"])
                 .where(`(LOWER(addOnPrice.name) = :name)`, {
                     name: `${addAddOnPrices.name.toLowerCase()}`
@@ -31,9 +31,8 @@ export class AddOnPricesRepository extends Repository<AddOnPrices> {
             if (addOnPrice) {
                 throw new ConflictException("ERR_ADD_ON_PRICE_NAME_EXIST&&&name");
             }
-            const addOnPrices = new AddOnPrices();
+            const addOnPrices = new Branches();
             addOnPrices.name = addAddOnPrices.name;
-            addOnPrices.price = formatPrice(addAddOnPrices.price);
             addOnPrices.isActive = addAddOnPrices.isActive;
             addOnPrices.code = addAddOnPrices.code;
             addOnPrices.createdBy = user.id;
@@ -44,11 +43,11 @@ export class AddOnPricesRepository extends Repository<AddOnPrices> {
         }
     }
 
-    async fetchAllAddOnPrices(filterDto?: any): Promise<{ addOnPrices: AddOnPrices[]; page: object }> {
+    async fetchAllAddOnPrices(filterDto?: any): Promise<{ addOnPrices: Branches[]; page: object }> {
         try {
             const listQuery = this.manager
-                .createQueryBuilder(AddOnPrices, "addOnPrice")
-                .select(["addOnPrice.id", "addOnPrice.name", "addOnPrice.price", "addOnPrice.code", "addOnPrice.isActive"])
+                .createQueryBuilder(Branches, "addOnPrice")
+                .select(["addOnPrice.id", "addOnPrice.name", "addOnPrice.code", "addOnPrice.isActive"])
                 .where("(addOnPrice.is_deleted = false)")
 
             if (filterDto) {
@@ -80,13 +79,13 @@ export class AddOnPricesRepository extends Repository<AddOnPrices> {
         }
     }
 
-    async editAddOnPrices(updateAddOnPrices: UpdateAddOnPricesDto, id): Promise<AddOnPrices> {
+    async editAddOnPrices(updateAddOnPrices: UpdateBranchesDTO, id): Promise<Branches> {
         try {
             const checkAddOnPrice = await this.findOne({ where: { id: id, isDeleted: false } });
             if (!checkAddOnPrice) throw new NotFoundException(`ERR_ADD_ON_PRICE_NOT_FOUND&&&id`);
 
             if (updateAddOnPrices?.name) {
-                const addOnPrice = await this.manager.createQueryBuilder(AddOnPrices, "addOnPrice")
+                const addOnPrice = await this.manager.createQueryBuilder(Branches, "addOnPrice")
                     .select(["addOnPrice.id", "addOnPrice.name"])
                     .where(`(LOWER(addOnPrice.name) = :name)`, {
                         name: `${updateAddOnPrices.name.toLowerCase()}`
@@ -102,7 +101,6 @@ export class AddOnPricesRepository extends Repository<AddOnPrices> {
                 checkAddOnPrice.name = updateAddOnPrices?.name;
             }
 
-            checkAddOnPrice.price = formatPrice(updateAddOnPrices.price)
             checkAddOnPrice.isActive = updateAddOnPrices.isActive;
             checkAddOnPrice.code = updateAddOnPrices.code
             await checkAddOnPrice.save();
@@ -116,7 +114,7 @@ export class AddOnPricesRepository extends Repository<AddOnPrices> {
         try {
             const response = await commonDeleteHandler(
                 this.dataSource,  // dataSource
-                AddOnPrices,
+                Branches,
                 deleteAddOnTransactions,
                 userId,
                 success.SUC_ADD_ON_PRICE_DELETED,

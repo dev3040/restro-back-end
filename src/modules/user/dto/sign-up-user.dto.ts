@@ -74,11 +74,11 @@ export class SignupUserDto {
 
     @ApiProperty({
         description: `Enter department Id`,
-        example: `1`
+        example: 1
     })
     @IsNotEmpty({
-        message: `Please enter department Id`
+        message: `Please enter department Id`,
     })
-    deptId: number;
+    branchId: number;
 
 }

@@ -3,8 +3,8 @@ import {
     NotFoundException
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { AddOnPricesRepository } from "./add-on-prices.repository";
-import { AddAddOnPricesDto, UpdateAddOnPricesDto } from "./dto/add-add-on-prices.dto";
+import { AddOnPricesRepository } from "./branch-master.repository";
+import { BranchesDTO, UpdateBranchesDTO } from "./dto/branch-master.dto";
 import { throwException } from "../../shared/utility/throw-exception";
 import { AppResponse } from "../../shared/interfaces/app-response.interface";
 import { User } from "src/shared/entity/user.entity";
@@ -19,7 +19,7 @@ export class AddOnPricesService {
         private readonly cacheService: RedisCacheService
     ) { }
 
-    async addAddOnPrices(addAddOnPrices: AddAddOnPricesDto, user: User): Promise<AppResponse> {
+    async addAddOnPrices(addAddOnPrices: BranchesDTO, user: User): Promise<AppResponse> {
         try {
             const createAdd_on_prices = await this.addOnPricesRepository.addAddOnPrices(addAddOnPrices, user);
             const data = await this.addOnPricesRepository.fetchAllAddOnPrices();
@@ -66,7 +66,7 @@ export class AddOnPricesService {
         }
     }
 
-    async editAddOnPrices(updateDto: UpdateAddOnPricesDto, id): Promise<AppResponse> {
+    async editAddOnPrices(updateDto: UpdateBranchesDTO, id): Promise<AppResponse> {
         try {
             await this.addOnPricesRepository.editAddOnPrices(updateDto, id);
 

@@ -1,10 +1,11 @@
 import {
-    BaseEntity, BeforeInsert, Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn,
+    BaseEntity, BeforeInsert, Column, CreateDateColumn, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn,
     UpdateDateColumn
 } from "typeorm";
 import * as bcrypt from "bcrypt";
 import { Exclude } from "class-transformer";
 import { AvatarColors } from "./avatar-colors.entity";
+import { Branches } from "./branches.entity";
 
 @Index("user_first_name", ["firstName"], {})
 @Index("user_last_name", ["lastName"], {})
@@ -20,6 +21,9 @@ export class User extends BaseEntity {
 
     @Column("varchar", { name: "last_name", length: 100 })
     lastName: string;
+
+    @Column("int", { name: "branch_id", nullable: true })
+    branchId: number | null;
 
     @Column("varchar", { name: "email", length: 150 })
     email: string;
@@ -92,4 +96,8 @@ export class User extends BaseEntity {
         const hash = await bcrypt.hash(password, this.salt);
         return hash === this.password;
     }
+
+    @ManyToOne(() => Branches)
+    @JoinColumn({ name: "branch_id", referencedColumnName: "id" })
+    branch: Branches;
 }

@@ -10,7 +10,7 @@ import { OtpLeftTime } from "../auth/interface/common.interface";
 import { EditUser, OtpData, UserStatusChange } from "./interface/common.interface";
 import { IsActive } from "src/shared/enums/is-active.enum";
 import { CreateUserDto } from "./dto/create-user.dto";
-import { checkDepartmentDataExists, checkUserAssignedDepartments, checkUserExists, commonDeleteHandler } from "src/shared/utility/common-function.methods";
+import { checkDepartmentDataExists, checkUserExists, commonDeleteHandler } from "src/shared/utility/common-function.methods";
 import { AppResponse } from "src/shared/interfaces/app-response.interface";
 import { UserDepartments } from "src/shared/entity/user-departments.entity";
 import error from '../../i18n/en/error.json';
@@ -45,9 +45,8 @@ export class UserRepository extends Repository<User> {
         try {
             const user = await this.manager
                 .createQueryBuilder(User, "user")
-                .leftJoinAndSelect("user.departmentUser", "departmentUser")
-                .leftJoinAndSelect("departmentUser.department", "department")
-                .select(["user.firstName", "user.lastName", "user.email", "user.isActive", "departmentUser.id", "departmentUser.departmentId", "department.id", "department.name"])
+                .leftJoinAndSelect("user.branch", "branch")
+                .select(["user.firstName", "user.lastName", "user.email", "user.isActive", "branch"])
                 .where("user.id =:id", { id })
                 .getOne();
 
@@ -63,7 +62,7 @@ export class UserRepository extends Repository<User> {
     async editUser(updateUser: UpdateUserDto, data: EditUser) {
         try {
             const { userId, loginUserId } = data;
-            const { email, departments } = updateUser;
+            const { email, branchId } = updateUser;
 
             const userExists = await checkUserExists(userId)
 
@@ -85,28 +84,8 @@ export class UserRepository extends Repository<User> {
             userExists.email = updateUser?.email;
             userExists.isActive = updateUser.isActive;
             userExists.updatedBy = loginUserId;
+            userExists.branchId = branchId
             await userExists.save();
-
-            //new departments
-            if (departments?.length) {
-                let arr = []
-                if (departments !== undefined && departments?.length) {
-                    arr = departments.map(e => +e)
-                    arr = [...new Set(arr)];
-
-                    await checkDepartmentDataExists(arr) //department 
-                    await checkUserAssignedDepartments(arr, userId) //user department
-                }
-
-                if (arr.length) {
-                    const data = arr.map(e => ({
-                        departmentId: e,
-                        userId: userExists.id,
-                        createdBy: loginUserId
-                    }));
-                    await this.mapUserDepartment(data)
-                }
-            }
 
             return userExists;
         } catch (error) {

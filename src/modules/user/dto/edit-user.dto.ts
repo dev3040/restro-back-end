@@ -2,14 +2,6 @@ import { IsEmail, ValidationArguments, IsOptional, MaxLength, MinLength } from "
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { IsValidName } from "src/shared/decorators/name.decorator";
 
-class DepartmentArr {
-
-    @IsOptional()
-    @ApiPropertyOptional({ description: `Enter department Id` })
-    departmentId: number;
-
-}
-
 export class UpdateUserDto {
     @IsOptional()
     @ApiProperty({
@@ -58,6 +50,7 @@ export class UpdateUserDto {
     })
     isActive: boolean;
 
-    @ApiProperty({ description: "Enter departments", example: `[1]` })
-    departments: DepartmentArr[];
+    @IsOptional()
+    @ApiPropertyOptional({ description: `Enter branch Id` })
+    branchId: number;
 }

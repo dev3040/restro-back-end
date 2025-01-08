@@ -82,6 +82,8 @@ export class CreateUserDto {
     @ApiProperty({ description: "Enter departments", example: `[1]` })
     departments: DepartmentArr[];
 
+    @ApiProperty({ description: "Branch", example: 1 })
+    branchId: number;
 }
 
 export class DeleteUsersDto {

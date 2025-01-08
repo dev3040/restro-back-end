@@ -2,7 +2,7 @@ import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
 import { ArrayMinSize, ArrayNotEmpty, IsArray, IsInt, Matches, MaxLength, MinLength } from 'class-validator';
 import { IsValidName } from 'src/shared/decorators/name.decorator';
 
-export class AddAddOnPricesDto {
+export class BranchesDTO {
    @ApiProperty({
       description: 'Please enter Name',
       example: 'Title',
@@ -21,12 +21,6 @@ export class AddAddOnPricesDto {
    code: string;
 
    @ApiProperty({
-      description: 'Please enter Price',
-      example: '200.30',
-   })
-   price: string;
-
-   @ApiProperty({
       description: 'Please enter Is active',
       example: 'true',
    })
@@ -34,9 +28,9 @@ export class AddAddOnPricesDto {
 
 }
 
-export class UpdateAddOnPricesDto extends PartialType(AddAddOnPricesDto) { }
+export class UpdateBranchesDTO extends PartialType(BranchesDTO) { }
 
-export class DeleteAddOnTransactionDto {
+export class DeleteBranchesDTO {
    @ApiProperty({
       type: [Number],
       description: 'Array of add on transaction IDs to be deleted',

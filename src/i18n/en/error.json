@@ -40,7 +40,7 @@
     "ERR_TRANSACTION_CODE_EXIST": "Transaction code already exists.",
     "ERR_PRIORITY_EXIST": "Priority type already exists.",
     "ERR_MODULE_EXIST": "Module already exists.",
-    "ERR_ADD_ON_PRICE_NAME_EXIST": "Add on transaction already exists.",
+    "ERR_ADD_ON_PRICE_NAME_EXIST": "Branch already exists.",
     "ERR_COUNTY_EXIST": "County already exists.",
     "ERR_TID_TYPE_EXIST": "TID type already exists.",
     "ERR_TID_TYPE_NOT_FOUND": "TID type not found.",

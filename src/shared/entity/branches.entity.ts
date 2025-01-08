@@ -3,26 +3,20 @@ import {
     Column,
     CreateDateColumn,
     Entity,
-    Index,
     JoinColumn,
     ManyToOne,
     PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from './user.entity';
 
-@Index("add_on_prices_name", ["name"], {})
-
-@Entity({ name: 'add_on_prices', schema: 'master' })
-export class AddOnPrices extends BaseEntity {
+@Entity({ name: 'branches', schema: 'master' })
+export class Branches extends BaseEntity {
 
     @PrimaryGeneratedColumn()
     id: number;
 
     @Column('varchar', { name: 'name', length: 150, })
     name: string;
-
-    @Column('decimal', { name: 'price' })
-    price: string;
 
     @Column('varchar', { name: 'code', length: 10, nullable: true })
     code: string | null;

@@ -1,8 +1,8 @@
 import { Module } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { AddOnPricesService } from "./add-on-prices.service";
-import { AddOnPricesController } from "./add-on-prices.controller";
-import { AddOnPricesRepository } from "./add-on-prices.repository";
+import { AddOnPricesService } from "./branch-master.service";
+import { AddOnPricesController } from "./branch-master.controller";
+import { AddOnPricesRepository } from "./branch-master.repository";
 import { RedisCacheModule } from "examples/redis-cache/redis-cache.module";
 
 @Module({

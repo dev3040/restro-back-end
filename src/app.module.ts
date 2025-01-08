@@ -14,7 +14,7 @@ import { UserModule } from "./modules/user/user.module";
 import { DepartmentsModule } from "./modules/department/departments.module";
 import { CarrierTypesModule } from "./modules/carrier-types/carrier-types.module";
 import { PriorityTypesModule } from "./modules/priority-types/priority-types.module";
-import { AddOnPricesModule } from "./modules/add-on-prices/add-on-prices.module";
+import { AddOnPricesModule } from "./modules/branch-master/branch-master.module";
 import { TidTypeModule } from "./modules/tid-type/tid-type.module";
 import { MasterListingModule } from "./modules/master-listing/master-listing.module";
 import { RedisCacheModule } from "examples/redis-cache/redis-cache.module";

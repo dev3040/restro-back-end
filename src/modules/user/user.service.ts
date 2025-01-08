@@ -33,6 +33,7 @@ export class UserService {
             user.email = email.toLowerCase();
             user.salt = salt;
             user.password = password;
+            user.branchId = createUser.branchId;
             await user.save();
 
             return {
