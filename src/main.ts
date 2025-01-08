@@ -70,6 +70,7 @@ async function bootstrap() {
     app.useWebSocketAdapter(ioAdapter);
 
     const serverPort = configService.get("server.port");
+    console.log('serverPort: ', serverPort);
     await app.listen(serverPort,'0.0.0.0');
 }
 
