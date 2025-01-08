@@ -5,8 +5,6 @@ import { AppResponse } from "../../shared/interfaces/app-response.interface";
 import { CarrierTypesRepository } from "./carrier-types.repository";
 import { AddCarrierTypeDto, UpdateCarrierTypeDto } from "./dto/add-carrier-type.dto";
 import { User } from "src/shared/entity/user.entity";
-import { RedisCacheService } from "examples/redis-cache/redis-cache.service";
-import { RedisKey } from "src/shared/enums/cache-key.enum";
 import { ListCarrierTypesDto } from "src/shared/dtos/list-data.dto";
 
 @Injectable()
@@ -14,15 +12,11 @@ export class CarrierTypesService {
     constructor(
         @InjectRepository(CarrierTypesRepository)
         private readonly carrierTypesRepository: CarrierTypesRepository,
-        private readonly cacheService: RedisCacheService
     ) { }
 
     async addCarrierType(addCarrierTypes: AddCarrierTypeDto, user: User): Promise<AppResponse> {
         try {
             const createCarrierTypes = await this.carrierTypesRepository.addCarrierType(addCarrierTypes, user);
-            const data = await this.carrierTypesRepository.fetchAllCarrierTypes();
-            await this.cacheService.deleteCache(RedisKey.CARRIER_TYPE);
-            await this.cacheService.addCache({ key: RedisKey.CARRIER_TYPE, value: data });
             return {
                 message: "SUC_CARRIER_CREATED",
                 data: createCarrierTypes
@@ -35,7 +29,6 @@ export class CarrierTypesService {
     async getCarrierTypeList(query: ListCarrierTypesDto): Promise<AppResponse> {
         try {
             const { carrierTypes, page } = await this.carrierTypesRepository.fetchAllCarrierTypes(query);
-            await this.cacheService.addCache({ key: RedisKey.CARRIER_TYPE, value: carrierTypes });
             return {
                 message: "SUC_CARRIER_LIST_FETCHED",
                 data: { carrierTypes, page }
@@ -71,9 +64,6 @@ export class CarrierTypesService {
     async editCarrierType(updateCarrierTypes: UpdateCarrierTypeDto, id): Promise<AppResponse> {
         try {
             await this.carrierTypesRepository.editCarrierType(updateCarrierTypes, id);
-            const data = await this.carrierTypesRepository.fetchAllCarrierTypes();
-            await this.cacheService.deleteCache(RedisKey.CARRIER_TYPE);
-            await this.cacheService.addCache({ key: RedisKey.CARRIER_TYPE, value: data });
             return {
                 message: "SUC_CARRIER_UPDATED",
                 data: {}

@@ -17,7 +17,6 @@ import { PriorityTypesModule } from "./modules/priority-types/priority-types.mod
 import { AddOnPricesModule } from "./modules/branch-master/branch-master.module";
 import { TidTypeModule } from "./modules/tid-type/tid-type.module";
 import { MasterListingModule } from "./modules/master-listing/master-listing.module";
-import { RedisCacheModule } from "examples/redis-cache/redis-cache.module";
 import { ParseIsSummaryPipe } from "./shared/pipes/is-summary.pipe";
 
 
@@ -37,7 +36,6 @@ import { ParseIsSummaryPipe } from "./shared/pipes/is-summary.pipe";
         }),
         AuthModule,
         UserModule,
-        RedisCacheModule,
         DepartmentsModule,
         CarrierTypesModule,
         PriorityTypesModule,
