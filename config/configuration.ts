@@ -1,7 +1,7 @@
 export const configuration = () => ({
     server: {
         env: process.env.NODE_ENV,
-        port: parseInt(process.env.PORT),
+        port: parseInt(process.env.SERVER_PORT),
         origin: JSON.parse(process.env.WHITELIST),
     },
 
