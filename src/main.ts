@@ -6,7 +6,7 @@ import helmet from "helmet";
 import { SwaggerModule } from "@nestjs/swagger";
 import { SwaggerConfig } from "./config/swagger.config";
 import { ReqResInterceptor } from "./shared/interceptors/req-res.intercepter";
-import { ForbiddenException, ValidationPipe } from "@nestjs/common";
+import { ValidationPipe } from "@nestjs/common";
 import { NestExpressApplication } from "@nestjs/platform-express";
 import { ConfigService } from "@nestjs/config";
 import cookieParser from "cookie-parser";
@@ -20,18 +20,10 @@ async function bootstrap() {
 
     const configService = app.get<ConfigService>(ConfigService);
 
-    const whiteList = configService.get("server.origin");
-
     app.enableCors({
-        origin: function (origin, callback) {
-            if (!origin || whiteList.indexOf(origin) !== -1) {
-                callback(null, true);
-            } else {
-                callback(new ForbiddenException("Not allowed by CORS"));
-            }
-        },
-        methods: "GET,PUT,PATCH,POST,DELETE",
-        credentials: true
+        origin: '*', // Allow all origins
+        methods: "GET,PUT,PATCH,POST,DELETE", // Specify allowed HTTP methods
+        credentials: true, // Allow credentials if needed
     });
 
     app.use(json({ limit: "15mb" }));
