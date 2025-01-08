@@ -73,11 +73,11 @@ export class SignupUserDto {
     confirmPassword: string;
 
     @ApiProperty({
-        description: `Enter department Id`,
+        description: `Enter branch Id`,
         example: 1
     })
     @IsNotEmpty({
-        message: `Please enter department Id`,
+        message: `Please enter branch Id`,
     })
     branchId: number;
 
