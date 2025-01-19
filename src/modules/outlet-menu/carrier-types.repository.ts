@@ -1,7 +1,7 @@
 import { DataSource, Repository } from 'typeorm';
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { throwException } from "../../shared/utility/throw-exception";
-import { OutletMenu } from 'src/shared/entity/carrier-types.entity';
+import { OutletMenu } from 'src/shared/entity/outlet-menu.entity';
 import { AddCarrierTypeDto, UpdateCarrierTypeDto } from './dto/add-carrier-type.dto';
 import { User } from 'src/shared/entity/user.entity';
 import { IsActive } from 'src/shared/enums/is-active.enum';
@@ -27,41 +27,41 @@ export class CarrierTypesRepository extends Repository<OutletMenu> {
             if (carrierType) {
                 throw new ConflictException("ERR_CARRIER_EXIST&&&name");
             }
-            const carrierTypes = new OutletMenu();
-            carrierTypes.name = addCarrierType.name;
-            carrierTypes.branchId = addCarrierType.branchId;
-            carrierTypes.isActive = addCarrierType.isActive;
-            carrierTypes.createdBy = user.id;
-            await carrierTypes.save();
-            return carrierTypes;
+            const outletMenu = new OutletMenu();
+            outletMenu.name = addCarrierType.name;
+            outletMenu.branchId = addCarrierType.branchId;
+            outletMenu.isActive = addCarrierType.isActive;
+            outletMenu.createdBy = user.id;
+            await outletMenu.save();
+            return outletMenu;
         } catch (error) {
             throwException(error);
         }
     }
 
-    async fetchAllCarrierTypes(filterDto?: any): Promise<{ carrierTypes: OutletMenu[], page: object }> {
+    async fetchAllCarrierTypes(filterDto?: any): Promise<{ outletMenu: OutletMenu[], page: object }> {
         try {
-            const listQuery = this.manager.createQueryBuilder(OutletMenu, "carrierTypes")
-                .leftJoinAndSelect("carrierTypes.branch", "branch")
-                .select(["carrierTypes.id", "carrierTypes.name", "branch", "carrierTypes.isActive", "carrierTypes.createdAt"])
-                .where("(carrierTypes.isDeleted = false)")
+            const listQuery = this.manager.createQueryBuilder(OutletMenu, "outletMenu")
+                .leftJoinAndSelect("outletMenu.branch", "branch")
+                .select(["outletMenu.id", "outletMenu.name", "branch", "outletMenu.isActive", "outletMenu.createdAt"])
+                .where("(outletMenu.isDeleted = false)")
 
             if (filterDto) {
                 if (filterDto.offset && filterDto.limit) {
                     listQuery.skip(filterDto.offset * filterDto.limit);
                     listQuery.take(filterDto.limit)
                 }
-                listQuery.orderBy(`carrierTypes.${filterDto.orderBy}`, filterDto.orderDir);
+                listQuery.orderBy(`outletMenu.${filterDto.orderBy}`, filterDto.orderDir);
 
                 if (filterDto.search) {
-                    listQuery.andWhere("(carrierTypes.name ilike :search)", { search: `%${filterDto.search}%` });
+                    listQuery.andWhere("(outletMenu.name ilike :search)", { search: `%${filterDto.search}%` });
                 }
 
                 if (filterDto?.activeStatus == IsActive.ACTIVE) {
-                    listQuery.andWhere("(carrierTypes.isActive = true)")
+                    listQuery.andWhere("(outletMenu.isActive = true)")
                 }
                 if (filterDto?.activeStatus == IsActive.INACTIVE) {
-                    listQuery.andWhere("(carrierTypes.isActive = false)")
+                    listQuery.andWhere("(outletMenu.isActive = false)")
                 }
             }
 
@@ -71,7 +71,7 @@ export class CarrierTypesRepository extends Repository<OutletMenu> {
                 filterDto.count = carrierTypesWithCount[1];
             }
 
-            return { carrierTypes: carrierTypesWithCount[0], page: filterDto };
+            return { outletMenu: carrierTypesWithCount[0], page: filterDto };
         } catch (error) {
             throwException(error);
         }
@@ -86,13 +86,13 @@ export class CarrierTypesRepository extends Repository<OutletMenu> {
             if (!carrierTypesExist) throw new NotFoundException(`ERR_CARRIER_NOT_FOUND`);
 
             if (updateCarrierType?.name) {
-                const carrierType = await this.manager.createQueryBuilder(OutletMenu, "carrierTypes")
-                    .select(["carrierTypes.id", "carrierTypes.name"])
-                    .where(`(LOWER(carrierTypes.name) = :name)`, {
+                const carrierType = await this.manager.createQueryBuilder(OutletMenu, "outletMenu")
+                    .select(["outletMenu.id", "outletMenu.name"])
+                    .where(`(LOWER(outletMenu.name) = :name)`, {
                         name: `${updateCarrierType.name.toLowerCase()}`
                     })
-                    .andWhere(`(carrierTypes.isDeleted = false)`)
-                    .andWhere(`(carrierTypes.id != :id)`, { id })
+                    .andWhere(`(outletMenu.isDeleted = false)`)
+                    .andWhere(`(outletMenu.id != :id)`, { id })
                     .getOne();
 
                 if (carrierType) {

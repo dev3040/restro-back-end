@@ -8,8 +8,8 @@ import { GetUser } from "src/shared/decorators/get-user.decorator";
 import { User } from "src/shared/entity/user.entity";
 import { ListPrioritiesDto } from "../../shared/dtos/list-data.dto";
 
-@ApiTags("Priority Types")
-@Controller("priority-types")
+@ApiTags("Sub Menu")
+@Controller("sub-menu")
 @UseGuards(AuthGuard("jwt"))
 @ApiBearerAuth()
 export class PriorityTypesController {
@@ -49,7 +49,7 @@ export class PriorityTypesController {
     @ApiResponse({ status: 200, description: "Api success" })
     @ApiResponse({ status: 422, description: "Bad Request or API error message" })
     @ApiResponse({ status: 404, description: "Not found!" })
-    @ApiResponse({ status: 409, description: "PriorityTypes Already Exist" })
+    @ApiResponse({ status: 409, description: "SubItems Already Exist" })
     @ApiResponse({ status: 500, description: "Internal server error!" })
     editPriorityTypes(@Param("id") id: string, @Body(ValidationPipe) updatePriorityTypes: UpdatePriorityTypesDto): Promise<AppResponse> {
         return this.priorityTypesService.editPriorityTypes(updatePriorityTypes, id);

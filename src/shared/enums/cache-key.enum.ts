@@ -1,7 +1,7 @@
 export enum RedisKey {
     TRANSACTION = "transaction",
     TICKET_STATUS = "ticketStatus",
-    PRIORITY_TYPE = "priorityType",
+    PRIORITY_TYPE = "subItems",
     CARRIER_TYPE = "carrierType",
     TRACKING_ID_TYPE = "trackingIdType",
     PLATE_MASTER = "plateMaster",

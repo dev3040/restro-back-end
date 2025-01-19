@@ -1,4 +1,4 @@
-import { PriorityTypes } from '../../shared/entity/priority-types.entity';
+import { SubItems } from '../../shared/entity/sub-items.entity';
 import { DataSource, Repository } from 'typeorm';
 import {
     ConflictException,
@@ -14,40 +14,43 @@ import success from '../../i18n/en/success.json';
 
 
 @Injectable()
-export class PriorityTypesRepository extends Repository<PriorityTypes> {
+export class PriorityTypesRepository extends Repository<SubItems> {
     constructor(readonly dataSource: DataSource) {
-        super(PriorityTypes, dataSource.createEntityManager());
+        super(SubItems, dataSource.createEntityManager());
     }
 
-    async addPriorityTypes(addPriorityTypes: AddPriorityTypesDto, user: User): Promise<PriorityTypes> {
+    async addPriorityTypes(addPriorityTypes: AddPriorityTypesDto, user: User): Promise<SubItems> {
         try {
-            const priorityType = await this.manager.createQueryBuilder(PriorityTypes, "priorityType")
-                .select(["priorityType.id", "priorityType.name"])
-                .where(`(priorityType.isDeleted = false)`)
-                .andWhere(`(LOWER(priorityType.name) = :name)`, {
+            const subItems = await this.manager.createQueryBuilder(SubItems, "subItems")
+                .leftJoinAndSelect("subItems.outletMenu", "outletMenu")
+                .select(["subItems.id", "subItems.name", "subItems.price", "outletMenu"])
+                .where(`(subItems.isDeleted = false)`)
+                .andWhere(`(LOWER(subItems.name) = :name)`, {
                     name: `${addPriorityTypes.name.toLowerCase()}`
                 })
                 .getOne();
-            if (priorityType) {
+            if (subItems) {
                 throw new ConflictException("ERR_PRIORITY_EXIST&&&name");
             }
 
-            const priorityTypes = new PriorityTypes();
-            priorityTypes.name = addPriorityTypes.name;
-            priorityTypes.isActive = addPriorityTypes.isActive;
-            priorityTypes.colorCode = addPriorityTypes.colorCode;
-            priorityTypes.createdBy = user.id;
-            const res = await priorityTypes.save();
+            const subItems_ = new SubItems();
+            subItems_.name = addPriorityTypes.name;
+            subItems_.price = addPriorityTypes.price;
+            subItems_.categoryId = addPriorityTypes.categoryId;
+            subItems_.isActive = addPriorityTypes.isActive;
+            subItems_.createdBy = user.id;
+            const res = await subItems_.save();
             return res;
         } catch (error) {
             throwException(error);
         }
     }
 
-    async fetchAllPriorityTypes(filterDto?: any): Promise<{ priority_types: PriorityTypes[]; page: object }> {
+    async fetchAllPriorityTypes(filterDto?: any): Promise<{ sub_items: SubItems[]; page: object }> {
         try {
-            const listQuery = this.manager.createQueryBuilder(PriorityTypes, "priority")
-                .select(["priority.id", "priority.name", "priority.colorCode", "priority.isActive", "priority.isActive", "priority.createdAt", "priority.order"])
+            const listQuery = this.manager.createQueryBuilder(SubItems, "priority")
+                .leftJoinAndSelect("priority.outletMenu", "outletMenu")
+                .select(["priority.id", "priority.name", "priority.isActive", "priority.isActive", "priority.createdAt", "priority.order","outletMenu"])
                 .where(`(priority.isDeleted = false)`)
 
             if (filterDto?.search) {
@@ -72,33 +75,32 @@ export class PriorityTypesRepository extends Repository<PriorityTypes> {
                 filterDto.count = priorityTypesWithCount[1];
             }
 
-            return { priority_types: priorityTypesWithCount[0], page: filterDto };
+            return { sub_items: priorityTypesWithCount[0], page: filterDto };
         } catch (error) {
             throwException(error);
         }
     }
 
-    async editPriorityTypes(updatePriorityTypes: UpdatePriorityTypesDto, id): Promise<PriorityTypes> {
+    async editPriorityTypes(updatePriorityTypes: UpdatePriorityTypesDto, id): Promise<SubItems> {
         try {
             // Check user exists with given ID
             const priorityTypesExist = await this.findOne({ where: { id: id, isDeleted: false } });
             if (!priorityTypesExist) throw new NotFoundException(`ERR_PRIORITY_NOT_FOUND`);
 
             if (updatePriorityTypes?.name) {
-                const priorityType = await this.manager.createQueryBuilder(PriorityTypes, "priorityType")
-                    .select(["priorityType.id", "priorityType.name"])
-                    .where(`(LOWER(priorityType.name) = :name)`, {
+                const subItems = await this.manager.createQueryBuilder(SubItems, "subItems")
+                    .select(["subItems.id", "subItems.name"])
+                    .where(`(LOWER(subItems.name) = :name)`, {
                         name: `${updatePriorityTypes.name.toLowerCase()}`
                     })
-                    .andWhere(`(priorityType.isDeleted = false)`)
-                    .andWhere(`(priorityType.id != :id)`, { id })
+                    .andWhere(`(subItems.isDeleted = false)`)
+                    .andWhere(`(subItems.id != :id)`, { id })
                     .getOne();
-                if (priorityType) {
+                if (subItems) {
                     throw new ConflictException("ERR_PRIORITY_EXIST&&&name");
                 }
 
                 priorityTypesExist.name = updatePriorityTypes.name;
-                priorityTypesExist.colorCode = updatePriorityTypes.colorCode;
             }
 
             priorityTypesExist.isActive = updatePriorityTypes.isActive;
@@ -112,7 +114,7 @@ export class PriorityTypesRepository extends Repository<PriorityTypes> {
         try {
             const response = await commonDeleteHandler(
                 this.dataSource,  // dataSource
-                PriorityTypes,
+                SubItems,
                 deletePriority,
                 userId,
                 success.SUC_PRIORITY_DELETED,

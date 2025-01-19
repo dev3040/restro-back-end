@@ -3,18 +3,16 @@ import {
     Column,
     CreateDateColumn,
     Entity,
-    Index,
     JoinColumn,
     ManyToOne,
     PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from './user.entity';
 import { CommonConst } from '../constants/common.constant';
+import { OutletMenu } from './outlet-menu.entity';
 
-@Index("priority_types_name", ["name"], {})
-
-@Entity({ name: 'priority_types', schema: 'master' })
-export class PriorityTypes extends BaseEntity {
+@Entity({ name: 'sub_items', schema: 'master' })
+export class SubItems extends BaseEntity {
 
     @PrimaryGeneratedColumn()
     id: number;
@@ -22,8 +20,11 @@ export class PriorityTypes extends BaseEntity {
     @Column('varchar', { name: 'name', length: 100, nullable: true })
     name: string;
 
-    @Column('varchar', { name: 'color_code', length: 100, nullable: true })
-    colorCode: string | null;
+    @Column('decimal', { name: 'price', precision: 10, scale: 2 })
+    price: string;
+
+    @Column("int", { name: "category_id", nullable: true })
+    categoryId: number | null;
 
     @Column('varchar', { name: 'slug', length: CommonConst.slugLength, nullable: true })
     slug: string;
@@ -53,5 +54,8 @@ export class PriorityTypes extends BaseEntity {
     @JoinColumn({ name: "updated_by", referencedColumnName: "id" })
     updatedByUser: User;
 
+    @ManyToOne(() => OutletMenu)
+    @JoinColumn({ name: "category_id", referencedColumnName: "id" })
+    outletMenu: OutletMenu;
 
 }

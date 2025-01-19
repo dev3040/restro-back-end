@@ -2,10 +2,10 @@ import moment from 'moment';
 import { User } from "../entity/user.entity";
 import { DataSource, ILike, In } from 'typeorm';
 import { BadRequestException, ConflictException, NotFoundException } from '@nestjs/common';
-import { OutletMenu } from '../entity/carrier-types.entity';
+import { OutletMenu } from '../entity/outlet-menu.entity';
 import { Departments } from '../entity/departments.entity';
 import { Customers } from '../entity/customers.entity';
-import { PriorityTypes } from '../entity/priority-types.entity';
+import { SubItems } from '../entity/sub-items.entity';
 import { TransactionTypes } from '../entity/transaction-types.entity';
 import { CustomerTransactionTypes } from '../entity/customer-transaction-types.entity';
 import { CustomerContacts } from '../entity/customer-contacts.entity';
@@ -104,8 +104,8 @@ async function checkCustomerExists(customerId) {
 
 /* Check priority exists */
 async function checkPriorityExists(priorityId) {
-    const priority = await PriorityTypes.findOne({
-        select: ['id', 'colorCode', 'name'],
+    const priority = await SubItems.findOne({
+        select: ['id', 'name'],
         where: {
             id: priorityId,
             isDeleted: false,
@@ -277,8 +277,8 @@ function formatPrice(price: string | number): string {
 
 /* get priority data */
 async function getPriorityData(priorityId) {
-    const priority = await PriorityTypes.findOne({
-        select: ['id', 'name', 'colorCode'],
+    const priority = await SubItems.findOne({
+        select: ['id', 'name'],
         where: { id: priorityId }
     })
     if (!priority) { return null; }

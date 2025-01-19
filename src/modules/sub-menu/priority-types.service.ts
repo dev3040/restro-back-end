@@ -31,10 +31,10 @@ export class PriorityTypesService {
 
     async getPriorityTypesList(query: ListPrioritiesDto): Promise<AppResponse> {
         try {
-            const { priority_types, page } = await this.priorityTypesRepository.fetchAllPriorityTypes(query);
+            const { sub_items, page } = await this.priorityTypesRepository.fetchAllPriorityTypes(query);
             return {
                 message: "SUC_PRIORITY_LIST_FETCHED",
-                data: { priority_types, page }
+                data: { sub_items, page }
             };
         } catch (error) {
             throwException(error);
@@ -43,7 +43,7 @@ export class PriorityTypesService {
 
     async getPriorityTypes(id): Promise<AppResponse> {
         try {
-            // Check priority_types exists with given ID
+            // Check sub_items exists with given ID
             const getpriorityTypes = await this.priorityTypesRepository.findOne({
                 where: { id: id }
             });

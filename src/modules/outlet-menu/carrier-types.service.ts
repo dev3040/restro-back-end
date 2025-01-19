@@ -28,10 +28,10 @@ export class CarrierTypesService {
 
     async getCarrierTypeList(query: ListCarrierTypesDto): Promise<AppResponse> {
         try {
-            const { carrierTypes, page } = await this.carrierTypesRepository.fetchAllCarrierTypes(query);
+            const { outletMenu, page } = await this.carrierTypesRepository.fetchAllCarrierTypes(query);
             return {
                 message: "SUC_CARRIER_LIST_FETCHED",
-                data: { carrierTypes, page }
+                data: { outletMenu, page }
             };
         } catch (error) {
             throwException(error);
@@ -45,7 +45,7 @@ export class CarrierTypesService {
      */
     async getCarrierType(id): Promise<AppResponse> {
         try {
-            // Check carrierTypes exists with given ID
+            // Check outletMenu exists with given ID
             const getcarrierTypes = await this.carrierTypesRepository.findOne({
                 where: { id: id }
             });

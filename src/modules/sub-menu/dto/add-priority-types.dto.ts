@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
-import { ArrayMinSize, ArrayNotEmpty, IsArray, IsInt, IsNotEmpty, MaxLength, MinLength, ValidateIf } from 'class-validator';
+import { ArrayMinSize, ArrayNotEmpty, IsArray, IsInt, IsNotEmpty, MaxLength, MinLength } from 'class-validator';
 import { IsValidName } from 'src/shared/decorators/name.decorator';
 
 export class AddPriorityTypesDto {
@@ -10,19 +10,18 @@ export class AddPriorityTypesDto {
    @IsValidName({ message: 'Please enter a valid name.&&&name' })
    @ApiProperty({
       description: 'Enter name',
-      example: 'High',
+      example: 'Manchurian',
    })
    name: string;
 
-   @ValidateIf(o => o.colorCode)
-   @MinLength(2)
-   @MaxLength(30)
-   @IsValidName({ message: 'Please enter a valid color code.&&&colorCode' })
    @ApiPropertyOptional({
-      description: 'Please enter color code',
-      example: '#FFFFF',
+      description: 'Price value with a precision of 7 and scale of 3',
+      example: 1234.567,
    })
-   colorCode: string;
+   price: any;
+
+   @ApiProperty({ description: "CategoryId", example: 1 })
+   categoryId: number;
 
    @ApiProperty({
       description: 'Please enter Is Active',
