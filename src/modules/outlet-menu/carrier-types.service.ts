@@ -41,7 +41,7 @@ export class CarrierTypesService {
     /**
      * Fetch carrier types details from ID
      * @author Ishita
-     * @param id  => CarrierTypes id
+     * @param id  => OutletMenu id
      */
     async getCarrierType(id): Promise<AppResponse> {
         try {

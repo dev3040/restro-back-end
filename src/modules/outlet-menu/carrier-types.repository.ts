@@ -1,7 +1,7 @@
 import { DataSource, Repository } from 'typeorm';
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { throwException } from "../../shared/utility/throw-exception";
-import { CarrierTypes } from 'src/shared/entity/carrier-types.entity';
+import { OutletMenu } from 'src/shared/entity/carrier-types.entity';
 import { AddCarrierTypeDto, UpdateCarrierTypeDto } from './dto/add-carrier-type.dto';
 import { User } from 'src/shared/entity/user.entity';
 import { IsActive } from 'src/shared/enums/is-active.enum';
@@ -10,14 +10,14 @@ import error from '../../i18n/en/error.json';
 import success from '../../i18n/en/success.json';
 
 @Injectable()
-export class CarrierTypesRepository extends Repository<CarrierTypes> {
+export class CarrierTypesRepository extends Repository<OutletMenu> {
     constructor(readonly dataSource: DataSource) {
-        super(CarrierTypes, dataSource.createEntityManager());
+        super(OutletMenu, dataSource.createEntityManager());
     }
 
-    async addCarrierType(addCarrierType: AddCarrierTypeDto, user: User): Promise<CarrierTypes> {
+    async addCarrierType(addCarrierType: AddCarrierTypeDto, user: User): Promise<OutletMenu> {
         try {
-            const carrierType = await this.manager.createQueryBuilder(CarrierTypes, "carrierType")
+            const carrierType = await this.manager.createQueryBuilder(OutletMenu, "carrierType")
                 .select(["carrierType.id", "carrierType.name"])
                 .where(`(LOWER(carrierType.name) = :name)`, {
                     name: `${addCarrierType.name.toLowerCase()}`
@@ -27,8 +27,9 @@ export class CarrierTypesRepository extends Repository<CarrierTypes> {
             if (carrierType) {
                 throw new ConflictException("ERR_CARRIER_EXIST&&&name");
             }
-            const carrierTypes = new CarrierTypes();
+            const carrierTypes = new OutletMenu();
             carrierTypes.name = addCarrierType.name;
+            carrierTypes.branchId = addCarrierType.branchId;
             carrierTypes.isActive = addCarrierType.isActive;
             carrierTypes.createdBy = user.id;
             await carrierTypes.save();
@@ -38,10 +39,11 @@ export class CarrierTypesRepository extends Repository<CarrierTypes> {
         }
     }
 
-    async fetchAllCarrierTypes(filterDto?: any): Promise<{ carrierTypes: CarrierTypes[], page: object }> {
+    async fetchAllCarrierTypes(filterDto?: any): Promise<{ carrierTypes: OutletMenu[], page: object }> {
         try {
-            const listQuery = this.manager.createQueryBuilder(CarrierTypes, "carrierTypes")
-                .select(["carrierTypes.id", "carrierTypes.name", "carrierTypes.isActive", "carrierTypes.createdAt"])
+            const listQuery = this.manager.createQueryBuilder(OutletMenu, "carrierTypes")
+                .leftJoinAndSelect("carrierTypes.branch", "branch")
+                .select(["carrierTypes.id", "carrierTypes.name", "branch", "carrierTypes.isActive", "carrierTypes.createdAt"])
                 .where("(carrierTypes.isDeleted = false)")
 
             if (filterDto) {
@@ -75,7 +77,7 @@ export class CarrierTypesRepository extends Repository<CarrierTypes> {
         }
     }
 
-    async editCarrierType(updateCarrierType: UpdateCarrierTypeDto, id: number): Promise<CarrierTypes> {
+    async editCarrierType(updateCarrierType: UpdateCarrierTypeDto, id: number): Promise<OutletMenu> {
         try {
             // Check user exists with given ID
             const carrierTypesExist = await this.findOne({
@@ -84,7 +86,7 @@ export class CarrierTypesRepository extends Repository<CarrierTypes> {
             if (!carrierTypesExist) throw new NotFoundException(`ERR_CARRIER_NOT_FOUND`);
 
             if (updateCarrierType?.name) {
-                const carrierType = await this.manager.createQueryBuilder(CarrierTypes, "carrierTypes")
+                const carrierType = await this.manager.createQueryBuilder(OutletMenu, "carrierTypes")
                     .select(["carrierTypes.id", "carrierTypes.name"])
                     .where(`(LOWER(carrierTypes.name) = :name)`, {
                         name: `${updateCarrierType.name.toLowerCase()}`
@@ -98,6 +100,7 @@ export class CarrierTypesRepository extends Repository<CarrierTypes> {
                 }
 
                 carrierTypesExist.name = updateCarrierType.name;
+                carrierTypesExist.branchId = updateCarrierType.branchId;
             }
             carrierTypesExist.isActive = updateCarrierType.isActive;
             await carrierTypesExist.save();
@@ -111,7 +114,7 @@ export class CarrierTypesRepository extends Repository<CarrierTypes> {
         try {
             const response = await commonDeleteHandler(
                 this.dataSource,  // dataSource
-                CarrierTypes,
+                OutletMenu,
                 deleteCarrierTypes,
                 userId,
                 success.SUC_CARRIER_DELETED,

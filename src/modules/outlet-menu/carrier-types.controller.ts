@@ -9,8 +9,8 @@ import { User } from "src/shared/entity/user.entity";
 import { ListCarrierTypesDto } from "src/shared/dtos/list-data.dto";
 
 
-@ApiTags("Carrier Types")
-@Controller("carrier-types")
+@ApiTags("Outlet Menu")
+@Controller("outlet-menu")
 @UseGuards(AuthGuard("jwt"))
 @ApiBearerAuth()
 @ApiCookieAuth()

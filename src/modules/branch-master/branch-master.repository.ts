@@ -31,19 +31,19 @@ export class AddOnPricesRepository extends Repository<Branches> {
             if (addOnPrice) {
                 throw new ConflictException("ERR_ADD_ON_PRICE_NAME_EXIST&&&name");
             }
-            const addOnPrices = new Branches();
-            addOnPrices.name = addAddOnPrices.name;
-            addOnPrices.isActive = addAddOnPrices.isActive;
-            addOnPrices.code = addAddOnPrices.code;
-            addOnPrices.createdBy = user.id;
-            await addOnPrices.save();
-            return addOnPrices;
+            const branches = new Branches();
+            branches.name = addAddOnPrices.name;
+            branches.isActive = addAddOnPrices.isActive;
+            branches.code = addAddOnPrices.code;
+            branches.createdBy = user.id;
+            await branches.save();
+            return branches;
         } catch (error) {
             throwException(error);
         }
     }
 
-    async fetchAllAddOnPrices(filterDto?: any): Promise<{ addOnPrices: Branches[]; page: object }> {
+    async fetchAllAddOnPrices(filterDto?: any): Promise<{ branches: Branches[]; page: object }> {
         try {
             const listQuery = this.manager
                 .createQueryBuilder(Branches, "addOnPrice")
@@ -73,7 +73,7 @@ export class AddOnPricesRepository extends Repository<Branches> {
                 filterDto.count = addOnPriceWithCount[1];
             }
 
-            return { addOnPrices: addOnPriceWithCount[0], page: filterDto };
+            return { branches: addOnPriceWithCount[0], page: filterDto };
         } catch (error) {
             throwException(error);
         }

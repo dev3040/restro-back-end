@@ -12,12 +12,12 @@ import { mailConfig } from "./config/mail.config";
 import { AuthModule } from "./modules/auth/auth.module";
 import { UserModule } from "./modules/user/user.module";
 // import { DepartmentsModule } from "./modules/department/departments.module";
-// import { CarrierTypesModule } from "./modules/carrier-types/carrier-types.module";
 // import { PriorityTypesModule } from "./modules/priority-types/priority-types.module";
 import { AddOnPricesModule } from "./modules/branch-master/branch-master.module";
 // import { TidTypeModule } from "./modules/tid-type/tid-type.module";
 // import { MasterListingModule } from "./modules/master-listing/master-listing.module";
 import { ParseIsSummaryPipe } from "./shared/pipes/is-summary.pipe";
+import { CarrierTypesModule } from "./modules/outlet-menu/carrier-types.module";
 
 
 @Module({
@@ -37,7 +37,7 @@ import { ParseIsSummaryPipe } from "./shared/pipes/is-summary.pipe";
         AuthModule,
         UserModule,
         // DepartmentsModule,
-        // CarrierTypesModule,
+        CarrierTypesModule,
         // PriorityTypesModule,
         AddOnPricesModule,
         // TidTypeModule,

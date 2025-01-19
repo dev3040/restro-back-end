@@ -31,6 +31,7 @@ export class UserService {
             user.firstName = firstName;
             user.lastName = lastName;
             user.email = email.toLowerCase();
+            user.phone = createUser.phone;
             user.salt = salt;
             user.password = password;
             user.branchId = createUser.branchId;

@@ -30,10 +30,10 @@ export class AddOnPricesService {
 
     async getAddOnPricesList(query: ListAddOnPricesDto): Promise<AppResponse> {
         try {
-            const { addOnPrices, page } = await this.addOnPricesRepository.fetchAllAddOnPrices(query);
+            const { branches, page } = await this.addOnPricesRepository.fetchAllAddOnPrices(query);
             return {
                 message: "SUC_ADD_ON_PRICE_FETCHED",
-                data: { addOnPrices, page }
+                data: { branches, page }
             };
         } catch (error) {
             throwException(error);

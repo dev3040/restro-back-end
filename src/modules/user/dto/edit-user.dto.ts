@@ -1,4 +1,4 @@
-import { IsEmail, ValidationArguments, IsOptional, MaxLength, MinLength } from "class-validator";
+import { IsEmail, ValidationArguments, IsOptional, MaxLength, MinLength, IsPhoneNumber } from "class-validator";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { IsValidName } from "src/shared/decorators/name.decorator";
 
@@ -42,6 +42,14 @@ export class UpdateUserDto {
         example: `jon.doe@gmail.com`
     })
     email: string;
+
+    @IsOptional()
+    @ApiPropertyOptional({
+        description: 'Enter  phone.',
+        example: '(123) 456-7890',
+    })
+    @IsPhoneNumber()
+    phone: string;
 
     @IsOptional()
     @ApiProperty({

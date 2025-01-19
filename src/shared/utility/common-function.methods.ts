@@ -2,7 +2,7 @@ import moment from 'moment';
 import { User } from "../entity/user.entity";
 import { DataSource, ILike, In } from 'typeorm';
 import { BadRequestException, ConflictException, NotFoundException } from '@nestjs/common';
-import { CarrierTypes } from '../entity/carrier-types.entity';
+import { OutletMenu } from '../entity/carrier-types.entity';
 import { Departments } from '../entity/departments.entity';
 import { Customers } from '../entity/customers.entity';
 import { PriorityTypes } from '../entity/priority-types.entity';
@@ -118,7 +118,7 @@ async function checkPriorityExists(priorityId) {
 
 /* Check assigned users for ticket */
 async function checkCarrierTypeExists(carrierTypesId) {
-    const carrierType = await CarrierTypes.findOne({
+    const carrierType = await OutletMenu.findOne({
         where: {
             id: carrierTypesId,
             isActive: true

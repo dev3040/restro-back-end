@@ -1,5 +1,5 @@
-import { IsNotEmpty, IsEmail, MinLength, MaxLength, Matches, ValidationArguments } from "class-validator";
-import { ApiProperty } from "@nestjs/swagger";
+import { IsNotEmpty, IsEmail, MinLength, MaxLength, Matches, ValidationArguments, IsOptional, IsPhoneNumber } from "class-validator";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { IsEqualTo } from "../../../shared/decorators/password.decorator";
 import { IsValidName } from "src/shared/decorators/name.decorator";
 
@@ -46,6 +46,14 @@ export class SignupUserDto {
         example: `jon.doe@gmail.com`
     })
     email: string;
+
+    @IsOptional()
+    @ApiPropertyOptional({
+        description: 'Enter  phone.',
+        example: '(123) 456-7890',
+    })
+    @IsPhoneNumber()
+    phone: string;
 
     @IsNotEmpty({
         message: `Please enter password.&&&password`

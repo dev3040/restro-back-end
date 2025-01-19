@@ -14,6 +14,9 @@ export class AddCarrierTypeDto {
    @IsValidName({ message: 'Please enter a valid name.&&&name' })
    name: string;
 
+   @ApiProperty({ description: "Branch", example: 1 })
+   branchId: number;
+
    @ApiProperty({
       description: "Select carrier type active or not",
       example: false
