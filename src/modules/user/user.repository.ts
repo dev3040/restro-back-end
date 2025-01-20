@@ -126,8 +126,7 @@ export class UserRepository extends Repository<User> {
     async fetchAllUsers(filterDto) {
         try {
             const listQuery = this.manager.createQueryBuilder(User, "user")
-                .leftJoinAndSelect("user.departmentUser", "departmentUser")
-                .leftJoinAndSelect("departmentUser.department", "department")
+                .leftJoinAndSelect("user.branch", "branch")
                 .select([
                     "user.id",
                     "user.firstName",
@@ -135,8 +134,7 @@ export class UserRepository extends Repository<User> {
                     "user.email",
                     "user.phone",
                     "user.isActive",
-                    "departmentUser.departmentId",
-                    "department.id", "department.name"
+                    "branch"
                 ])
                 .where("(user.isDeleted = false)")
             if (filterDto?.search) {
