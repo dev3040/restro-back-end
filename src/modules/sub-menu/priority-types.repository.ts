@@ -36,6 +36,7 @@ export class PriorityTypesRepository extends Repository<SubItems> {
             const subItems_ = new SubItems();
             subItems_.name = addPriorityTypes.name;
             subItems_.price = addPriorityTypes.price;
+            subItems_.offer = addPriorityTypes.offer;
             subItems_.categoryId = addPriorityTypes.categoryId;
             subItems_.isActive = addPriorityTypes.isActive;
             subItems_.createdBy = user.id;
@@ -50,7 +51,7 @@ export class PriorityTypesRepository extends Repository<SubItems> {
         try {
             const listQuery = this.manager.createQueryBuilder(SubItems, "priority")
                 .leftJoinAndSelect("priority.outletMenu", "outletMenu")
-                .select(["priority.id", "priority.name", "priority.isActive", "priority.isActive", "priority.createdAt", "priority.order","outletMenu"])
+                .select(["priority.id", "priority.name", "priority.isActive", "priority.isActive", "priority.createdAt", "priority.order", "outletMenu"])
                 .where(`(priority.isDeleted = false)`)
 
             if (filterDto?.search) {
@@ -101,8 +102,11 @@ export class PriorityTypesRepository extends Repository<SubItems> {
                 }
 
                 priorityTypesExist.name = updatePriorityTypes.name;
-            }
 
+            }
+            priorityTypesExist.price = updatePriorityTypes.price;
+            priorityTypesExist.offer = updatePriorityTypes.offer;
+            priorityTypesExist.categoryId = updatePriorityTypes.categoryId;
             priorityTypesExist.isActive = updatePriorityTypes.isActive;
             await priorityTypesExist.save();
             return priorityTypesExist;

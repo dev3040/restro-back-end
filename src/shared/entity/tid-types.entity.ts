@@ -3,16 +3,13 @@ import {
     Column,
     CreateDateColumn,
     Entity,
-    Index,
     PrimaryGeneratedColumn,
     UpdateDateColumn,
 } from 'typeorm';
 import { CommonConst } from '../constants/common.constant';
 
-@Index("tid_types_name", ["name"], {})
-
-@Entity({ name: 'tid_types', schema: 'master' })
-export class TidTypes extends BaseEntity {
+@Entity({ name: 'transaction_types', schema: 'master' })
+export class TransactionTypes extends BaseEntity {
 
     @PrimaryGeneratedColumn()
     id: number;
@@ -22,6 +19,9 @@ export class TidTypes extends BaseEntity {
 
     @Column('boolean', { name: 'is_deleted', default: false, comment: "true=deleted, false=not-deleted" })
     isDeleted: boolean;
+
+    @Column('boolean', { name: 'is_active', default: false, comment: "true=deleted, false=not-deleted" })
+    isActive: boolean;
 
     @Column('varchar', { name: 'slug', length: CommonConst.slugLength, nullable: true })
     slug: string | null;

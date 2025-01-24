@@ -6,7 +6,6 @@ import { OutletMenu } from '../entity/outlet-menu.entity';
 import { Departments } from '../entity/departments.entity';
 import { Customers } from '../entity/customers.entity';
 import { SubItems } from '../entity/sub-items.entity';
-import { TransactionTypes } from '../entity/transaction-types.entity';
 import { CustomerTransactionTypes } from '../entity/customer-transaction-types.entity';
 import { CustomerContacts } from '../entity/customer-contacts.entity';
 import { UserDepartments } from '../entity/user-departments.entity';
@@ -23,7 +22,7 @@ import { IdOptions } from '../enums/lien-info.enum';
 import { throwException } from './throw-exception';
 import { SellerTypeEnum } from '../enums/seller-info.enum';
 import { ConfigMaster } from '../entity/config-master.entity';
-import { TidTypes } from '../entity/tid-types.entity';
+import { TransactionTypes } from '../entity/tid-types.entity';
 
 
 /* check if user exists */
@@ -173,7 +172,7 @@ async function checkCustomerTransactionTypesCount(transactionTypesIds, customerI
 
 /* Check TID type exist*/
 async function checkTidTypeExists(id) {
-    const getData = await TidTypes.findOne({
+    const getData = await TransactionTypes.findOne({
         where: { id: id, isDeleted: false }
     });
     if (!getData) {
@@ -715,7 +714,7 @@ function fedExShipmentJson(payload, isReturn = true) {
 
 /* Check TID type exist*/
 async function getCarrierTypeEmail(id: number) {
-    const getData = await TidTypes.findOne({
+    const getData = await TransactionTypes.findOne({
         select: ["id", "name"],
         where: {
             id,

@@ -20,6 +20,12 @@ export class AddPriorityTypesDto {
    })
    price: any;
 
+   @ApiPropertyOptional({
+      description: 'Offer',
+      example: 1234.567,
+   })
+   offer: any;
+
    @ApiProperty({ description: "CategoryId", example: 1 })
    categoryId: number;
 

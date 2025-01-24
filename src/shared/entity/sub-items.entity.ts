@@ -29,6 +29,9 @@ export class SubItems extends BaseEntity {
     @Column('varchar', { name: 'slug', length: CommonConst.slugLength, nullable: true })
     slug: string;
 
+    @Column("decimal", { name: "offer", precision: 10, scale: 2, nullable: true })
+    offer: string | null;
+
     @Column('smallint', { name: 'order', nullable: true })
     order: number;
 

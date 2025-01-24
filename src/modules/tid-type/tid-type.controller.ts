@@ -20,8 +20,8 @@ import { AddTidTypeDto, DeleteTidTypesDto, UpdateTidTypeDto } from "./dto/add-ti
 import { ListTidTypesDto } from "src/shared/dtos/list-data.dto";
 
 
-@ApiTags("TID Type")
-@Controller("tid-type")
+@ApiTags("Transaction Type")
+@Controller("tran-type")
 @UseGuards(AuthGuard("jwt"))
 @ApiBearerAuth()
 export class TidTypeController {
