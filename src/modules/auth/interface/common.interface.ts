@@ -1,5 +1,5 @@
 export interface OtpLeftTime {
-    email: string;
+    username: string;
     otpType: string;
 }
 

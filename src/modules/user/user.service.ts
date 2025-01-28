@@ -20,21 +20,22 @@ export class UserService {
     async signUp(createUser: SignupUserDto): Promise<AppResponse> {
         try {
 
-            const { firstName, lastName, email, password } = createUser;
+            const { firstName, lastName, username, password } = createUser;
 
-            const userExist = await this.userRepository.findOne({ where: { email: email.toLocaleLowerCase(), isDeleted: false } });
+            const userExist = await this.userRepository.findOne({ where: { username: username.toLocaleLowerCase(), isDeleted: false } });
 
-            if (userExist) throw new ConflictException(`ERR_EMAIL_EXIST&&&email`);
+            if (userExist) throw new ConflictException(`ERR_EMAIL_EXIST&&&username`);
 
             const user = new User();
             const salt = await bcrypt.genSalt();
             user.firstName = firstName;
             user.lastName = lastName;
-            user.email = email.toLowerCase();
+            user.username = username.toLowerCase();
             user.phone = createUser.phone;
             user.salt = salt;
             user.password = password;
             user.branchId = createUser.branchId;
+            user.designationId = createUser.designationId;
             await user.save();
 
             return {

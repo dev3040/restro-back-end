@@ -6,10 +6,10 @@ import * as bcrypt from "bcrypt";
 import { Exclude } from "class-transformer";
 import { AvatarColors } from "./avatar-colors.entity";
 import { Branches } from "./branches.entity";
+import { Designation } from "./designation.entity";
 
 @Index("user_first_name", ["firstName"], {})
 @Index("user_last_name", ["lastName"], {})
-@Index("user_email", ["email"], {})
 
 @Entity({ name: "user", schema: "authentication" })
 export class User extends BaseEntity {
@@ -25,8 +25,11 @@ export class User extends BaseEntity {
     @Column("int", { name: "branch_id", nullable: true })
     branchId: number | null;
 
-    @Column("varchar", { name: "email", length: 150 })
-    email: string;
+    @Column("int", { name: "designation_id", nullable: true })
+    designationId: number | null;
+
+    @Column("varchar", { name: "username", length: 150 })
+    username: string;
 
     @Column('varchar', { name: 'phone', length: 30, nullable: true })
     phone: string;
@@ -63,9 +66,7 @@ export class User extends BaseEntity {
         type: "timestamp with time zone",
         name: "updated_at"
     })
-    updatedAt: Date; checkBasicInfoExists
-    activityMentionConversion
-    findBillingInfoStartedLog
+    updatedAt: Date;
 
     @BeforeInsert()
     async hashPassword() {
@@ -103,4 +104,8 @@ export class User extends BaseEntity {
     @ManyToOne(() => Branches)
     @JoinColumn({ name: "branch_id", referencedColumnName: "id" })
     branch: Branches;
+
+    @ManyToOne(() => Designation)
+    @JoinColumn({ name: "designation_id", referencedColumnName: "id" })
+    designation: Designation;
 }

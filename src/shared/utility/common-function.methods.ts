@@ -9,12 +9,9 @@ import { SubItems } from '../entity/sub-items.entity';
 import { CustomerTransactionTypes } from '../entity/customer-transaction-types.entity';
 import { CustomerContacts } from '../entity/customer-contacts.entity';
 import { UserDepartments } from '../entity/user-departments.entity';
-import { TitleStates } from '../entity/title-states.entity';
 import { InsuranceType } from '../enums/insurance-info.enum';
 import { OdometerCodeEnum } from '../enums/trade-in-info.enum';
 import { ActiveDutyMilEnum, BusinessTypeEnum, IDOptionEnum } from '../enums/buyer-info.enum';
-import { PlateMaster } from '../entity/plate-master.entity';
-import { TitleCounties } from '../entity/title-counties.entity';
 import { ColorMaster } from '../entity/color-master.entity';
 import { TransactionReturnTypeEnum } from '../enums/transaction-return-type.enum';
 import { BillingDepositTypesEnum } from '../enums/billing-deposit-type.enum';
@@ -288,7 +285,7 @@ async function getPriorityData(priorityId) {
 /* get user */
 async function getUser(userId: number) {
     const userExists = await User.findOne({
-        select: ['id', 'isActive', 'email', 'firstName', 'lastName'],
+        select: ['id', 'isActive', 'username', 'firstName', 'lastName'],
         where: {
             id: userId,
         }
@@ -299,19 +296,9 @@ async function getUser(userId: number) {
 
 /* check if state exists */
 async function checkStateExists(stateId: number) {
-    const data = await TitleStates.findOne({
-        select: ["id"],
-        where: { id: stateId }
-    })
-    if (!data) throw new NotFoundException(`ERR_STATE_NOT_FOUND&&&stateId`)
-    return data;
-}
+    console.log('stateId: ', stateId);
 
-async function plateTypeExist(plateTypeId: number) {
-    const data = await PlateMaster.findOne({
-        where: { id: plateTypeId }
-    })
-    if (!data) throw new NotFoundException(`ERR_PLATE_MASTER_NOT_FOUND&&&plateTypeId`)
+    return null;
 }
 
 
@@ -374,18 +361,8 @@ function getActiveMil(type) {
 
 /* check if county exists */
 async function checkCountyExists(county: number) {
-    if (county === null) {
-        return null;
-    }
-    const countyExists = await TitleCounties.findOne({
-        select: ['id', 'name', 'code', 'countyCode'],
-        where: {
-            id: county,
-            isDeleted: false
-        }
-    })
-    if (!countyExists) throw new NotFoundException(`ERR_COUNTY_NOT_FOUND&&&county`)
-    return countyExists;
+    console.log('county: ', county);
+    return null
 }
 
 /* Check color exist*/
@@ -718,7 +695,7 @@ async function getCarrierTypeEmail(id: number) {
         select: ["id", "name"],
         where: {
             id,
-            name: ILike("email")
+            name: ILike("username")
         },
     });
     return getData;
@@ -732,7 +709,7 @@ export {
     checkContactExists, checkDepartmentDataExists, checkUserAssignedDepartments, checkUserDepartment, checkCusContactForPrimary,
     formatPrice, getPriorityData, getUser,
     checkStateExists, getInsuranceTypeName, getOdometerCodeName, getBuyerType,
-    getIdOption, getActiveMil, plateTypeExist, checkCountyExists, checkColorExists, getProcessingDate,
+    getIdOption, getActiveMil, checkCountyExists, checkColorExists, getProcessingDate,
     filterYearlyGraph, getIdOptionValue, getSellerType,
     getTransactionReturnType, getBillingDepositType, checkValidProcessingDate, commonDeleteHandler, getValue,
     getAllUserIds, convertToNumberIfNumeric, getUserSpecificTeams, getTeamSpecificUsers, checkTicketNullValues,

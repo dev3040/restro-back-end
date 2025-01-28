@@ -46,7 +46,8 @@ export class UserRepository extends Repository<User> {
             const user = await this.manager
                 .createQueryBuilder(User, "user")
                 .leftJoinAndSelect("user.branch", "branch")
-                .select(["user.firstName", "user.phone", "user.lastName", "user.email", "user.isActive", "branch"])
+                .leftJoinAndSelect("user.designation", "designation")
+                .select(["user.firstName", "user.phone", "user.lastName", "user.username", "user.isActive", "branch", "designation"])
                 .where("user.id =:id", { id })
                 .getOne();
 
@@ -62,29 +63,30 @@ export class UserRepository extends Repository<User> {
     async editUser(updateUser: UpdateUserDto, data: EditUser) {
         try {
             const { userId, loginUserId } = data;
-            const { email, branchId } = updateUser;
+            const { username, branchId } = updateUser;
 
             const userExists = await checkUserExists(userId)
 
-            if (email) {
+            if (username) {
                 // Check if Duplicate Email
                 const emailExists = await this.findOne({
                     where: {
-                        email: email,
+                        username: username,
                         id: Not(userId),
                         isDeleted: false
                     }
                 });
-                if (emailExists) throw new ConflictException(`ERR_EMAIL_EXIST&&&email`);
+                if (emailExists) throw new ConflictException(`ERR_EMAIL_EXIST&&&username`);
             }
 
 
             userExists.firstName = updateUser?.firstName;
             userExists.lastName = updateUser?.lastName;
-            userExists.email = updateUser?.email;
+            userExists.username = updateUser?.username;
             userExists.isActive = updateUser.isActive;
             userExists.updatedBy = loginUserId;
             userExists.branchId = branchId
+            userExists.designationId = updateUser?.designationId
             await userExists.save();
 
             return userExists;
@@ -99,7 +101,7 @@ export class UserRepository extends Repository<User> {
             const salt = await bcrypt.genSalt();
             user.firstName = addUser.firstName;
             user.lastName = addUser.lastName;
-            user.email = addUser.email;
+            user.username = addUser.username;
             user.phone = addUser.phone;
             user.password = addUser.password;
             user.salt = salt;
@@ -131,14 +133,14 @@ export class UserRepository extends Repository<User> {
                     "user.id",
                     "user.firstName",
                     "user.lastName",
-                    "user.email",
+                    "user.username",
                     "user.phone",
                     "user.isActive",
                     "branch"
                 ])
                 .where("(user.isDeleted = false)")
             if (filterDto?.search) {
-                listQuery.andWhere("( (user.email like :search) OR (CONCAT(first_name,' ',last_name) ILIKE '%' || :keyword || '%'))",
+                listQuery.andWhere("( (user.username like :search) OR (CONCAT(first_name,' ',last_name) ILIKE '%' || :keyword || '%'))",
                     { search: `%${filterDto.search}%`, keyword: filterDto.search });
             }
 
@@ -168,12 +170,12 @@ export class UserRepository extends Repository<User> {
 
     async getOtpLeftTime(otpData: OtpLeftTime) {
         try {
-            const { email, otpType } = otpData;
+            const { username, otpType } = otpData;
             const getOtp = await this.manager
                 .createQueryBuilder(Otp, "otp")
                 .leftJoinAndSelect("otp.user", "user")
                 .select(["user", "otp"])
-                .where("user.email =:email", { email })
+                .where("user.username =:username", { username })
                 .andWhere("otp.type =:otpType", { otpType: +OtpType[otpType] })
                 .orderBy("otp.created_at", "DESC")
                 .getOne();
@@ -199,15 +201,15 @@ export class UserRepository extends Repository<User> {
 
     async createUser(createUser: CreateUserDto): Promise<AppResponse> {
         try {
-            const { firstName, lastName, email, password, departments } = createUser;
+            const { firstName, lastName, username, password, departments } = createUser;
 
             const userExist = await this.findOne({
                 where: {
-                    email: email.toLocaleLowerCase(),
+                    username: username.toLocaleLowerCase(),
                     isDeleted: false
                 }
             });
-            if (userExist) throw new ConflictException(`ERR_EMAIL_EXIST&&&email`);
+            if (userExist) throw new ConflictException(`ERR_EMAIL_EXIST&&&username`);
 
             let arr = []
             if (departments !== undefined && departments?.length) {
@@ -222,10 +224,12 @@ export class UserRepository extends Repository<User> {
             const user = new User();
             user.firstName = firstName;
             user.lastName = lastName;
-            user.email = email.toLowerCase();
+            user.username = username.toLowerCase();
             user.phone = createUser.phone;
             user.salt = salt;
             user.password = password;
+            user.branchId = createUser.branchId;
+            user.designationId = createUser.designationId;
             user.createdBy = user.id;
             await user.save();
 

@@ -41,9 +41,9 @@ export class AuthController {
     @ApiResponse({ status: 422, description: "Bad Request or API error message" })
     @ApiResponse({ status: 401, description: "Invalid Login credentials." })
     @ApiResponse({ status: 500, description: "Internal server error!" })
-    getOtpLeftTime(@Query("email") email: string, @Query("otpType") otpType: string): Promise<AppResponse> {
+    getOtpLeftTime(@Query("username") username: string, @Query("otpType") otpType: string): Promise<AppResponse> {
         const data: OtpLeftTime = {
-            email: email,
+            username: username,
             otpType: otpType
         };
         return this.authService.getOtpLeftTime(data);

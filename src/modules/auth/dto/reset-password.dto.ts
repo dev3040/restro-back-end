@@ -4,13 +4,13 @@ import { IsEqualTo } from "src/shared/decorators/password.decorator";
 
 export class ResetPasswordDto {
     @IsNotEmpty({
-        message: `Please enter email`
+        message: `Please enter username`
     })
     @ApiProperty({
         description: "User Email",
-        example: "jon.doe@gmail.com"
+        example: "jondoe30"
     })
-    email: string;
+    username: string;
 
     @IsNotEmpty({
         message: `Please enter your new password.&&&password`

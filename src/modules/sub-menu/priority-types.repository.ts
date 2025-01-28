@@ -51,7 +51,7 @@ export class PriorityTypesRepository extends Repository<SubItems> {
         try {
             const listQuery = this.manager.createQueryBuilder(SubItems, "priority")
                 .leftJoinAndSelect("priority.outletMenu", "outletMenu")
-                .select(["priority.id", "priority.name", "priority.isActive", "priority.isActive", "priority.createdAt", "priority.order", "outletMenu"])
+                .select(["priority.id", "priority.name", "priority.offer", "priority.price", "priority.isActive", "priority.isActive", "priority.createdAt", "priority.order", "outletMenu"])
                 .where(`(priority.isDeleted = false)`)
 
             if (filterDto?.search) {

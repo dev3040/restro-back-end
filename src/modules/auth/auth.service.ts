@@ -48,15 +48,34 @@ export class AuthService {
 
     async loginUser(loginUser: LoginDto, res): Promise<AppResponse> {
         try {
-            const { email, password } = loginUser;
-            const user = await this.userRepository.findOne({
-                select: ['id', 'isActive', 'salt', 'password', 'isDeleted', 'firstName', 'email', 'lastName'],
-                where: { email: email.toLocaleLowerCase() },
-                order: { id: "DESC" }
-            });
+            const { username, password } = loginUser;
 
+            const user = await this.userRepository
+                .createQueryBuilder('user')
+                .select([
+                    'user.id',
+                    'user.isActive',
+                    'user.salt',
+                    'user.password',
+                    'user.isDeleted',
+                    'user.firstName',
+                    'user.username',
+                    'user.lastName',
+                    'designation.id',
+                    'designation.name',
+                    'branch.name',
+                    'branch.id'
+
+                ])
+                .leftJoinAndSelect('user.designation', 'designation')
+                .leftJoinAndSelect("user.branch", "branch")
+                .where('LOWER(user.username) = :username', { username: username.toLowerCase() })
+                .orderBy('user.id', 'DESC')
+                .getOne();
+
+                console.log('user: ', user);
             if (!user) {
-                throw new UnauthorizedException(`ERR_INVALID_PASSWORD&&&email`);
+                throw new UnauthorizedException(`ERR_INVALID_PASSWORD&&&username`);
             } else if (user.isDeleted) {
                 throw new UnauthorizedException(`ERR_DELETED_ACC`);
             } else if (!user.isActive) {
@@ -66,10 +85,14 @@ export class AuthService {
                 const { accessToken, refreshToken } = this.generateJWTToken(user, res);
 
                 await this.storeLoginToken(accessToken, refreshToken, user.id);
+                delete user.password
+                delete user.salt
+                delete user.isDeleted
+                delete user.isActive
 
                 return {
                     data: {
-                        user_id: user.id,
+                        user_id: user,
                         access_token: accessToken,
                         refresh_token: refreshToken
                     },
@@ -89,13 +112,13 @@ export class AuthService {
      */
     async getOtpLeftTime(data: OtpLeftTime): Promise<AppResponse> {
         try {
-            const { email, otpType } = data;
-            const getUser = await this.userRepository.findOne({ where: { email: email.toLocaleLowerCase() } });
+            const { username, otpType } = data;
+            const getUser = await this.userRepository.findOne({ where: { username: username.toLocaleLowerCase() } });
             if (!getUser) {
-                throw new NotFoundException(`ERR_USER_NOT_FOUND&&&email`);
+                throw new NotFoundException(`ERR_USER_NOT_FOUND&&&username`);
             }
             const otpObj: OtpLeftTime = {
-                email: email,
+                username: username,
                 otpType: otpType
             };
             const getOtpDetails = await this.userRepository.getOtpLeftTime(otpObj);
@@ -119,11 +142,11 @@ export class AuthService {
      */
     async resendOtp(resendOtp: ResendOtpDto): Promise<AppResponse> {
         try {
-            const { email, otpType } = resendOtp;
-            const user = await this.userRepository.findOne({ where: { email: email.toLocaleLowerCase() } }); // user by email
+            const { username, otpType } = resendOtp;
+            const user = await this.userRepository.findOne({ where: { username: username.toLocaleLowerCase() } }); // user by username
 
             if (!user) {
-                throw new NotFoundException("ERR_USER_NOT_FOUND&&&email");
+                throw new NotFoundException("ERR_USER_NOT_FOUND&&&username");
             }
 
             // Delete all existing OTPs for this user and type
@@ -142,7 +165,7 @@ export class AuthService {
             // Save the new OTP to the database
             await this.otpRepository.save(otp);
 
-            // Send the new OTP via email
+            // Send the new OTP via username
             await this.mailerService.ResetPasswordOtp(user, generateOtp);
 
             return {
@@ -190,17 +213,17 @@ export class AuthService {
 
     async forgotPassword(forgotPasswordDto: ForgotPasswordDto): Promise<AppResponse> {
         try {
-            const { email } = forgotPasswordDto;
+            const { username } = forgotPasswordDto;
 
             const user = await this.userRepository.findOne({
-                select: ['id', 'email', 'isActive', 'isDeleted', "firstName", "lastName"],
+                select: ['id', 'username', 'isActive', 'isDeleted', "firstName", "lastName"],
                 where: {
-                    email: email.toLocaleLowerCase(),
+                    username: username.toLocaleLowerCase(),
                     isDeleted: false
                 }
             });
             if (!user) {
-                throw new NotFoundException("ERR_USER_NOT_FOUND&&&email");
+                throw new NotFoundException("ERR_USER_NOT_FOUND&&&username");
             } else if (!user.isActive) {
                 throw new NotAcceptableException("ERR_INACTIVE_ACC");
             }
@@ -232,10 +255,10 @@ export class AuthService {
      */
     async resetPassword(resetPasswordDto: ResetPasswordDto): Promise<AppResponse> {
         try {
-            const { email, newPassword } = resetPasswordDto;
+            const { username, newPassword } = resetPasswordDto;
             let user = await this.userRepository.findOne({
                 select: ['id', 'isActive', 'password', 'salt', 'password'],
-                where: { email: email.toLocaleLowerCase() }
+                where: { username: username.toLocaleLowerCase() }
             });
             if (!user) {
                 throw new NotFoundException(`NOT_FOUND`);
@@ -260,13 +283,13 @@ export class AuthService {
 
     async otpVerify(otpVerifyDto: OtpVerifyDto, res): Promise<AppResponse> {
         try {
-            const { email, otp } = otpVerifyDto;
+            const { username, otp } = otpVerifyDto;
             const user = await this.userRepository.findOne({
-                select: ['id', 'email'],
-                where: { email: email.toLocaleLowerCase(), isDeleted: false }
+                select: ['id', 'username'],
+                where: { username: username.toLocaleLowerCase(), isDeleted: false }
             });
             if (!user) {
-                throw new NotFoundException(`ERR_USER_NOT_FOUND&&&email`);
+                throw new NotFoundException(`ERR_USER_NOT_FOUND&&&username`);
             }
 
             const currentTime = new Date().getTime();
@@ -284,7 +307,7 @@ export class AuthService {
             return {
                 message: "SUC_OTP_VERIFICATION",
                 data: {
-                    user: { email: user.email }
+                    user: { username: user.username }
                 }
             };
         } catch (error) {
@@ -295,8 +318,8 @@ export class AuthService {
     generateJWTToken(user, res: Response): { accessToken: string; refreshToken: string } {
         const payload: JwtPayload = {
             id: user.id,
-            email: user.email,
-            username: user.firstName + " " + user.lastName,
+            username: user.username,
+            userFullName: user.firstName + " " + user.lastName,
             firstName: user.firstName,
             date: Date.now().toString(),
             lastName: user.lastName,
@@ -311,9 +334,9 @@ export class AuthService {
         const refreshTokenConfig = this.configService.get("refresh_token");
         const refreshPayload: RefreshTokenPayload = {
             id: user.id,
-            email: user.email,
+            username: user.username,
             date: Date.now().toString(),
-            username: user.firstName + " " + user.lastName
+            userFullName: user.firstName + " " + user.lastName
         };
 
         const refreshToken = this.jwtService.sign(
@@ -339,8 +362,8 @@ export class AuthService {
         const refreshTokenConfig = this.configService.get("refresh_token");
         const payload: RefreshTokenPayload = {
             id: user.id,
-            email: user.email,
-            username: user.firstName + " " + user.lastName,
+            username: user.username,
+            userFullName: user.firstName + " " + user.lastName,
             date: Date.now().toString()
         };
 

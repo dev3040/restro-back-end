@@ -1,6 +1,6 @@
 {
-    "ERR_INVALID_PASSWORD": "Invalid login credentials! Please enter correct email address and password.",
-    "ERR_EMAIL_EXIST": "Email address already exists.",
+    "ERR_INVALID_PASSWORD": "Invalid login credentials! Please enter correct username and password.",
+    "ERR_EMAIL_EXIST": "Username already exists.",
     "ERR_USER_NOT_FOUND": "User not found.",
     "ERR_RESET_OLD_PASSWORD": "New password cannot be the same as the old password.",
     "ERR_NEW_AND_CONFIRM_PASSWORD_MISMATCHED": "Passwords do not match.",

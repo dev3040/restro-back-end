@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsEmail, MinLength, MaxLength, Matches, ValidationArguments, IsOptional, IsPhoneNumber } from "class-validator";
+import { IsNotEmpty, MinLength, MaxLength, Matches, IsOptional, IsPhoneNumber } from "class-validator";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { IsEqualTo } from "../../../shared/decorators/password.decorator";
 import { IsValidName } from "src/shared/decorators/name.decorator";
@@ -29,23 +29,11 @@ export class SignupUserDto {
     @IsValidName({ message: 'Please enter a valid last name.&&&lastName' })
     lastName: string;
 
-    @IsEmail(
-        {},
-        {
-            message: (args: ValidationArguments) => {
-                if (typeof args.value == "undefined" || args.value == "") {
-                    return `Please enter email.&&&email`;
-                } else {
-                    return `Please enter a valid email.&&&email`;
-                }
-            }
-        }
-    )
     @ApiProperty({
         description: `Enter Email`,
-        example: `jon.doe@gmail.com`
+        example: `jondoe30`
     })
-    email: string;
+    username: string;
 
     @IsOptional()
     @ApiPropertyOptional({
@@ -88,5 +76,14 @@ export class SignupUserDto {
         message: `Please enter branch Id`,
     })
     branchId: number;
+
+    @ApiProperty({
+        description: `Enter branch Id`,
+        example: 1
+    })
+    @IsNotEmpty({
+        message: `Please enter designation Id`,
+    })
+    designationId: number;
 
 }

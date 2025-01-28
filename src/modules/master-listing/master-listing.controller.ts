@@ -2,8 +2,6 @@ import {
     Controller,
     UseGuards,
     Get,
-    Param,
-    Query,
     Put,
     ValidationPipe,
     Body
@@ -23,25 +21,14 @@ import { ConfigMasterDto } from "./dto/config-master.dto";
 export class ListingController {
     constructor(private readonly listingService: ListingService) { }
 
-    @Get("/title-state")
-    @ApiOperation({ summary: "Get title state list" })
+    @Get("/designations")
+    @ApiOperation({ summary: "Get designation list" })
     @ApiResponse({ status: 200, description: "Api success" })
     @ApiResponse({ status: 422, description: "Bad Request or API error message" })
     @ApiResponse({ status: 404, description: "Not found!" })
     @ApiResponse({ status: 500, description: "Internal server error!" })
-    getTitleStateList(@Query() query: { isMaster: boolean }): Promise<AppResponse> {
-        return this.listingService.getTitleStateList(query);
-    }
-
-    @Get("/counties/:stateId?")
-    @ApiOperation({ summary: "Get counties" })
-    @ApiResponse({ status: 200, description: "Api success" })
-    @ApiResponse({ status: 422, description: "Bad Request or API error message" })
-    @ApiResponse({ status: 404, description: "Not found!" })
-    @ApiResponse({ status: 500, description: "Internal server error!" })
-    getCounties(@Param("stateId") stateId?: string, @Query("stateCode") stateCode?: string): Promise<AppResponse> {
-        const stateIdNumber = stateId ? parseInt(stateId, 10) : undefined;
-        return this.listingService.getCounties(stateIdNumber, stateCode);
+    getTitleStateList(): Promise<AppResponse> {
+        return this.listingService.getTitleStateList();
     }
 
     @Get("/avatar-colors")

@@ -1,25 +1,13 @@
-import { IsEmail, IsEnum, IsNotEmpty, ValidationArguments } from "class-validator";
+import { IsEnum, IsNotEmpty, ValidationArguments } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 import { OtpType } from "src/shared/enums/otp-type.enum";
 
 export class ResendOtpDto {
-    @IsEmail(
-        {},
-        {
-            message: (args: ValidationArguments) => {
-                if (typeof args.value == "undefined" || args.value == "") {
-                    return `Please enter your email.&&&email`;
-                } else {
-                    return `Please enter a valid email.&&&email`;
-                }
-            }
-        }
-    )
     @ApiProperty({
         description: "User Email",
-        example: "jon.doe@gmail.com"
+        example: "jondoe30"
     })
-    email: string;
+    username: string;
 
     @IsEnum(OtpType, {
         message: (args: ValidationArguments) => {
