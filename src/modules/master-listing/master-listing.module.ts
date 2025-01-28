@@ -1,10 +1,10 @@
 import { Module } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { ListingService } from "./master-listing.service";
-import { ConfigController } from "./master-listing.controller";
+import { ConfigController,  ListingController } from "./master-listing.controller";
 
 @Module({
-    controllers: [ConfigController],
+    controllers: [ListingController, ConfigController],
     providers: [ListingService, ConfigService],
     exports: []
 })
