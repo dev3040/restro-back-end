@@ -10,7 +10,7 @@ import { OtpLeftTime } from "../auth/interface/common.interface";
 import { EditUser, OtpData, UserStatusChange } from "./interface/common.interface";
 import { IsActive } from "src/shared/enums/is-active.enum";
 import { CreateUserDto } from "./dto/create-user.dto";
-import { checkDepartmentDataExists, checkUserExists, commonDeleteHandler } from "src/shared/utility/common-function.methods";
+import { checkUserExists, commonDeleteHandler } from "src/shared/utility/common-function.methods";
 import { AppResponse } from "src/shared/interfaces/app-response.interface";
 import { UserDepartments } from "src/shared/entity/user-departments.entity";
 import error from '../../i18n/en/error.json';
@@ -201,7 +201,7 @@ export class UserRepository extends Repository<User> {
 
     async createUser(createUser: CreateUserDto): Promise<AppResponse> {
         try {
-            const { firstName, lastName, username, password, departments } = createUser;
+            const { firstName, lastName, username, password } = createUser;
 
             const userExist = await this.findOne({
                 where: {
@@ -212,12 +212,6 @@ export class UserRepository extends Repository<User> {
             if (userExist) throw new ConflictException(`ERR_EMAIL_EXIST&&&username`);
 
             let arr = []
-            if (departments !== undefined && departments?.length) {
-                arr = departments.map(e => +e)
-                arr = [...new Set(arr)];
-                await checkDepartmentDataExists(arr)
-
-            }
 
             const salt = await bcrypt.genSalt();
 

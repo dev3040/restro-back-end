@@ -3,15 +3,6 @@ import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { IsEqualTo } from "../../../shared/decorators/password.decorator";
 import { IsValidName } from "src/shared/decorators/name.decorator";
 
-class DepartmentArr {
-
-    @IsNotEmpty({ message: `Please enter department id&&&departmentId`, })
-    @ApiProperty({ description: `Enter department Id` })
-    departmentId: number;
-
-}
-
-
 export class CreateUserDto {
 
     @IsNotEmpty({
