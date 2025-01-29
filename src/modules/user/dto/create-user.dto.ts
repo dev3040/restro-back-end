@@ -76,9 +76,6 @@ export class CreateUserDto {
     @IsNotEmpty({ message: `Please enter confirm password.&&&confirmPassword` })
     confirmPassword: string;
 
-    @ApiProperty({ description: "Enter departments", example: `[1]` })
-    departments: DepartmentArr[];
-
     @ApiProperty({ description: "Branch", example: 1 })
     branchId: number;
     
