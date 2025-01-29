@@ -40,7 +40,6 @@ export class SignupUserDto {
         description: 'Enter  phone.',
         example: '(123) 456-7890',
     })
-    @IsPhoneNumber()
     phone: string;
 
     @IsNotEmpty({
