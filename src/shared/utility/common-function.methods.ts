@@ -19,7 +19,7 @@ import { IdOptions } from '../enums/lien-info.enum';
 import { throwException } from './throw-exception';
 import { SellerTypeEnum } from '../enums/seller-info.enum';
 import { ConfigMaster } from '../entity/config-master.entity';
-import { TransactionTypes } from '../entity/tid-types.entity';
+import { PaymentMethods } from '../entity/tid-types.entity';
 
 
 /* check if user exists */
@@ -146,7 +146,7 @@ async function generateInvoiceId(ticketCount: number) {
 
 /* get count of transaction types */
 async function checkTransactionTypesCount(transactionTypesIds) {
-    const checkTransactionTypes = await TransactionTypes.count({
+    const checkTransactionTypes = await PaymentMethods.count({
         where: {
             id: In(transactionTypesIds),
             isDeleted: false,
@@ -169,7 +169,7 @@ async function checkCustomerTransactionTypesCount(transactionTypesIds, customerI
 
 /* Check TID type exist*/
 async function checkTidTypeExists(id) {
-    const getData = await TransactionTypes.findOne({
+    const getData = await PaymentMethods.findOne({
         where: { id: id, isDeleted: false }
     });
     if (!getData) {
@@ -180,7 +180,7 @@ async function checkTidTypeExists(id) {
 
 /* Check transaction type exists*/
 async function checkTransactionTypeExists(id) {
-    const data = await TransactionTypes.findOne({
+    const data = await PaymentMethods.findOne({
         where: {
             id: id,
             isDeleted: false
@@ -691,7 +691,7 @@ function fedExShipmentJson(payload, isReturn = true) {
 
 /* Check TID type exist*/
 async function getCarrierTypeEmail(id: number) {
-    const getData = await TransactionTypes.findOne({
+    const getData = await PaymentMethods.findOne({
         select: ["id", "name"],
         where: {
             id,

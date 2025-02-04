@@ -3,23 +3,23 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { throwException } from "../../shared/utility/throw-exception";
 import { AddTidTypeDto, UpdateTidTypeDto } from './dto/add-tid-type.dto';
 import { User } from 'src/shared/entity/user.entity';
-import { TransactionTypes } from 'src/shared/entity/tid-types.entity';
+import { PaymentMethods } from 'src/shared/entity/tid-types.entity';
 import { checkTidTypeExists, commonDeleteHandler } from 'src/shared/utility/common-function.methods';
 import error from '../../i18n/en/error.json';
 import success from '../../i18n/en/success.json';
 
 
 @Injectable()
-export class TidTypeRepository extends Repository<TransactionTypes> {
+export class TidTypeRepository extends Repository<PaymentMethods> {
     constructor(readonly dataSource: DataSource) {
-        super(TransactionTypes, dataSource.createEntityManager());
+        super(PaymentMethods, dataSource.createEntityManager());
     }
 
-    async addTidType(addTidType: AddTidTypeDto, user: User): Promise<TransactionTypes> {
+    async addTidType(addTidType: AddTidTypeDto, user: User): Promise<PaymentMethods> {
         try {
             const { name } = addTidType;
 
-            const tidTypeNameExists = await this.manager.createQueryBuilder(TransactionTypes, "tidType")
+            const tidTypeNameExists = await this.manager.createQueryBuilder(PaymentMethods, "tidType")
                 .select(["tidType.id", "tidType.name"])
                 .where(`(LOWER(tidType.name) = :name)`, { name: `${name.toLowerCase()}` })
                 .andWhere(`(tidType.isDeleted = false)`)
@@ -28,7 +28,7 @@ export class TidTypeRepository extends Repository<TransactionTypes> {
                 throw new ConflictException("ERR_TID_TYPE_EXIST&&&name");
             }
 
-            const tidType = new TransactionTypes();
+            const tidType = new PaymentMethods();
             tidType.name = name;
             tidType.createdBy = user.id
             await tidType.save();
@@ -39,9 +39,9 @@ export class TidTypeRepository extends Repository<TransactionTypes> {
         }
     }
 
-    async fetchAllTidTypes(filterDto?: any): Promise<{ tidTypes: TransactionTypes[]; page: object }> {
+    async fetchAllTidTypes(filterDto?: any): Promise<{ tidTypes: PaymentMethods[]; page: object }> {
         try {
-            const listQuery = this.manager.createQueryBuilder(TransactionTypes, "tidType")
+            const listQuery = this.manager.createQueryBuilder(PaymentMethods, "tidType")
                 .where("(tidType.isDeleted = false)")
                 .select(["tidType.id", "tidType.name", "tidType.slug"])
 
@@ -69,13 +69,13 @@ export class TidTypeRepository extends Repository<TransactionTypes> {
         }
     }
 
-    async editTidType(updateTidType: UpdateTidTypeDto, id, user: User): Promise<TransactionTypes> {
+    async editTidType(updateTidType: UpdateTidTypeDto, id, user: User): Promise<PaymentMethods> {
         try {
             const { name } = updateTidType;
 
             const tidTypeExist = await checkTidTypeExists(id);
 
-            const tidTypeNameExists = await this.manager.createQueryBuilder(TransactionTypes, "tidType")
+            const tidTypeNameExists = await this.manager.createQueryBuilder(PaymentMethods, "tidType")
                 .select(["tidType.id", "tidType.name"])
                 .where(`(LOWER(tidType.name) = :name)`, { name: `${name.toLowerCase()}` })
                 .andWhere(`(tidType.isDeleted = false)`)
@@ -99,7 +99,7 @@ export class TidTypeRepository extends Repository<TransactionTypes> {
         try {
             const response = await commonDeleteHandler(
                 this.dataSource,  // dataSource
-                TransactionTypes,
+                PaymentMethods,
                 tidTypes,
                 userId,
                 success.SUC_TID_TYPE_DELETED,

@@ -8,8 +8,8 @@ import {
 } from 'typeorm';
 import { CommonConst } from '../constants/common.constant';
 
-@Entity({ name: 'transaction_types', schema: 'master' })
-export class TransactionTypes extends BaseEntity {
+@Entity({ name: 'payment_methods', schema: 'master' })
+export class PaymentMethods extends BaseEntity {
 
     @PrimaryGeneratedColumn()
     id: number;

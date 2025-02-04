@@ -1,4 +1,4 @@
-import { IsNotEmpty, MinLength, MaxLength, Matches, IsArray, ArrayNotEmpty, ArrayMinSize, IsInt, IsOptional, IsPhoneNumber } from "class-validator";
+import { IsNotEmpty, MinLength, MaxLength, Matches, IsArray, ArrayNotEmpty, ArrayMinSize, IsInt, IsOptional } from "class-validator";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { IsEqualTo } from "../../../shared/decorators/password.decorator";
 import { IsValidName } from "src/shared/decorators/name.decorator";
