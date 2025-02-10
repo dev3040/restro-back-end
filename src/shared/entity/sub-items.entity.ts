@@ -35,6 +35,9 @@ export class SubItems extends BaseEntity {
     @Column('smallint', { name: 'order', nullable: true })
     order: number;
 
+    @Column('varchar', { name: 'printer', length: 100, nullable: true, default: "K1" })
+    printer: string;
+
     @Column('boolean', { name: 'is_active', default: true })
     isActive: boolean;
 

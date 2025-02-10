@@ -14,6 +14,14 @@ export class AddPriorityTypesDto {
    })
    name: string;
 
+   @MaxLength(50)
+   @IsOptional()
+   @ApiProperty({
+      description: 'Enter name',
+      example: 'K1',
+   })
+   printer: string;
+
    @IsOptional()
    @ApiProperty({
       description: 'Enter vin details',

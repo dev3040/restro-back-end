@@ -33,6 +33,9 @@ export class OutletMenu extends BaseEntity {
     @Column('boolean', { name: 'is_deleted', default: false, comment: "true=deleted, false=not-deleted" })
     isDeleted: boolean;
 
+    @Column('varchar', { name: 'printer', length: 100, nullable: true, default: "K1" })
+    printer: string;
+
     @CreateDateColumn({
         type: "timestamp with time zone",
         name: "created_at"

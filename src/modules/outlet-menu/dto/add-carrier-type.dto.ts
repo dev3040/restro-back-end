@@ -1,5 +1,5 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { ArrayMinSize, ArrayNotEmpty, IsArray, IsInt, IsNotEmpty, MaxLength, MinLength } from 'class-validator';
+import { ArrayMinSize, ArrayNotEmpty, IsArray, IsInt, IsNotEmpty, IsOptional, MaxLength, MinLength } from 'class-validator';
 import { IsValidName } from 'src/shared/decorators/name.decorator';
 
 export class AddCarrierTypeDto {
@@ -22,6 +22,14 @@ export class AddCarrierTypeDto {
       example: false
    })
    isActive: boolean;
+
+   @MaxLength(50)
+   @IsOptional()
+   @ApiProperty({
+      description: 'Enter name',
+      example: 'K1',
+   })
+   printer: string;
 
 }
 
