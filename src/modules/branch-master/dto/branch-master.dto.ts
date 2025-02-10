@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
-import { ArrayMinSize, ArrayNotEmpty, IsArray, IsInt, Matches, MaxLength, MinLength } from 'class-validator';
+import { ArrayMinSize, ArrayNotEmpty, IsArray, IsInt, IsOptional, Matches, MaxLength, MinLength } from 'class-validator';
 import { IsValidName } from 'src/shared/decorators/name.decorator';
 
 export class BranchesDTO {
@@ -25,6 +25,17 @@ export class BranchesDTO {
       example: 'true',
    })
    isActive: boolean;
+
+   @ApiProperty({ description: 'Address', example: 'B-103' })
+   @IsOptional()
+   address?: string;
+
+   @MaxLength(100)
+   @ApiPropertyOptional({
+      description: 'Please enter prn number',
+      example: '1230',
+   })
+   prnNum: string;
 
 }
 

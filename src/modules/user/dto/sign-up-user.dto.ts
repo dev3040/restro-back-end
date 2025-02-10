@@ -1,5 +1,5 @@
-import { IsNotEmpty, MinLength, MaxLength, Matches, IsOptional } from "class-validator";
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { IsNotEmpty, MinLength, MaxLength, Matches } from "class-validator";
+import { ApiProperty } from "@nestjs/swagger";
 import { IsEqualTo } from "../../../shared/decorators/password.decorator";
 import { IsValidName } from "src/shared/decorators/name.decorator";
 
@@ -34,13 +34,6 @@ export class SignupUserDto {
         example: `jondoe30`
     })
     username: string;
-
-    @IsOptional()
-    @ApiPropertyOptional({
-        description: 'Enter  phone.',
-        example: '(123) 456-7890',
-    })
-    phone: string;
 
     @IsNotEmpty({
         message: `Please enter password.&&&password`

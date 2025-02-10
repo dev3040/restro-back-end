@@ -33,6 +33,8 @@ export class AddOnPricesRepository extends Repository<Branches> {
             }
             const branches = new Branches();
             branches.name = addAddOnPrices.name;
+            branches.address = addAddOnPrices.address;
+            branches.prnNum = addAddOnPrices.prnNum;
             branches.isActive = addAddOnPrices.isActive;
             branches.code = addAddOnPrices.code;
             branches.createdBy = user.id;
@@ -47,7 +49,7 @@ export class AddOnPricesRepository extends Repository<Branches> {
         try {
             const listQuery = this.manager
                 .createQueryBuilder(Branches, "addOnPrice")
-                .select(["addOnPrice.id", "addOnPrice.name", "addOnPrice.code", "addOnPrice.isActive"])
+                .select(["addOnPrice.id", "addOnPrice.name", "addOnPrice.code", "addOnPrice.isActive", "addOnPrice.address", "addOnPrice.prnNum"])
                 .where("(addOnPrice.is_deleted = false)")
 
             if (filterDto) {
@@ -103,6 +105,8 @@ export class AddOnPricesRepository extends Repository<Branches> {
 
             checkAddOnPrice.isActive = updateAddOnPrices.isActive;
             checkAddOnPrice.code = updateAddOnPrices.code
+            checkAddOnPrice.address = updateAddOnPrices.address;
+            checkAddOnPrice.prnNum = updateAddOnPrices.prnNum;
             await checkAddOnPrice.save();
             return checkAddOnPrice;
         } catch (error) {

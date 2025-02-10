@@ -1,5 +1,5 @@
 import { IsNotEmpty, MinLength, MaxLength, Matches, IsArray, ArrayNotEmpty, ArrayMinSize, IsInt, IsOptional } from "class-validator";
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { ApiProperty } from "@nestjs/swagger";
 import { IsEqualTo } from "../../../shared/decorators/password.decorator";
 import { IsValidName } from "src/shared/decorators/name.decorator";
 
@@ -36,13 +36,6 @@ export class CreateUserDto {
     })
     username: string;
 
-    @IsOptional()
-    @ApiPropertyOptional({
-        description: 'Enter  phone.',
-        example: '(123) 456-7890',
-    })
-    phone: string;
-
     @IsNotEmpty({
         message: `Please enter password.&&&password`
     })
@@ -67,8 +60,9 @@ export class CreateUserDto {
     confirmPassword: string;
 
     @ApiProperty({ description: "Branch", example: 1 })
+    @IsOptional()
     branchId: number;
-    
+
     @ApiProperty({ description: "Branch", example: 1 })
     @IsNotEmpty({
         message: `Please enter designation Id`,

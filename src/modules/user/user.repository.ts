@@ -47,7 +47,7 @@ export class UserRepository extends Repository<User> {
                 .createQueryBuilder(User, "user")
                 .leftJoinAndSelect("user.branch", "branch")
                 .leftJoinAndSelect("user.designation", "designation")
-                .select(["user.firstName", "user.phone", "user.lastName", "user.username", "user.isActive", "branch", "designation"])
+                .select(["user.firstName", "user.lastName", "user.username", "user.isActive", "branch", "designation"])
                 .where("user.id =:id", { id })
                 .getOne();
 
@@ -102,7 +102,6 @@ export class UserRepository extends Repository<User> {
             user.firstName = addUser.firstName;
             user.lastName = addUser.lastName;
             user.username = addUser.username;
-            user.phone = addUser.phone;
             user.password = addUser.password;
             user.salt = salt;
             user.createdBy = userId;
@@ -134,7 +133,6 @@ export class UserRepository extends Repository<User> {
                     "user.firstName",
                     "user.lastName",
                     "user.username",
-                    "user.phone",
                     "user.isActive",
                     "branch"
                 ])
@@ -219,7 +217,6 @@ export class UserRepository extends Repository<User> {
             user.firstName = firstName;
             user.lastName = lastName;
             user.username = username.toLowerCase();
-            user.phone = createUser.phone;
             user.salt = salt;
             user.password = password;
             user.branchId = createUser.branchId;

@@ -30,10 +30,7 @@ export class User extends BaseEntity {
 
     @Column("varchar", { name: "username", length: 150 })
     username: string;
-
-    @Column('varchar', { name: 'phone', length: 30, nullable: true })
-    phone: string;
-
+    
     @Column("boolean", { name: "is_active", default: true, comment: "True = Active, False = Inactive" })
     isActive: boolean;
 

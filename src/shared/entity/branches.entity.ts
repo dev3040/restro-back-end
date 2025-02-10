@@ -21,6 +21,12 @@ export class Branches extends BaseEntity {
     @Column('varchar', { name: 'code', length: 10, nullable: true })
     code: string | null;
 
+    @Column('varchar', { name: 'prn_num', length: 100, nullable: true })
+    prnNum: string | null;
+
+    @Column("text", { nullable: true })
+    address: string | null;
+
     @Column('boolean', { name: 'is_active', default: true, comment: "true=active, false=inactive" })
     isActive: boolean;
 
