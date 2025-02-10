@@ -20,7 +20,7 @@ export class SubItems extends BaseEntity {
     @Column('varchar', { name: 'name', length: 100, nullable: true })
     name: string;
 
-    @Column('decimal', { name: 'price', precision: 10, scale: 2 })
+    @Column({ type: 'jsonb', name: 'price', nullable: true })
     price: string;
 
     @Column("int", { name: "category_id", nullable: true })
@@ -60,5 +60,4 @@ export class SubItems extends BaseEntity {
     @ManyToOne(() => OutletMenu)
     @JoinColumn({ name: "category_id", referencedColumnName: "id" })
     outletMenu: OutletMenu;
-
 }

@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
-import { ArrayMinSize, ArrayNotEmpty, IsArray, IsInt, IsNotEmpty, MaxLength, MinLength } from 'class-validator';
+import { ArrayMinSize, ArrayNotEmpty, IsArray, IsInt, IsNotEmpty, IsOptional, MaxLength, MinLength } from 'class-validator';
 import { IsValidName } from 'src/shared/decorators/name.decorator';
 
 export class AddPriorityTypesDto {
@@ -14,9 +14,13 @@ export class AddPriorityTypesDto {
    })
    name: string;
 
-   @ApiPropertyOptional({
-      description: 'Price value with a precision of 7 and scale of 3',
-      example: 1234.567,
+   @IsOptional()
+   @ApiProperty({
+      description: 'Enter vin details',
+      example: [{
+         platForm: 'Zomato',
+         price: '23.00',
+      }],
    })
    price: any;
 
