@@ -1,6 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, Matches, MaxLength, MinLength, ValidationOptions, ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface, registerDecorator } from "class-validator";
-import { IsEqualTo } from "src/shared/decorators/password.decorator";
 
 
 @ValidatorConstraint({ async: false })
@@ -54,14 +53,4 @@ export class ChangePasswordDto {
         message: 'New password should not be the same as the old password.&&&newPassword'
     })
     newPassword: string
-
-    @ApiProperty({
-        description: `Enter confirm password&&&confirmPassword`,
-        example: `Test123@`
-    })
-    @IsEqualTo(`newPassword`)
-    @IsNotEmpty({
-        message: `Please enter your confirm password.&&&confirm_password`
-    })
-    confirmPassword: string;
 }

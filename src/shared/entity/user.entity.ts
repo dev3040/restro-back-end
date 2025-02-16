@@ -30,11 +30,11 @@ export class User extends BaseEntity {
 
     @Column("varchar", { name: "username", length: 150 })
     username: string;
-    
+
     @Column("boolean", { name: "is_active", default: true, comment: "True = Active, False = Inactive" })
     isActive: boolean;
 
-    @Column("varchar", { name: "password", length: 255 })
+    @Column("varchar", { name: "password", length: 255, nullable: true })
     @Exclude()
     password: string;
 

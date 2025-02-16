@@ -1,6 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, Matches, MaxLength, MinLength } from "class-validator";
-import { IsEqualTo } from "src/shared/decorators/password.decorator";
 
 export class ResetPasswordDto {
     @IsNotEmpty({
@@ -25,14 +24,4 @@ export class ResetPasswordDto {
         message: `Your new password must be 8 characters long, should contain at least 1 uppercase, 1 lowercase, 1 numeric or special character.&&&password`
     })
     newPassword: string;
-
-    @ApiProperty({
-        description: `Enter confirm password`,
-        example: `Test123@`
-    })
-    @IsEqualTo(`newPassword`)
-    @IsNotEmpty({
-        message: `Please enter your confirm password.&&&confirm_password`
-    })
-    confirmPassword: string;
 }
