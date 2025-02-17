@@ -30,7 +30,6 @@ export class CarrierTypesRepository extends Repository<OutletMenu> {
             const outletMenu = new OutletMenu();
             outletMenu.name = addCarrierType.name;
             outletMenu.printer = addCarrierType.printer;
-            outletMenu.branchId = addCarrierType.branchId;
             outletMenu.isActive = addCarrierType.isActive;
             outletMenu.createdBy = user.id;
             await outletMenu.save();
@@ -43,8 +42,7 @@ export class CarrierTypesRepository extends Repository<OutletMenu> {
     async fetchAllCarrierTypes(filterDto?: any): Promise<{ outletMenu: OutletMenu[], page: object }> {
         try {
             const listQuery = this.manager.createQueryBuilder(OutletMenu, "outletMenu")
-                .leftJoinAndSelect("outletMenu.branch", "branch")
-                .select(["outletMenu.id", "outletMenu.printer", "outletMenu.name", "branch", "outletMenu.isActive", "outletMenu.createdAt"])
+                .select(["outletMenu.id", "outletMenu.printer", "outletMenu.name", "outletMenu.isActive", "outletMenu.createdAt"])
                 .where("(outletMenu.isDeleted = false)")
 
             if (filterDto) {
@@ -102,7 +100,6 @@ export class CarrierTypesRepository extends Repository<OutletMenu> {
 
                 carrierTypesExist.name = updateCarrierType.name;
                 carrierTypesExist.printer = updateCarrierType.printer;
-                carrierTypesExist.branchId = updateCarrierType.branchId;
             }
             carrierTypesExist.isActive = updateCarrierType.isActive;
             await carrierTypesExist.save();
