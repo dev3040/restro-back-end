@@ -128,13 +128,15 @@ export class UserRepository extends Repository<User> {
         try {
             const listQuery = this.manager.createQueryBuilder(User, "user")
                 .leftJoinAndSelect("user.branch", "branch")
+                .leftJoinAndSelect("user.designation", "designation")
                 .select([
                     "user.id",
                     "user.firstName",
                     "user.lastName",
                     "user.username",
                     "user.isActive",
-                    "branch"
+                    "branch",
+                    "designation"
                 ])
                 .where("(user.isDeleted = false)")
             if (filterDto?.search) {
