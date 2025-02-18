@@ -1,4 +1,4 @@
-import { IsNotEmpty, MinLength, MaxLength, Matches, IsOptional } from "class-validator";
+import { IsNotEmpty, MinLength, MaxLength, IsOptional } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 import { IsValidName } from "src/shared/decorators/name.decorator";
 
@@ -42,11 +42,11 @@ export class SignupUserDto {
         example: `Test123@`
     })
     @IsOptional()
-    @MaxLength(20)
-    @MinLength(8, { message: `Password is too short. It should be minimum 8 characters.&&&password` })
-    @Matches(/^(?!.*\s)(?=.*\d)(?=.*\W+)(?=.*[A-Z])(?=.*[a-z]).{8,20}$/, {
-        message: `Your password must be 8 characters long, should contain at least 1 uppercase, 1 lowercase, 1 numeric or special character.&&&password`
-    })
+    // @MaxLength(20)
+    // @MinLength(8, { message: `Password is too short. It should be minimum 8 characters.&&&password` })
+    // @Matches(/^(?!.*\s)(?=.*\d)(?=.*\W+)(?=.*[A-Z])(?=.*[a-z]).{8,20}$/, {
+    //     message: `Your password must be 8 characters long, should contain at least 1 uppercase, 1 lowercase, 1 numeric or special character.&&&password`
+    // })
     password: string;
 
     @ApiProperty({
