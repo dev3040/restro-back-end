@@ -18,6 +18,9 @@ export class Branches extends BaseEntity {
     @Column('varchar', { name: 'name', length: 150, })
     name: string;
 
+    @Column('text', { name: 'logo', nullable: true })
+    logo: string;
+
     @Column('varchar', { name: 'code', length: 10, nullable: true })
     code: string | null;
 
