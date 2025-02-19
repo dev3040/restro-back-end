@@ -12,6 +12,7 @@ import { ConfigService } from "@nestjs/config";
 import cookieParser from "cookie-parser";
 import { AllHttpExceptionFilter } from "./exceptions/all-exceptions.filter";
 import { IoAdapter } from "@nestjs/platform-socket.io";
+import { join } from "path";
 
 
 async function bootstrap() {
@@ -62,7 +63,13 @@ async function bootstrap() {
     app.useWebSocketAdapter(ioAdapter);
 
     const serverPort = configService.get("server.port");
-    await app.listen(serverPort,'0.0.0.0');
+
+    // Serve static assets (e.g., images)
+    console.log('__dirname: ', __dirname);
+    app.useStaticAssets(join(__dirname, "..", "..", "assets", "branchLogo"), {
+        prefix: "/branch-logo",
+    });
+    await app.listen(serverPort, '0.0.0.0');
 }
 
 bootstrap();
