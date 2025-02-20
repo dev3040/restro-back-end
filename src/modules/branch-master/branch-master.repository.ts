@@ -49,7 +49,7 @@ export class AddOnPricesRepository extends Repository<Branches> {
         try {
             const listQuery = this.manager
                 .createQueryBuilder(Branches, "addOnPrice")
-                .select(["addOnPrice.id", "addOnPrice.name", "addOnPrice.code", "addOnPrice.isActive", "addOnPrice.address", "addOnPrice.prnNum"])
+                .select(["addOnPrice.id", "addOnPrice.name", "addOnPrice.code", "addOnPrice.isActive", "addOnPrice.address", "addOnPrice.prnNum", "addOnPrice.logo"])
                 .where("(addOnPrice.is_deleted = false)")
 
             if (filterDto) {
