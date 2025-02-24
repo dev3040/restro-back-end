@@ -68,7 +68,11 @@ async function bootstrap() {
     console.log('__dirname: ', __dirname);
     app.useStaticAssets(join(__dirname, "..", "..", "assets", "branchLogo"), {
         prefix: "/branch-logo",
-    });
+        setHeaders: (res) => {
+            res.setHeader("Access-Control-Allow-Origin", "*");
+            res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+        }
+    });    
     await app.listen(serverPort, '0.0.0.0');
 }
 
