@@ -17,6 +17,7 @@ import { CarrierTypesModule } from "./modules/outlet-menu/carrier-types.module";
 import { PriorityTypesModule } from "./modules/sub-menu/priority-types.module";
 import { TidTypeModule } from "./modules/tid-type/tid-type.module";
 import { MasterListingModule } from "./modules/master-listing/master-listing.module";
+import { CustomerModule } from "./modules/customer/customer-management..module";
 
 
 @Module({
@@ -41,6 +42,7 @@ import { MasterListingModule } from "./modules/master-listing/master-listing.mod
         PriorityTypesModule,
         TidTypeModule,
         MasterListingModule,
+        CustomerModule
     ],
     controllers: [],
     providers: [

@@ -20,11 +20,8 @@ export class Customers extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column('varchar', { name: 'name', length: 150, nullable: false })
+    @Column('varchar', { name: 'name', length: 150, nullable: true })
     name: string;
-
-    @Column('varchar', { name: 'short_name', length: 50, nullable: true })
-    shortName: string | null;
 
     @Column('varchar', { name: 'email', length: 100, nullable: true })
     email: string | null;
@@ -32,23 +29,28 @@ export class Customers extends BaseEntity {
     @Column('varchar', { name: 'phone', length: 30, nullable: true })
     phone: string | null;
 
-    @Column('text', { name: 'primary_location', nullable: true })
-    primaryLocation: string | null;
+    @Column('text', { name: 'address', nullable: true })
+    address: string | null;
 
-    @Column('varchar', { name: 'fax', length: 30, nullable: true })
-    fax: string | null;
+    @Column('text', { name: 'state', nullable: true })
+    state: string | null;
 
-    @Column('text', { name: 'customer_note', nullable: true })
-    customerNote: string | null;
+    @Column('text', { name: 'street', nullable: true })
+    street: string | null;
 
-    @Column('text', { name: 'billing_note', nullable: true })
-    billingNote: string | null;
+    @Column({
+        type: "date",
+        name: "birth_date",
+        nullable: true
+    })
+    birthDate: Date;
 
-    @Column('text', { name: 'payment_terms', nullable: true })
-    paymentTerms: string | null;
-
-    @Column('text', { name: 'vendor_number', nullable: true })
-    vendorNumber: string | null;
+    @Column({
+        type: "date",
+        name: "anniversary_date",
+        nullable: true
+    })
+    anniversaryDate: Date;
 
     @Column("boolean", { name: "is_active", nullable: false, comment: "true=active, false=deactive" })
     isActive: boolean;
