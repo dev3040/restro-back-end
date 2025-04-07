@@ -13,7 +13,6 @@ import { CustomerTransactionTypes } from './customer-transaction-types.entity';
 import { CustomerContacts } from './customer-contacts.entity';
 
 @Index("customers_name", ["name"], {})
-
 @Entity({ name: 'customers', schema: 'customer' })
 export class Customers extends BaseEntity {
 
@@ -22,6 +21,9 @@ export class Customers extends BaseEntity {
 
     @Column('varchar', { name: 'name', length: 150, nullable: true })
     name: string;
+
+    @Column('varchar', { name: 'unique_id', length: 150, nullable: true })
+    uniqueId: string;
 
     @Column('varchar', { name: 'email', length: 100, nullable: true })
     email: string | null;

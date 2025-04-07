@@ -8,6 +8,7 @@ import { commonDeleteHandler } from 'src/shared/utility/common-function.methods'
 import error from '../../i18n/en/error.json';
 import success from '../../i18n/en/success.json';
 import { Customers } from 'src/shared/entity/customers.entity';
+import { Branches } from 'src/shared/entity/branches.entity';
 
 @Injectable()
 export class CustomerRepository extends Repository<Customers> {
@@ -16,6 +17,8 @@ export class CustomerRepository extends Repository<Customers> {
     }
 
     async addCustomer(addCustomerDto: AddCustomerDto, user): Promise<Customers> {
+        const branch = await Branches.findOne({ where: { id: user?.branchId } });
+        if (!branch) throw new NotFoundException(`ERR_BRANCH_NOT_FOUND`);
         try {
             const customer = new Customers();
             customer.name = addCustomerDto.name;
@@ -28,6 +31,17 @@ export class CustomerRepository extends Repository<Customers> {
             customer.anniversaryDate = addCustomerDto.anniversaryDate ? new Date(addCustomerDto.anniversaryDate) : null;
             customer.isActive = addCustomerDto.isActive;
             customer.createdBy = user.id;
+
+            // Generate customer ID
+            const lastCustomer = await this.manager
+            .createQueryBuilder(Customers, "customer")
+            .select("customer.uniqueId")
+            .where("customer.uniqueId LIKE :branchCode", { branchCode: `${branch.code}_%` })
+            .orderBy("customer.id", "DESC")
+            .getOne();
+
+            const lastIdNumber = lastCustomer ? parseInt(lastCustomer.uniqueId.split("_")[1]) : 0;
+            customer.uniqueId = `${branch.code}_${lastIdNumber + 1}`;
 
             const res = await customer.save();
             return res;
