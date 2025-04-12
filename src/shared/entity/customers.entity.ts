@@ -28,7 +28,7 @@ export class Customers extends BaseEntity {
     @Column('varchar', { name: 'email', length: 100, nullable: true })
     email: string | null;
 
-    @Column('varchar', { name: 'phone', length: 30, nullable: true })
+    @Column('varchar', { name: 'phone', length: 100, nullable: true })
     phone: string | null;
 
     @Column('text', { name: 'address', nullable: true })
@@ -54,7 +54,7 @@ export class Customers extends BaseEntity {
     })
     anniversaryDate: Date;
 
-    @Column("boolean", { name: "is_active", nullable: false, comment: "true=active, false=deactive" })
+    @Column("boolean", { name: "is_active", nullable: false, comment: "true=active, false=deactive", default: true })
     isActive: boolean;
 
     @Column("boolean", { name: "is_deleted", default: false })
@@ -66,7 +66,7 @@ export class Customers extends BaseEntity {
     })
     createdAt: Date;
 
-    @Column("int", { name: "created_by", nullable: false })
+    @Column("int", { name: "created_by", nullable: true })
     createdBy: number;
 
     @UpdateDateColumn({
