@@ -18,6 +18,7 @@ import { PriorityTypesModule } from "./modules/sub-menu/priority-types.module";
 import { TidTypeModule } from "./modules/tid-type/tid-type.module";
 import { MasterListingModule } from "./modules/master-listing/master-listing.module";
 import { CustomerModule } from "./modules/customer/customer-management..module";
+import { BillingModule } from "./modules/billing/billing.module";
 
 
 @Module({
@@ -42,7 +43,8 @@ import { CustomerModule } from "./modules/customer/customer-management..module";
         PriorityTypesModule,
         TidTypeModule,
         MasterListingModule,
-        CustomerModule
+        CustomerModule,
+        BillingModule
     ],
     controllers: [],
     providers: [

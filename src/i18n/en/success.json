@@ -238,5 +238,6 @@
     "SUC_VIN_PROFILE_FETCHED": "Vin profile details fetched successfully.",
     "SUC_VIN_PROFILE_SAVED": "Vin profile saved successfully.",
     "SUC_ACTIVITY_CREATED": "Activity added successfully.",
-    "SUC_VIN_PROFILE_DOCS_PREVIEW": "Documents preview generated successfully."
+    "SUC_VIN_PROFILE_DOCS_PREVIEW": "Documents preview generated successfully.",
+    "SUC_BILLING_CREATED": "Billing created successfully."
 }

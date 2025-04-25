@@ -19,7 +19,7 @@ import { IdOptions } from '../enums/lien-info.enum';
 import { throwException } from './throw-exception';
 import { SellerTypeEnum } from '../enums/seller-info.enum';
 import { ConfigMaster } from '../entity/config-master.entity';
-import { PaymentMethods } from '../entity/tid-types.entity';
+import { PaymentMethods } from '../entity/payment-methods.entity';
 
 
 /* check if user exists */

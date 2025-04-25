@@ -3,7 +3,7 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { throwException } from "../../shared/utility/throw-exception";
 import { AddTidTypeDto, UpdateTidTypeDto } from './dto/add-tid-type.dto';
 import { User } from 'src/shared/entity/user.entity';
-import { PaymentMethods } from 'src/shared/entity/tid-types.entity';
+import { PaymentMethods } from 'src/shared/entity/payment-methods.entity';
 import { checkTidTypeExists, commonDeleteHandler } from 'src/shared/utility/common-function.methods';
 import error from '../../i18n/en/error.json';
 import success from '../../i18n/en/success.json';
