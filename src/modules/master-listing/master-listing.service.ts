@@ -7,6 +7,7 @@ import { AppResponse } from "../../shared/interfaces/app-response.interface";
 import { AvatarColors } from "src/shared/entity/avatar-colors.entity";
 import { ConfigMaster } from "src/shared/entity/config-master.entity";
 import { Designation } from "src/shared/entity/designation.entity";
+import { DeliveryBoy } from "../../shared/entity/delivery-boy.entity";
 
 @Injectable()
 export class ListingService {
@@ -80,6 +81,32 @@ export class ListingService {
             return {
                 message: "SUC_COUNTY_PROCESSING_SAVED",
                 data: await ConfigMaster.save(config)
+            };
+        } catch (error) {
+            throwException(error);
+        }
+    }
+
+    async getDeliveryBoys(): Promise<AppResponse> {
+        try {
+            const deliveryBoys = await DeliveryBoy.find({
+                where: { isDeleted: false },
+                order: { createdAt: 'DESC' }
+            });
+
+            const response = deliveryBoys.map(boy => ({
+                id: boy.id,
+                empId: boy.empId,
+                name: boy.name,
+                phone: boy.phone,
+                isActive: boy.isActive,
+                createdAt: boy.createdAt,
+                updatedAt: boy.updatedAt
+            }));
+
+            return {
+                message: "Delivery boys fetched successfully",
+                data: response
             };
         } catch (error) {
             throwException(error);

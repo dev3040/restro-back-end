@@ -38,6 +38,16 @@ export class ListingController {
     getAvatarColors(): Promise<AppResponse> {
         return this.listingService.getAvatarColors();
     }
+
+    @Get("/delivery-boys")
+    @ApiOperation({ summary: "Get delivery boys list" })
+    @ApiResponse({ status: 200, description: "Api success" })
+    @ApiResponse({ status: 422, description: "Bad Request or API error message" })
+    @ApiResponse({ status: 404, description: "Not found!" })
+    @ApiResponse({ status: 500, description: "Internal server error!" })
+    getDeliveryBoys(): Promise<AppResponse> {
+        return this.listingService.getDeliveryBoys();
+    }
 }
 
 @ApiTags("Master Config")
