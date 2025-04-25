@@ -132,8 +132,8 @@ export class CustomerRepository extends Repository<Customers> {
                 Customers,
                 deleteDepartments,
                 userId,
-                success.SUC_DEPARTMENT_DELETED,
-                error.ERR_DEPARTMENT_NOT_FOUND
+                success.SUC_CUSTOMER_DELETED,
+                error.ERR_CUSTOMER_NOT_FOUND
             );
             return response;
         } catch (error) {
