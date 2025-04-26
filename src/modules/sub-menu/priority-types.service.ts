@@ -79,4 +79,23 @@ export class PriorityTypesService {
             throwException(error);
         }
     }
+
+    async getItemsByCategory(categoryId: number): Promise<AppResponse> {
+        try {
+            const items = await this.priorityTypesRepository.find({
+                where: { categoryId: categoryId }
+            });
+
+            if (!items || items.length === 0) {
+                throw new NotFoundException(`ERR_ITEMS_NOT_FOUND_FOR_CATEGORY`);
+            }
+
+            return {
+                message: "SUC_ITEMS_FETCHED",
+                data: items
+            };
+        } catch (error) {
+            throwException(error);
+        }
+    }
 }

@@ -65,5 +65,13 @@ export class PriorityTypesController {
         return this.priorityTypesService.deletePriorityTypes(deletePriority, user.id);
     }
 
-
+    @Get("/category/:categoryId")
+    @ApiOperation({ summary: "Get items by category ID" })
+    @ApiResponse({ status: 200, description: "Api success" })
+    @ApiResponse({ status: 422, description: "Bad Request or API error message" })
+    @ApiResponse({ status: 404, description: "Not found!" })
+    @ApiResponse({ status: 500, description: "Internal server error!" })
+    getItemsByCategory(@Param("categoryId") categoryId: string): Promise<AppResponse> {
+        return this.priorityTypesService.getItemsByCategory(Number(categoryId));
+    }
 }
