@@ -62,7 +62,7 @@ export class BillingController {
     }
 
     @Get()
-    @ApiOperation({ summary: 'Get all bills with optional date filter' })
+    @ApiOperation({ summary: 'Get all bills with optional date and payment status filters' })
     @ApiResponse({
         status: 200,
         description: 'Bills retrieved successfully',
@@ -70,7 +70,10 @@ export class BillingController {
     })
     @ApiResponse({ status: 401, description: 'Unauthorized' })
     @ApiResponse({ status: 500, description: 'Internal Server Error' })
-    async getAllBills(@Query('date') date?: string): Promise<AppResponse> {
-        return this.billingService.getAllBills(date);
+    async getAllBills(
+        @Query('date') date?: string,
+        @Query('isPendingPayment') isPendingPayment?: boolean
+    ): Promise<AppResponse> {
+        return this.billingService.getAllBills(date, isPendingPayment);
     }
 } 

@@ -85,7 +85,7 @@ export class BillingRepository extends Repository<Billing> {
         }
     }
 
-    async getAllBills(date?: string): Promise<Billing[]> {
+    async getAllBills(date?: string, isPendingPayment?: boolean): Promise<Billing[]> {
         try {
             const queryBuilder = this.createQueryBuilder('billing')
                 .leftJoinAndSelect('billing.branch', 'branch')
@@ -97,9 +97,15 @@ export class BillingRepository extends Repository<Billing> {
                 const endDate = new Date(date);
                 endDate.setHours(23, 59, 59, 999);
 
-                queryBuilder.where('billing.createdAt BETWEEN :startDate AND :endDate', {
+                queryBuilder.andWhere('billing.createdAt BETWEEN :startDate AND :endDate', {
                     startDate,
                     endDate
+                });
+            }
+
+            if (isPendingPayment !== undefined) {
+                queryBuilder.andWhere('billing.isPendingPayment = :isPendingPayment', {
+                    isPendingPayment
                 });
             }
 
