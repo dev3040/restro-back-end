@@ -45,6 +45,7 @@
         "compression": "^1.7.4",
         "config": "^3.3.12",
         "cookie-parser": "^1.4.6",
+        "ejs": "^3.1.10",
         "fcm-node": "^1.6.1",
         "helmet": "^6.0.1",
         "html-pdf-node": "^1.0.8",
