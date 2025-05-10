@@ -5,6 +5,7 @@ import {
     Param,
     Post,
     Query,
+    Res,
     UseGuards
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
@@ -75,5 +76,17 @@ export class BillingController {
         @Query('isPendingPayment') isPendingPayment?: boolean
     ): Promise<AppResponse> {
         return this.billingService.getAllBills(date, isPendingPayment);
+    }
+
+    @Get(':id/pdf')
+    async getBillPdfById(@Param('id') id: number, @Res() res: any) {
+        const bill = await this.billingService.getBillById(id);
+        if (!bill) {
+            return res.status(404).send('Bill not found');
+        }
+        const pdfBuffer = await this.billingService.generateBillPdf(bill);
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `inline; filename="bill_${bill.id}.pdf"`);
+        res.end(pdfBuffer);
     }
 } 

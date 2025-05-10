@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Bill <%= bill.billingId %>
+    </title>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            width: 350px;
+            margin: 0 auto;
+            background: #fff;
+            color: #000;
+        }
+
+        .header,
+        .footer {
+            text-align: center;
+        }
+
+        .header img {
+            max-width: 60px;
+            margin-bottom: 5px;
+        }
+
+        .info,
+        .summary {
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+
+        .items-table th,
+        .items-table td {
+            border-bottom: 1px dashed #000;
+            padding: 4px 2px;
+            text-align: left;
+        }
+
+        .items-table th {
+            border-top: 1px solid #000;
+            border-bottom: 1px solid #000;
+            background: #f8f8f8;
+        }
+
+        .summary {
+            border-top: 1px solid #000;
+            padding-top: 8px;
+        }
+
+        .footer {
+            margin-top: 18px;
+            font-size: 13px;
+        }
+
+        .totals {
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <h3>TAX INVOICE</h3>
+        <% if (bill?.branch?.logo) { %>
+            <img src="<%= bill.branch.logo %>" alt="Logo">
+            <% } %>
+                <div><strong>
+                        <%= bill?.branch?.name || 'RESTAURANT NAME' %>
+                    </strong></div>
+                <div class="info">
+                    <div>TRN: <%= bill?.branch?.prnNum || 'XXXXXXXXXXXXXXX' %>
+                    </div>
+                    <div>
+                        <%= bill?.branch?.address || 'Address not available' %>
+                    </div>
+                </div>
+                <div class="info">
+                    Bill No: <%= bill.billingId %><br>
+                        Date: <%= new Date(bill.createdAt).toLocaleDateString() %> &nbsp; Time: <%= new
+                                Date(bill.createdAt).toLocaleTimeString() %>
+                </div>
+    </div>
+    <table class="items-table">
+        <thead>
+            <tr>
+                <th>S.N</th>
+                <th>Name</th>
+                <th>Rate</th>
+                <th>Qty</th>
+                <th>Net</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% bill.billingCalc.items.forEach((item, idx)=> { %>
+                <tr>
+                    <td>
+                        <%= idx + 1 %>
+                    </td>
+                    <td>
+                        <%= item.name %>
+                    </td>
+                    <td>
+                        <%= item.price.toFixed(2) %>
+                    </td>
+                    <td>
+                        <%= item.quantity %>
+                    </td>
+                    <td>
+                        <%= (item.price * item.quantity).toFixed(2) %>
+                    </td>
+                </tr>
+                <% }) %>
+        </tbody>
+    </table>
+    <div class="summary">
+        <div>Total Items: <%= bill.billingCalc.items.length %>
+        </div>
+        <div>Total Before VAT: <%= bill.billingCalc.amountWithOutVat.toFixed(2) %>
+        </div>
+        <div>Incl. VAT 5%: <%= bill.billingCalc.vat.toFixed(2) %>
+        </div>
+        <div class="totals">Total Amt (AED): <%= bill.subTotal %>
+        </div>
+        <div>Payment Method: <%= bill.paymentMethod?.name || '' %>
+        </div>
+    </div>
+    <div class="footer">
+        <div>Thank You, Visit Again</div>
+    </div>
+</body>
+
+</html>
