@@ -80,4 +80,12 @@ export class CreateBillingDto {
     })
     @IsOptional()
     tableNo?: string;
+
+    @ApiProperty({
+        description: 'Whether the payment is pending',
+        example: false,
+        required: false
+    })
+    @IsOptional()
+    isPendingPayment?: boolean;
 } 

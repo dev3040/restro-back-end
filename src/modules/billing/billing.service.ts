@@ -29,4 +29,11 @@ export class BillingService {
     async getBillById(id: number): Promise<Billing> {
         return this.billingRepository.getBillById(id);
     }
+
+    async getAllBills(date?: string): Promise<AppResponse> {
+        return {
+            message: "SUC_BILLING_LIST_FETCHED",
+            data: await this.billingRepository.getAllBills(date)
+        };
+    }
 } 

@@ -4,6 +4,7 @@ import {
     Get,
     Param,
     Post,
+    Query,
     UseGuards
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
@@ -58,5 +59,18 @@ export class BillingController {
     @ApiResponse({ status: 500, description: 'Internal Server Error' })
     async getBillById(@Param('id') id: number): Promise<Billing> {
         return this.billingService.getBillById(id);
+    }
+
+    @Get()
+    @ApiOperation({ summary: 'Get all bills with optional date filter' })
+    @ApiResponse({
+        status: 200,
+        description: 'Bills retrieved successfully',
+        type: [Billing]
+    })
+    @ApiResponse({ status: 401, description: 'Unauthorized' })
+    @ApiResponse({ status: 500, description: 'Internal Server Error' })
+    async getAllBills(@Query('date') date?: string): Promise<AppResponse> {
+        return this.billingService.getAllBills(date);
     }
 } 

@@ -20,7 +20,8 @@ export class BillingRepository extends Repository<Billing> {
                 deliveryBoyId,
                 branchId,
                 paymentMethodId,
-                tableNo
+                tableNo,
+                isPendingPayment
             } = createBillingDto;
 
             // Get the current date at midnight for comparison
@@ -53,6 +54,7 @@ export class BillingRepository extends Repository<Billing> {
             billing.branch = { id: branchId } as any;
             billing.paymentMethodId = paymentMethodId;
             billing.tableNo = tableNo;
+            billing.isPendingPayment = isPendingPayment;
             billing.createdBy = userId;
             billing.updatedBy = userId;
 
@@ -80,6 +82,30 @@ export class BillingRepository extends Repository<Billing> {
                 throw error;
             }
             throw new InternalServerErrorException('Failed to get billing');
+        }
+    }
+
+    async getAllBills(date?: string): Promise<Billing[]> {
+        try {
+            const queryBuilder = this.createQueryBuilder('billing')
+                .leftJoinAndSelect('billing.branch', 'branch')
+                .leftJoinAndSelect('billing.paymentMethod', 'paymentMethod');
+
+            if (date) {
+                const startDate = new Date(date);
+                startDate.setHours(0, 0, 0, 0);
+                const endDate = new Date(date);
+                endDate.setHours(23, 59, 59, 999);
+
+                queryBuilder.where('billing.createdAt BETWEEN :startDate AND :endDate', {
+                    startDate,
+                    endDate
+                });
+            }
+
+            return await queryBuilder.getMany();
+        } catch (error) {
+            throw new InternalServerErrorException('Failed to get bills');
         }
     }
 } 

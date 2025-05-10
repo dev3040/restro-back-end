@@ -20,6 +20,9 @@ export class Billing extends BaseEntity {
     @Column('int', { name: 'billing_id' })
     billingId: number;
 
+    @Column('boolean', { name: 'is_pending_payment', default: false })
+    isPendingPayment: boolean | null;
+
     @Column('json', { name: 'billing_calc', nullable: true })
     billingCalc: Record<string, any> | null;
 
