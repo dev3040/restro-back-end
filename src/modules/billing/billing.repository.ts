@@ -41,7 +41,16 @@ export class BillingRepository extends Repository<Billing> {
             });
 
             // Generate new billing ID (reset daily)
-            const billingId = lastBilling ? lastBilling.billingId + 1 : 1;
+            let billingId = 1;
+            if (lastBilling) {
+                // Check if the last billing is from today
+                const lastBillingDate = new Date(lastBilling.createdAt);
+                lastBillingDate.setHours(0, 0, 0, 0);
+                
+                if (lastBillingDate.getTime() === today.getTime()) {
+                    billingId = lastBilling.billingId + 1;
+                }
+            }
 
             const billing = new Billing();
             billing.billingId = billingId;
