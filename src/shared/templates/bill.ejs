@@ -84,8 +84,9 @@
                 </div>
                 <div class="info">
                     Bill No: <%= bill.billingId %><br>
-                        Date: <%= new Date(bill.createdAt).toLocaleDateString() %> &nbsp; Time: <%= new
-                                Date(bill.createdAt).toLocaleTimeString() %>
+                        Date: <%= new Date(bill.createdAt).toLocaleDateString('en-GB') %> &nbsp; Time: <%= new
+                                Date(bill.createdAt).toLocaleTimeString('en-US', { hour: 'numeric' , minute: 'numeric' ,
+                                hour12: true }) %>
                 </div>
     </div>
     <table class="items-table">

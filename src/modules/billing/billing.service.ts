@@ -52,4 +52,16 @@ export class BillingService {
         const pdfBuffer = await pdf.generatePdf(file, options);
         return pdfBuffer;
     }
+
+    async updateBill(id: number, updateBillingDto: CreateBillingDto, userId: number): Promise<AppResponse> {
+        try {
+            const bill = await this.billingRepository.updateBill(id, updateBillingDto, userId);
+            return {
+                message: "SUC_BILLING_UPDATED",
+                data: bill
+            };
+        } catch (error) {
+            throwException(error);
+        }
+    }
 } 

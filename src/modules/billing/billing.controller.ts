@@ -4,6 +4,7 @@ import {
     Get,
     Param,
     Post,
+    Put,
     Query,
     Res,
     UseGuards
@@ -88,5 +89,25 @@ export class BillingController {
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Disposition', `inline; filename="bill_${bill.id}.pdf"`);
         res.end(pdfBuffer);
+    }
+
+    @Put(':id')
+    @ApiOperation({ summary: 'Update an existing bill' })
+    @ApiParam({ name: 'id', description: 'Bill ID', type: 'number' })
+    @ApiResponse({
+        status: 200,
+        description: 'Bill updated successfully',
+        type: Billing
+    })
+    @ApiResponse({ status: 400, description: 'Bad Request' })
+    @ApiResponse({ status: 401, description: 'Unauthorized' })
+    @ApiResponse({ status: 404, description: 'Bill not found' })
+    @ApiResponse({ status: 500, description: 'Internal Server Error' })
+    async updateBill(
+        @Param('id') id: number,
+        @Body() updateBillingDto: CreateBillingDto,
+        @GetUser() user: User,
+    ): Promise<AppResponse> {
+        return this.billingService.updateBill(id, updateBillingDto, user.id);
     }
 } 

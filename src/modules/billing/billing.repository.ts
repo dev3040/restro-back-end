@@ -123,4 +123,48 @@ export class BillingRepository extends Repository<Billing> {
             throw new InternalServerErrorException('Failed to get bills');
         }
     }
+
+    async updateBill(id: number, updateBillingDto: CreateBillingDto, userId: number): Promise<Billing> {
+        try {
+            const bill = await this.getBillById(id);
+            if (!bill) {
+                throw new NotFoundException(`Bill with ID ${id} not found`);
+            }
+
+            const {
+                billingCalc,
+                isTakeAway,
+                isHomeDelivery,
+                subTotal,
+                discount,
+                deliveryBoyId,
+                branchId,
+                paymentMethodId,
+                tableNo,
+                isPendingPayment
+            } = updateBillingDto;
+
+            // Update bill properties
+            if (billingCalc !== undefined) bill.billingCalc = billingCalc;
+            if (isTakeAway !== undefined) bill.isTakeAway = isTakeAway;
+            if (isHomeDelivery !== undefined) bill.isHomeDelivery = isHomeDelivery;
+            if (subTotal !== undefined) bill.subTotal = subTotal;
+            if (discount !== undefined) bill.discount = discount;
+            if (deliveryBoyId !== undefined) bill.deliveryBoyId = deliveryBoyId;
+            if (branchId !== undefined) bill.branch = { id: branchId } as any;
+            if (paymentMethodId !== undefined) bill.paymentMethodId = paymentMethodId;
+            if (tableNo !== undefined) bill.tableNo = tableNo;
+            if (isPendingPayment !== undefined) bill.isPendingPayment = isPendingPayment;
+            
+            bill.updatedBy = userId;
+
+            await bill.save();
+            return bill;
+        } catch (error) {
+            if (error instanceof NotFoundException) {
+                throw error;
+            }
+            throw new InternalServerErrorException('Failed to update billing');
+        }
+    }
 } 
