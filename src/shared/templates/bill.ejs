@@ -69,9 +69,17 @@
 <body>
     <div class="header">
         <h3>TAX INVOICE</h3>
+        <% if (bill?.isTakeAway) { %>
+            <div>Takeaway</div>
+        <% } else if (bill?.isHomeDelivery) { %>
+            <div>Home Delivery</div>
+        <% } else { %>
+            <div>Dine in</div>
+        <% } %>
         <% if (bill?.branch?.logo) { %>
             <img src="<%= bill?.branch?.logo %>" alt="Logo">
         <% } %>
+        
         <div><strong>
             <%= bill?.branch?.name || 'RESTAURANT NAME' %>
         </strong></div>

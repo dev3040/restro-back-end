@@ -21,18 +21,20 @@ export class PriorityTypesRepository extends Repository<SubItems> {
 
     async addPriorityTypes(addPriorityTypes: AddPriorityTypesDto, user: User): Promise<SubItems> {
         try {
-            const subItems = await this.manager.createQueryBuilder(SubItems, "subItems")
-                .leftJoinAndSelect("subItems.outletMenu", "outletMenu")
-                .select(["subItems.id", "subItems.name", "subItems.price", "outletMenu"])
+            // Check for duplicate name
+            const existingItem = await this.manager.createQueryBuilder(SubItems, "subItems")
+                .select(["subItems.id", "subItems.name"])
                 .where(`(subItems.isDeleted = false)`)
                 .andWhere(`(LOWER(subItems.name) = :name)`, {
                     name: `${addPriorityTypes.name.toLowerCase()}`
                 })
                 .getOne();
-            if (subItems) {
+
+            if (existingItem) {
                 throw new ConflictException("ERR_PRIORITY_EXIST&&&name");
             }
 
+            // Create new priority type
             const subItems_ = new SubItems();
             subItems_.name = addPriorityTypes.name;
             subItems_.printer = addPriorityTypes.printer;
