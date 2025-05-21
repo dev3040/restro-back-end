@@ -7,7 +7,7 @@ import { AppResponse } from 'src/shared/interfaces/app-response.interface';
 import { throwException } from 'src/shared/utility/throw-exception';
 import * as ejs from 'ejs';
 import * as path from 'path';
-import * as pdf from 'html-pdf-node';
+import * as puppeteer from 'puppeteer';
 
 @Injectable()
 export class BillingService {
@@ -41,45 +41,45 @@ export class BillingService {
     }
 
     async generateBillPdf(bill: any): Promise<Buffer> {
-        // Always resolve from project root
-        const templatePath = path.join(process.cwd(), 'src', 'shared', 'templates', 'bill.ejs');
-        console.log("Billlllllllll:",bill?.branch?.address);
-        const html = await ejs.renderFile(templatePath, { bill });
-        console.log("html:",html);
-        
-        const file = { content: html };
-        const options = { 
-            format: 'A4',
-            encoding: 'UTF-8',
-            border: {
-                top: '10px',
-                right: '10px',
-                bottom: '10px',
-                left: '10px'
-            },
-            type: 'pdf',
-            quality: 100,
-            preferCSSPageSize: true,
-            printBackground: true,
-            margin: {
-                top: '10px',
-                right: '10px',
-                bottom: '10px',
-                left: '10px'
-            },
-            args: ['--no-sandbox', '--disable-setuid-sandbox'],
-            // Add support for RTL and Arabic fonts
-            html: {
-                dir: 'rtl'
-            },
-            // Include a font that supports Arabic characters
-            font: {
-                family: 'Arial Unicode MS, Arial, sans-serif'
-            }
-        };
+        try {
+            // Always resolve from project root
+            const templatePath = path.join(process.cwd(), 'src', 'shared', 'templates', 'bill.ejs');
+            const html = await ejs.renderFile(templatePath, { bill });
 
-        const pdfBuffer = await pdf.generatePdf(file, options);
-        return pdfBuffer;
+            // Launch puppeteer
+            const browser = await puppeteer.launch({
+                headless: true,
+                args: ['--no-sandbox', '--disable-setuid-sandbox']
+            });
+
+            // Create a new page
+            const page = await browser.newPage();
+
+            // Set content
+            await page.setContent(html, {
+                waitUntil: 'networkidle0'
+            });
+
+            // Generate PDF
+            const pdfBuffer = await page.pdf({
+                format: 'A4',
+                printBackground: true,
+                margin: {
+                    top: '10px',
+                    right: '10px',
+                    bottom: '10px',
+                    left: '10px'
+                }
+            });
+
+            // Close browser
+            await browser.close();
+
+            return Buffer.from(pdfBuffer);
+        } catch (error) {
+            console.error('Error generating PDF:', error);
+            throw error;
+        }
     }
 
     async updateBill(id: number, updateBillingDto: CreateBillingDto, userId: number): Promise<AppResponse> {
