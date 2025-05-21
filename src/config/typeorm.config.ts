@@ -14,6 +14,8 @@ export const typeOrmConfig: TypeOrmModuleAsyncOptions = {
         database: configService.get("db.database"),
         logging: configService.get("db.logging"),
         cache: configService.get("db.cache"),
+        charset: 'utf8mb4',
+        collation: 'utf8mb4_unicode_ci',
         // ssl: {
         //     rejectUnauthorized: false // when sslmode = require in postgress db server
         // },

@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html dir="ltr">
+<html dir="ltr" lang="en">
 
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Bill <%= bill?.billingId %>
     </title>
     <style>
@@ -38,6 +39,8 @@
             word-wrap: break-word;
             white-space: normal;
             line-height: 1.4;
+            direction: rtl;
+            text-align: right;
         }
 
         .items-table {

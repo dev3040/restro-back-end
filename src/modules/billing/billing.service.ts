@@ -47,7 +47,16 @@ export class BillingService {
         const html = await ejs.renderFile(templatePath, { bill });
 
         const file = { content: html };
-        const options = { format: 'A4' };
+        const options = { 
+            format: 'A4',
+            encoding: 'UTF-8',
+            border: {
+                top: '10px',
+                right: '10px',
+                bottom: '10px',
+                left: '10px'
+            }
+        };
 
         const pdfBuffer = await pdf.generatePdf(file, options);
         return pdfBuffer;
