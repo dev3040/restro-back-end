@@ -45,7 +45,8 @@ export class BillingService {
         const templatePath = path.join(process.cwd(), 'src', 'shared', 'templates', 'bill.ejs');
         console.log("Billlllllllll:",bill?.branch?.address);
         const html = await ejs.renderFile(templatePath, { bill });
-
+        console.log("html:",html);
+        
         const file = { content: html };
         const options = { 
             format: 'A4',
