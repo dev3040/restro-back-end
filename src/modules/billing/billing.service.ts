@@ -43,7 +43,7 @@ export class BillingService {
     async generateBillPdf(bill: any): Promise<Buffer> {
         // Always resolve from project root
         const templatePath = path.join(process.cwd(), 'src', 'shared', 'templates', 'bill.ejs');
-        console.log(templatePath);
+        console.log("Billlllllllll:",bill?.branch?.address);
         const html = await ejs.renderFile(templatePath, { bill });
 
         const file = { content: html };
