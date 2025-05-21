@@ -45,11 +45,14 @@ export class BillingRepository extends Repository<Billing> {
             // Generate new billing ID (reset daily)
             let billingId = 1;
             if (lastBilling) {
-                // Check if the last billing is from today
+                // Check if the last billing is from today by comparing dates only
                 const lastBillingDate = new Date(lastBilling.createdAt);
                 lastBillingDate.setHours(0, 0, 0, 0);
                 
-                if (lastBillingDate.getTime() === today.getTime()) {
+                // Compare only the date parts (year, month, day)
+                if (lastBillingDate.getFullYear() === today.getFullYear() &&
+                    lastBillingDate.getMonth() === today.getMonth() &&
+                    lastBillingDate.getDate() === today.getDate()) {
                     billingId = lastBilling.billingId + 1;
                 }
             }
