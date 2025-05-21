@@ -56,6 +56,25 @@ export class BillingService {
                 right: '10px',
                 bottom: '10px',
                 left: '10px'
+            },
+            type: 'pdf',
+            quality: 100,
+            preferCSSPageSize: true,
+            printBackground: true,
+            margin: {
+                top: '10px',
+                right: '10px',
+                bottom: '10px',
+                left: '10px'
+            },
+            args: ['--no-sandbox', '--disable-setuid-sandbox'],
+            // Add support for RTL and Arabic fonts
+            html: {
+                dir: 'rtl'
+            },
+            // Include a font that supports Arabic characters
+            font: {
+                family: 'Arial Unicode MS, Arial, sans-serif'
             }
         };
 
