@@ -21,7 +21,9 @@ export class BillingRepository extends Repository<Billing> {
                 branchId,
                 paymentMethodId,
                 tableNo,
-                isPendingPayment
+                isPendingPayment,
+                customerId,
+                remarks
             } = createBillingDto;
 
             // Get the current date at midnight for comparison
@@ -64,6 +66,8 @@ export class BillingRepository extends Repository<Billing> {
             billing.paymentMethodId = paymentMethodId;
             billing.tableNo = tableNo;
             billing.isPendingPayment = isPendingPayment;
+            billing.customerId = customerId;
+            billing.remarks = remarks;
             billing.createdBy = userId;
             billing.updatedBy = userId;
 
@@ -78,7 +82,7 @@ export class BillingRepository extends Repository<Billing> {
         try {
             const billing = await this.findOne({
                 where: { id },
-                relations: ['branch', 'paymentMethod']
+                relations: ['branch', 'paymentMethod', 'customer']
             });
 
             if (!billing) {
@@ -141,7 +145,9 @@ export class BillingRepository extends Repository<Billing> {
                 branchId,
                 paymentMethodId,
                 tableNo,
-                isPendingPayment
+                isPendingPayment,
+                customerId,
+                remarks
             } = updateBillingDto;
 
             // Update bill properties
@@ -155,6 +161,8 @@ export class BillingRepository extends Repository<Billing> {
             if (paymentMethodId !== undefined) bill.paymentMethodId = paymentMethodId;
             if (tableNo !== undefined) bill.tableNo = tableNo;
             if (isPendingPayment !== undefined) bill.isPendingPayment = isPendingPayment;
+            if (customerId !== undefined) bill.customerId = customerId;
+            if (remarks !== undefined) bill.remarks = remarks;
             
             bill.updatedBy = userId;
 

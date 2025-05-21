@@ -136,6 +136,12 @@
     <div class="footer">
         <div>Thank You, Visit Again</div>
     </div>
+    <% if (bill.customer?.name) { %>
+        <br>Customer: <%= bill.customer.name %>
+            <% } %>
+                <% if (bill.remarks) { %>
+                    <br>Remarks: <%= bill.remarks %>
+                        <% } %>
 </body>
 
 </html>

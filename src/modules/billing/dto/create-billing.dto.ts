@@ -88,4 +88,20 @@ export class CreateBillingDto {
     })
     @IsOptional()
     isPendingPayment?: boolean;
+
+    @ApiProperty({
+        description: 'Customer ID',
+        example: 123,
+        required: false
+    })
+    @IsOptional()
+    customerId?: number;
+
+    @ApiProperty({
+        description: 'Additional remarks or notes for the billing',
+        example: 'Special instructions for preparation',
+        required: false
+    })
+    @IsOptional()
+    remarks?: string;
 } 

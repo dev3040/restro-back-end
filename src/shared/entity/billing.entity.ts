@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { Branches } from './branches.entity';
 import { PaymentMethods } from './payment-methods.entity';
+import { Customers } from './customers.entity';
 
 @Entity({ name: 'billing', schema: 'public' })
 export class Billing extends BaseEntity {
@@ -55,6 +56,12 @@ export class Billing extends BaseEntity {
     @Column('varchar', { name: 'table_no', nullable: true })
     tableNo: string | null;
 
+    @Column('int', { name: 'customer_id', nullable: true })
+    customerId: number | null;
+
+    @Column('text', { name: 'remarks', nullable: true })
+    remarks: string | null;
+
     @CreateDateColumn({
         type: "timestamp with time zone",
         name: "created_at"
@@ -72,4 +79,8 @@ export class Billing extends BaseEntity {
 
     @Column("int", { name: "updated_by", nullable: true })
     updatedBy: number;
+
+    @ManyToOne(() => Customers)
+    @JoinColumn({ name: 'customer_id', referencedColumnName: 'id' })
+    customer: Customers;
 }
