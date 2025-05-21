@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html dir="ltr">
 
 <head>
     <meta charset="UTF-8">
@@ -7,8 +7,8 @@
     </title>
     <style>
         body {
-            font-family: 'Courier New', Courier, monospace;
-            width: 350px;
+            font-family: Arial, sans-serif;
+            width: 400px;
             margin: 0 auto;
             background: #fff;
             color: #000;
@@ -28,6 +28,14 @@
         .summary {
             font-size: 13px;
             margin-bottom: 8px;
+        }
+
+        .address {
+            font-size: 13px;
+            margin-bottom: 8px;
+            word-wrap: break-word;
+            white-space: normal;
+            line-height: 1.4;
         }
 
         .items-table {
@@ -85,7 +93,7 @@
         </strong></div>
         <div class="info">
             <div>TRN: <%= bill?.branch?.prnNum || 'XXXXXXXXXXXXXXX' %></div>
-            <div><%= bill?.branch?.address || 'Address not available' %></div>
+            <div class="address"><%= bill?.branch?.address || 'Address not available' %></div>
         </div>
         <div class="info">
             Bill No: <%= bill?.billingId %><br>
