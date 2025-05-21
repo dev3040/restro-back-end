@@ -6,8 +6,10 @@
     <title>Bill <%= bill?.billingId %>
     </title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo&display=swap');
+        
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Cairo', sans-serif;
             width: 400px;
             margin: 0 auto;
             background: #fff;
@@ -79,27 +81,33 @@
         <h3>TAX INVOICE</h3>
         <% if (bill?.isTakeAway) { %>
             <div>Takeaway</div>
-        <% } else if (bill?.isHomeDelivery) { %>
-            <div>Home Delivery</div>
-        <% } else { %>
-            <div>Dine in</div>
-        <% } %>
-        <% if (bill?.branch?.logo) { %>
-            <img src="<%= bill?.branch?.logo %>" alt="Logo">
-        <% } %>
-        
-        <div><strong>
-            <%= bill?.branch?.name || 'RESTAURANT NAME' %>
-        </strong></div>
-        <div class="info">
-            <div>TRN: <%= bill?.branch?.prnNum || 'XXXXXXXXXXXXXXX' %></div>
-            <div class="address"><%= bill?.branch?.address || 'Address not available' %></div>
-        </div>
-        <div class="info">
-            Bill No: <%= bill?.billingId %><br>
-            Date: <%= bill?.createdAt ? new Date(bill.createdAt).toLocaleDateString('en-GB') : '' %> &nbsp; 
-            Time: <%= bill?.createdAt ? new Date(bill.createdAt).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true, timeZone: 'Asia/Dubai' }) : '' %>
-        </div>
+            <% } else if (bill?.isHomeDelivery) { %>
+                <div>Home Delivery</div>
+                <% } else { %>
+                    <div>Dine in</div>
+                    <% } %>
+                        <% if (bill?.branch?.logo) { %>
+                            <img src="<%= bill?.branch?.logo %>" alt="Logo">
+                            <% } %>
+
+                                <div><strong>
+                                        <%= bill?.branch?.name || 'RESTAURANT NAME' %>
+                                    </strong></div>
+                                <div class="info">
+                                    <div>TRN: <%= bill?.branch?.prnNum || 'XXXXXXXXXXXXXXX' %>
+                                    </div>
+                                    <div class="address">
+                                        <%= bill?.branch?.address || 'Address not available' %>
+                                    </div>
+                                </div>
+                                <div class="info">
+                                    Bill No: <%= bill?.billingId %><br>
+                                        Date: <%= bill?.createdAt ? new Date(bill.createdAt).toLocaleDateString('en-GB')
+                                            : '' %> &nbsp;
+                                            Time: <%= bill?.createdAt ? new
+                                                Date(bill.createdAt).toLocaleTimeString('en-US', { hour: 'numeric' ,
+                                                minute: 'numeric' , hour12: true, timeZone: 'Asia/Dubai' }) : '' %>
+                                </div>
     </div>
     <table class="items-table">
         <thead>
@@ -114,31 +122,46 @@
         <tbody>
             <% bill?.billingCalc?.items?.forEach((item, idx)=> { %>
                 <tr>
-                    <td><%= idx + 1 %></td>
-                    <td><%= item?.name %></td>
-                    <td><%= item?.price?.toFixed(2) %></td>
-                    <td><%= item?.quantity %></td>
-                    <td><%= (item?.price * item?.quantity)?.toFixed(2) %></td>
+                    <td>
+                        <%= idx + 1 %>
+                    </td>
+                    <td>
+                        <%= item?.name %>
+                    </td>
+                    <td>
+                        <%= item?.price?.toFixed(2) %>
+                    </td>
+                    <td>
+                        <%= item?.quantity %>
+                    </td>
+                    <td>
+                        <%= (item?.price * item?.quantity)?.toFixed(2) %>
+                    </td>
                 </tr>
-            <% }) %>
+                <% }) %>
         </tbody>
     </table>
     <div class="summary">
-        <div>Total Items: <%= bill?.billingCalc?.items?.length || 0 %></div>
-        <div>Total Before VAT: <%= bill?.billingCalc?.amountWithOutVat?.toFixed(2) || '0.00' %></div>
-        <div>Incl. VAT 5%: <%= bill?.billingCalc?.vat?.toFixed(2) || '0.00' %></div>
-        <div class="totals">Total Amt (AED): <%= bill?.subTotal || '0.00' %></div>
-        <div>Payment Method: <%= bill?.paymentMethod?.name || '' %></div>
+        <div>Total Items: <%= bill?.billingCalc?.items?.length || 0 %>
+        </div>
+        <div>Total Before VAT: <%= bill?.billingCalc?.amountWithOutVat?.toFixed(2) || '0.00' %>
+        </div>
+        <div>Incl. VAT 5%: <%= bill?.billingCalc?.vat?.toFixed(2) || '0.00' %>
+        </div>
+        <div class="totals">Total Amt (AED): <%= bill?.subTotal || '0.00' %>
+        </div>
+        <div>Payment Method: <%= bill?.paymentMethod?.name || '' %>
+        </div>
     </div>
     <div class="footer">
         <div>Thank You, Visit Again</div>
     </div>
     <% if (bill?.customer?.name) { %>
         <br>Customer: <%= bill?.customer?.name %>
-    <% } %>
-    <% if (bill?.remarks) { %>
-        <br>Remarks: <%= bill?.remarks %>
-    <% } %>
+            <% } %>
+                <% if (bill?.remarks) { %>
+                    <br>Remarks: <%= bill?.remarks %>
+                        <% } %>
 </body>
 
 </html>
