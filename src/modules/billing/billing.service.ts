@@ -95,7 +95,7 @@ export class BillingService {
         }
     }
 
-    async generateFinalReportPdf({ from, to, isHalfDay }): Promise<Buffer> {
+    async generateFinalReportPdf({ from, to, isHalfDay, branchId }): Promise<Buffer> {
         try {
             // 1. Parse dates
             const fromDate = new Date(from);
@@ -110,7 +110,8 @@ export class BillingService {
             // 3. Query bills for the user/branch in the date range
             const bills = await Billing.find({
                 where: {
-                    createdAt: Between(fromDate, toDate)
+                    createdAt: Between(fromDate, toDate),
+                    branchId: branchId
                 }
             });
 
@@ -205,6 +206,110 @@ export class BillingService {
             return Buffer.from(pdfBuffer);
         } catch (error) {
             console.error('Error generating final report PDF:', error);
+            throw error;
+        }
+    }
+
+    async generateModeWiseReportPdf({ from, to, isHalfDay, branchId }): Promise<Buffer> {
+        try {
+            const fromDate = new Date(from);
+            const toDate = new Date(to);
+            toDate.setHours(23, 59, 59, 999);
+            if (isHalfDay) {
+                toDate.setHours(12, 0, 0, 0);
+            }
+            const bills = await Billing.find({
+                where: {
+                    createdAt: Between(fromDate, toDate),
+                    // branchId: branchId
+                },
+                relations: ['paymentMethod']
+            });
+            console.log("bills", bills.length);
+            // Payment modes and their display names
+            const paymentModes = [
+                { slug: 'cash', label: 'CASH Payment' },
+                { slug: 'credit-card', label: 'CREDIT CARD Payment' },
+                { slug: 'credit-card-cash', label: 'CREDIT CARD Payment' },
+                { slug: 'talabat', label: 'TALABAT Payment' },
+                { slug: 'noon', label: 'NOON FOOD Payment' },
+                { slug: 'smiles', label: 'SMILES Payment' },
+                { slug: 'careem', label: 'CAREEM Payment' },
+                { slug: 'deliveroo', label: 'DELIVEROO Payment' },
+                { slug: 'instashop', label: 'INSTASHOP Payment' },
+                { slug: 'zomoto', label: 'ZOMATO Payment' },
+                { slug: 'uber-eats', label: 'UBER EATS Payment' }
+            ];
+
+            const modeGroups = paymentModes.map(({ slug, label }) => {
+                console.log("bills", bills);
+                const modeBills = bills.filter(b => b.paymentMethod?.slug === slug);
+                let subTotal = 0, subVat = 0, subDiscount = 0;
+                console.log("modeBills", modeBills);
+                const rows = modeBills.map(bill => {
+                    const vat = Number(bill.billingCalc?.vat || 0);
+                    const discount = Number(bill.discount || 0);
+                    const total = Number(bill.subTotal || 0);
+                    subVat += vat;
+                    subDiscount += discount;
+                    subTotal += total;
+                    return {
+                        paymentMode: bill.paymentMethod?.name || label,
+                        billNo: bill.billingId,
+                        covers: 0, // If you have covers, use it
+                        billDate: new Date(bill.createdAt).toLocaleDateString('en-GB'),
+                        discount,
+                        vat,
+                        total
+                    };
+                });
+                return {
+                    paymentMode: label,
+                    rows,
+                    subTotals: {
+                        discount: subDiscount,
+                        vat: subVat,
+                        total: subTotal
+                    }
+                };
+            });
+            console.log("modeGroups", modeGroups);
+            // Calculate grand totals
+            let grandDiscount = 0, grandVat = 0, grandTotal = 0;
+            modeGroups.forEach(g => {
+                grandDiscount += g.subTotals.discount;
+                grandVat += g.subTotals.vat;
+                grandTotal += g.subTotals.total;
+            });
+
+            const reportData = {
+                from,
+                to,
+                isHalfDay,
+                modeGroups,
+                grandDiscount,
+                grandVat,
+                grandTotal
+            };
+
+            const templatePath = path.join(process.cwd(), 'src', 'shared', 'templates', 'mode-wise-report.ejs');
+            const html = await ejs.renderFile(templatePath, reportData);
+
+            const browser = await puppeteer.launch({
+                headless: true,
+                args: ['--no-sandbox', '--disable-setuid-sandbox']
+            });
+            const page = await browser.newPage();
+            await page.setContent(html, { waitUntil: 'networkidle0' });
+            const pdfBuffer = await page.pdf({
+                format: 'A4',
+                printBackground: true,
+                margin: { top: '10px', right: '10px', bottom: '10px', left: '10px' }
+            });
+            await browser.close();
+            return Buffer.from(pdfBuffer);
+        } catch (error) {
+            console.error('Error generating mode wise report PDF:', error);
             throw error;
         }
     }

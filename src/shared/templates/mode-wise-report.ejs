@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sale Report Mode Wise</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --background-color: #f8fafc;
+            --text-color: #1e293b;
+            --border-color: #e2e8f0;
+            --success-color: #22c55e;
+            --hover-color: #f1f5f9;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--background-color);
+            color: var(--text-color);
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+
+        .header-title {
+            font-size: 2.5em;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .date-row {
+            font-size: 1.1em;
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        .date-row span {
+            font-weight: 500;
+        }
+
+        .green {
+            color: var(--success-color);
+            font-weight: 600;
+        }
+
+        .report-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-bottom: 1.5rem;
+        }
+
+        th, td {
+            padding: 12px 16px;
+            font-size: 14px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background: var(--primary-color);
+            color: white;
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+        }
+
+        th:first-child {
+            border-top-left-radius: 8px;
+        }
+
+        th:last-child {
+            border-top-right-radius: 8px;
+        }
+
+        tr:hover {
+            background-color: var(--hover-color);
+            transition: background-color 0.2s ease;
+        }
+
+        .mode-title {
+            font-weight: 600;
+            font-size: 1.1em;
+            background: var(--hover-color);
+            color: var(--primary-color);
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin: 1rem 0;
+        }
+
+        .subtotal-row {
+            font-weight: 500;
+            background: var(--hover-color);
+        }
+
+        .grandtotal-row {
+            font-weight: 600;
+            background: var(--primary-color);
+            color: white;
+            font-size: 1.1em;
+        }
+
+        .grandtotal-row td {
+            border-bottom: none;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .header, .report-container {
+                box-shadow: none;
+            }
+
+            th {
+                background: #f1f5f9 !important;
+                color: var(--text-color) !important;
+            }
+
+            .grandtotal-row {
+                background: #f1f5f9 !important;
+                color: var(--text-color) !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .date-row {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            th, td {
+                padding: 8px;
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-title">Sale Report Mode Wise</div>
+        <div class="date-row">
+            <div>Report From Date: <span class="green"><%= new Date(from).toLocaleDateString('en-GB') %></span></div>
+            <div>To Date: <span class="green"><%= new Date(to).toLocaleDateString('en-GB') %></span></div>
+        </div>
+    </div>
+    <div class="report-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Payment Mode</th>
+                    <th>Bill No.</th>
+                    <th>Covers</th>
+                    <th>Bill Date</th>
+                    <th>Discount Amt.</th>
+                    <th>VAT Amt.</th>
+                    <th>Total Amt. (AED)</th>
+                </tr>
+            </thead>
+            <tbody>
+            <% modeGroups.forEach(group => { %>
+                <% if (group.rows.length > 0) { %>
+                    <tr>
+                        <td class="mode-title" colspan="7"><%= group.paymentMode %></td>
+                    </tr>
+                    <% group.rows.forEach(row => { %>
+                        <tr>
+                            <td><%= row.paymentMode %></td>
+                            <td><%= row.billNo %></td>
+                            <td><%= row.covers %></td>
+                            <td><%= row.billDate %></td>
+                            <td><%= row.discount?.toFixed(3) || '0.000' %></td>
+                            <td><%= row.vat?.toFixed(3) || '0.000' %></td>
+                            <td><%= row.total?.toFixed(3) || '0.000' %></td>
+                        </tr>
+                    <% }) %>
+                    <tr class="subtotal-row">
+                        <td colspan="4">Sub Total</td>
+                        <td><%= group.subTotals.discount?.toFixed(3) || '0.000' %></td>
+                        <td><%= group.subTotals.vat?.toFixed(3) || '0.000' %></td>
+                        <td><%= group.subTotals.total?.toFixed(3) || '0.000' %></td>
+                    </tr>
+                <% } %>
+            <% }) %>
+            <tr class="grandtotal-row">
+                <td colspan="4">Grand Total</td>
+                <td><%= grandDiscount?.toFixed(3) || '0.000' %></td>
+                <td><%= grandVat?.toFixed(3) || '0.000' %></td>
+                <td><%= grandTotal?.toFixed(3) || '0.000' %></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html> 

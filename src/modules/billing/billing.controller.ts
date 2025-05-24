@@ -66,9 +66,31 @@ export class BillingController {
             from,
             to,
             isHalfDay: isHalfDay === 'true',
+            branchId: user.branchId
         });
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Disposition', `inline; filename="final_report.pdf"`);
+        res.end(pdfBuffer);
+    }
+
+    @Get('mode-wise-report')
+    @ApiOperation({ summary: 'Get sale report mode wise as PDF' })
+    @ApiResponse({ status: 200, description: 'PDF report generated' })
+    async getModeWiseReport(
+        @Query('from') from: string,
+        @Query('to') to: string,
+        @Query('isHalfDay') isHalfDay: string,
+        @Res() res: any,
+        @GetUser() user: User,
+    ) {
+        const pdfBuffer = await this.billingService.generateModeWiseReportPdf({
+            from,
+            to,
+            isHalfDay: isHalfDay === 'true',
+            branchId: user.branchId
+        });
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `inline; filename="mode_wise_report.pdf"`);
         res.end(pdfBuffer);
     }
 
