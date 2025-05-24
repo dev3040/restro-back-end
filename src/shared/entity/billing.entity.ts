@@ -42,6 +42,9 @@ export class Billing extends BaseEntity {
     @Column('int', { name: 'delivery_boy_id', nullable: true })
     deliveryBoyId: number | null;
 
+    @Column('int', { name: 'branch_id', nullable: true })
+    branchId: number | null;
+
     @ManyToOne(() => Branches)
     @JoinColumn({ name: 'branch_id', referencedColumnName: 'id' })
     branch: Branches;

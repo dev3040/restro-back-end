@@ -101,11 +101,12 @@ export class BillingRepository extends Repository<Billing> {
         }
     }
 
-    async getAllBills(date?: string, isPendingPayment?: boolean): Promise<Billing[]> {
+    async getAllBills(date?: string, isPendingPayment?: boolean, branchId?: number): Promise<Billing[]> {
         try {
             const queryBuilder = this.createQueryBuilder('billing')
                 .leftJoinAndSelect('billing.branch', 'branch')
-                .leftJoinAndSelect('billing.paymentMethod', 'paymentMethod');
+                .leftJoinAndSelect('billing.paymentMethod', 'paymentMethod')
+                .where('billing.branchId = :branchId', { branchId });
 
             if (date) {
                 const startDate = new Date(date);

@@ -1,6 +1,7 @@
 import {
     Body,
     Controller,
+    Delete,
     Get,
     Param,
     Post,
@@ -23,6 +24,9 @@ import { BillingService } from './billing.service';
 import { CreateBillingDto } from './dto/create-billing.dto';
 import { Billing } from '../../shared/entity/billing.entity';
 import { AppResponse } from 'src/shared/interfaces/app-response.interface';
+import { PaymentService } from './payment.service';
+import { CreatePaymentDto } from './dto/create-payment.dto';
+import { Payment } from '../../shared/entity/payment.entity';
 
 @ApiTags('Billing')
 @Controller('billing')
@@ -73,10 +77,11 @@ export class BillingController {
     @ApiResponse({ status: 401, description: 'Unauthorized' })
     @ApiResponse({ status: 500, description: 'Internal Server Error' })
     async getAllBills(
+        @GetUser() user: User,
         @Query('date') date?: string,
-        @Query('isPendingPayment') isPendingPayment?: boolean
+        @Query('isPendingPayment') isPendingPayment?: boolean,
     ): Promise<AppResponse> {
-        return this.billingService.getAllBills(date, isPendingPayment);
+        return this.billingService.getAllBills(user, date, isPendingPayment);
     }
 
     @Get(':id/pdf')
@@ -110,4 +115,89 @@ export class BillingController {
     ): Promise<AppResponse> {
         return this.billingService.updateBill(id, updateBillingDto, user.id);
     }
-} 
+}
+
+@ApiTags('Payments')
+@Controller('payments')
+@UseGuards(AuthGuard())
+@ApiBearerAuth()
+export class PaymentsController {
+    constructor(private paymentService: PaymentService) { }
+
+    @Post()
+    @ApiOperation({ summary: 'Create a new payment' })
+    @ApiResponse({
+        status: 201,
+        description: 'Payment created successfully',
+        type: Payment
+    })
+    @ApiResponse({ status: 400, description: 'Bad Request' })
+    @ApiResponse({ status: 401, description: 'Unauthorized' })
+    @ApiResponse({ status: 500, description: 'Internal Server Error' })
+    async createPayment(
+        @Body() createPaymentDto: CreatePaymentDto,
+    ): Promise<AppResponse> {
+        return this.paymentService.createPayment(createPaymentDto);
+    }
+
+    @Get()
+    @ApiOperation({ summary: 'Get all payments' })
+    @ApiResponse({
+        status: 200,
+        description: 'Payments retrieved successfully',
+        type: [Payment]
+    })
+    @ApiResponse({ status: 401, description: 'Unauthorized' })
+    @ApiResponse({ status: 500, description: 'Internal Server Error' })
+    async getAllPayments(@GetUser() user: User): Promise<AppResponse> {
+        return this.paymentService.getAllPayments(user);
+    }
+
+    @Get(':id')
+    @ApiOperation({ summary: 'Get a payment by ID' })
+    @ApiParam({ name: 'id', description: 'Payment ID', type: 'number' })
+    @ApiResponse({
+        status: 200,
+        description: 'Payment retrieved successfully',
+        type: Payment
+    })
+    @ApiResponse({ status: 401, description: 'Unauthorized' })
+    @ApiResponse({ status: 404, description: 'Payment not found' })
+    @ApiResponse({ status: 500, description: 'Internal Server Error' })
+    async getPaymentById(@Param('id') id: number): Promise<Payment> {
+        return this.paymentService.getPaymentById(id);
+    }
+
+    @Put(':id')
+    @ApiOperation({ summary: 'Update an existing payment' })
+    @ApiParam({ name: 'id', description: 'Payment ID', type: 'number' })
+    @ApiResponse({
+        status: 200,
+        description: 'Payment updated successfully',
+        type: Payment
+    })
+    @ApiResponse({ status: 400, description: 'Bad Request' })
+    @ApiResponse({ status: 401, description: 'Unauthorized' })
+    @ApiResponse({ status: 404, description: 'Payment not found' })
+    @ApiResponse({ status: 500, description: 'Internal Server Error' })
+    async updatePayment(
+        @Param('id') id: number,
+        @Body() updatePaymentDto: CreatePaymentDto,
+    ): Promise<AppResponse> {
+        return this.paymentService.updatePayment(id, updatePaymentDto);
+    }
+
+    @Delete(':id')
+    @ApiOperation({ summary: 'Delete a payment' })
+    @ApiParam({ name: 'id', description: 'Payment ID', type: 'number' })
+    @ApiResponse({
+        status: 200,
+        description: 'Payment deleted successfully'
+    })
+    @ApiResponse({ status: 401, description: 'Unauthorized' })
+    @ApiResponse({ status: 404, description: 'Payment not found' })
+    @ApiResponse({ status: 500, description: 'Internal Server Error' })
+    async deletePayment(@Param('id') id: number): Promise<AppResponse> {
+        return this.paymentService.deletePayment(id);
+    }
+}
