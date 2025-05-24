@@ -104,4 +104,12 @@ export class CreateBillingDto {
     })
     @IsOptional()
     remarks?: string;
+
+    @ApiProperty({
+        description: 'Whether the billing is void',
+        example: false,
+        required: false
+    })
+    @IsOptional()
+    isVoid?: boolean;
 } 

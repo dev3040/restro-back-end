@@ -101,7 +101,7 @@ export class BillingRepository extends Repository<Billing> {
         }
     }
 
-    async getAllBills(date?: string, isPendingPayment?: boolean, branchId?: number): Promise<Billing[]> {
+    async getAllBills(date?: string, isPendingPayment?: boolean, branchId?: number, isVoid?: boolean): Promise<Billing[]> {
         try {
             const queryBuilder = this.createQueryBuilder('billing')
                 .leftJoinAndSelect('billing.branch', 'branch')
@@ -123,6 +123,12 @@ export class BillingRepository extends Repository<Billing> {
             if (isPendingPayment !== undefined) {
                 queryBuilder.andWhere('billing.isPendingPayment = :isPendingPayment', {
                     isPendingPayment
+                });
+            }
+
+            if (isVoid !== undefined) {
+                queryBuilder.andWhere('billing.isVoid = :isVoid', {
+                    isVoid
                 });
             }
 
@@ -151,7 +157,8 @@ export class BillingRepository extends Repository<Billing> {
                 tableNo,
                 isPendingPayment,
                 customerId,
-                remarks
+                remarks,
+                isVoid
             } = updateBillingDto;
 
             // Update bill properties
@@ -167,7 +174,7 @@ export class BillingRepository extends Repository<Billing> {
             if (isPendingPayment !== undefined) bill.isPendingPayment = isPendingPayment;
             if (customerId !== undefined) bill.customerId = customerId;
             if (remarks !== undefined) bill.remarks = remarks;
-            
+            if (isVoid !== undefined) bill.isVoid = isVoid;
             bill.updatedBy = userId;
 
             await bill.save();

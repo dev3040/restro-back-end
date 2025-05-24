@@ -65,6 +65,9 @@ export class Billing extends BaseEntity {
     @Column('text', { name: 'remarks', nullable: true })
     remarks: string | null;
 
+    @Column('boolean', { name: 'is_void', default: true })
+    isVoid: boolean | null;
+
     @CreateDateColumn({
         type: "timestamp with time zone",
         name: "created_at"

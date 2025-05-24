@@ -34,10 +34,10 @@ export class BillingService {
         return this.billingRepository.getBillById(id);
     }
 
-    async getAllBills(user: any, date?: string, isPendingPayment?: boolean): Promise<AppResponse> {
+    async getAllBills(user: any, date?: string, isPendingPayment?: boolean, isVoid?: boolean): Promise<AppResponse> {
         return {
             message: "SUC_BILLING_LIST_FETCHED",
-            data: await this.billingRepository.getAllBills(date, isPendingPayment, user.branchId)
+            data: await this.billingRepository.getAllBills(date, isPendingPayment, user.branchId, isVoid)
         };
     }
 
@@ -111,7 +111,8 @@ export class BillingService {
             const bills = await Billing.find({
                 where: {
                     createdAt: Between(fromDate, toDate),
-                    branchId: branchId
+                    branchId: branchId,
+                    isVoid: true
                 }
             });
 
@@ -221,7 +222,8 @@ export class BillingService {
             const bills = await Billing.find({
                 where: {
                     createdAt: Between(fromDate, toDate),
-                    // branchId: branchId
+                    branchId: branchId,
+                    isVoid: true
                 },
                 relations: ['paymentMethod']
             });
