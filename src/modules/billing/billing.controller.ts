@@ -52,6 +52,26 @@ export class BillingController {
         return this.billingService.createBill(createBillingDto, user.id);
     }
 
+    @Get('final-report')
+    @ApiOperation({ summary: 'Get final analysis report as PDF' })
+    @ApiResponse({ status: 200, description: 'PDF report generated' })
+    async getFinalReport(
+        @Query('from') from: string,
+        @Query('to') to: string,
+        @Query('isHalfDay') isHalfDay: string,
+        @Res() res: any,
+        @GetUser() user: User,
+    ) {
+        const pdfBuffer = await this.billingService.generateFinalReportPdf({
+            from,
+            to,
+            isHalfDay: isHalfDay === 'true',
+        });
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `inline; filename="final_report.pdf"`);
+        res.end(pdfBuffer);
+    }
+
     @Get(':id')
     @ApiOperation({ summary: 'Get a bill by ID' })
     @ApiParam({ name: 'id', description: 'Bill ID', type: 'number' })
