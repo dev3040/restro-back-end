@@ -122,8 +122,9 @@ export class BillingController {
         @GetUser() user: User,
         @Query('date') date?: string,
         @Query('isPendingPayment') isPendingPayment?: boolean,
+        @Query('isVoid') isVoid?: boolean,
     ): Promise<AppResponse> {
-        return this.billingService.getAllBills(user, date, isPendingPayment);
+        return this.billingService.getAllBills(user, date, isPendingPayment, isVoid);
     }
 
     @Get(':id/pdf')
@@ -183,7 +184,7 @@ export class PaymentsController {
     }
 
     @Get()
-    @ApiOperation({ summary: 'Get all payments' })
+    @ApiOperation({ summary: 'Get all payments with optional date filter' })
     @ApiResponse({
         status: 200,
         description: 'Payments retrieved successfully',
@@ -191,8 +192,11 @@ export class PaymentsController {
     })
     @ApiResponse({ status: 401, description: 'Unauthorized' })
     @ApiResponse({ status: 500, description: 'Internal Server Error' })
-    async getAllPayments(@GetUser() user: User): Promise<AppResponse> {
-        return this.paymentService.getAllPayments(user);
+    async getAllPayments(
+        @GetUser() user: User,
+        @Query('date') date?: string,
+    ): Promise<AppResponse> {
+        return this.paymentService.getAllPayments(user, date);
     }
 
     @Get(':id')

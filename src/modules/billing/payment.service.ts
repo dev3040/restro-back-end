@@ -24,11 +24,18 @@ export class PaymentService {
         };
     }
 
-    async getAllPayments(user: any): Promise<AppResponse> {
+    async getAllPayments(user: any, date?: string): Promise<AppResponse> {
+        const whereClause: any = { branchId: user.branchId };
+        
+        if (date) {
+            whereClause.paymentDate = date;
+        }
+
         const payments = await this.paymentRepository.find({
             order: { paymentDate: 'DESC' },
-            where: { branchId: user.branchId }
+            where: whereClause
         });
+        
         return {
             message: 'Payments retrieved successfully',
             data: payments
