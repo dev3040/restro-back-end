@@ -113,7 +113,8 @@ export class BillingService {
                     createdAt: Between(fromDate, toDate),
                     branchId: branchId,
                     isVoid: true
-                }
+                },
+                relations: ['paymentMethod']
             });
 
             console.log("bills", bills.length);
