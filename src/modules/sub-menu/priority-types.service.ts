@@ -83,7 +83,10 @@ export class PriorityTypesService {
     async getItemsByCategory(categoryId: number): Promise<AppResponse> {
         try {
             const items = await this.priorityTypesRepository.find({
-                where: { categoryId: categoryId, isDeleted: false }
+                where: { categoryId: categoryId, isDeleted: false },
+                order: {
+                    name: "ASC"
+                }
             });
 
             if (!items || items.length === 0) {
