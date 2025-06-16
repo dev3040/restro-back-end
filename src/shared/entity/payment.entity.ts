@@ -1,9 +1,9 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, BaseEntity } from 'typeorm';
 import { Branches } from './branches.entity';
 
 
 @Entity('payments')
-export class Payment {
+export class Payment extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 

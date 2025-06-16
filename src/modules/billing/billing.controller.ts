@@ -58,6 +58,7 @@ export class BillingController {
     async getFinalReport(
         @Query('from') from: string,
         @Query('to') to: string,
+        @Query('branchId') branchId: number,
         @Query('isHalfDay') isHalfDay: string,
         @Res() res: any,
         @GetUser() user: User,
@@ -66,7 +67,7 @@ export class BillingController {
             from,
             to,
             isHalfDay: isHalfDay === 'true',
-            branchId: user.branchId
+            branchId: branchId || user.branchId
         });
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Disposition', `inline; filename="final_report.pdf"`);

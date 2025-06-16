@@ -9,6 +9,7 @@ import * as ejs from 'ejs';
 import * as path from 'path';
 import * as puppeteer from 'puppeteer';
 import { Between } from 'typeorm';
+import { Payment } from 'src/shared/entity/payment.entity';
 
 @Injectable()
 export class BillingService {
@@ -117,7 +118,14 @@ export class BillingService {
                 relations: ['paymentMethod']
             });
 
-            console.log("bills", bills.length);
+            const payments = await Payment.createQueryBuilder('payment')
+                .select('SUM(payment.amount)', 'totalAmount')
+                .where({
+                    paymentDate: Between(fromDate, toDate),
+                    branchId: branchId
+                })
+                .getRawOne();
+            console.log("payments", payments);
 
             // 4. Aggregate report data
             let taxableAmt = 0;
@@ -133,7 +141,7 @@ export class BillingService {
             let deliverooSales = 0;
             let instashopSales = 0;
             let cashSales = 0;
-            let totalPayments = 0; // You may want to fetch actual payments
+            let totalPayments = +payments?.totalAmount || 0; // You may want to fetch actual payments
             let totalCheque = 0;   // If you have cheque payments
             let zomotoSales = 0;
 
