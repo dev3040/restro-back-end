@@ -121,10 +121,11 @@ export class BillingController {
     async getAllBills(
         @GetUser() user: User,
         @Query('date') date?: string,
+        @Query('branchId') branchId?: number,
         @Query('isPendingPayment') isPendingPayment?: boolean,
         @Query('isVoid') isVoid?: boolean,
     ): Promise<AppResponse> {
-        return this.billingService.getAllBills(user, date, isPendingPayment, isVoid);
+        return this.billingService.getAllBills(user, date, isPendingPayment, isVoid, branchId);
     }
 
     @Get(':id/pdf')

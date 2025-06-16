@@ -48,7 +48,7 @@ export class BillingRepository extends Repository<Billing> {
                 // Check if the last billing is from today by comparing dates only
                 const lastBillingDate = new Date(lastBilling.createdAt);
                 lastBillingDate.setHours(0, 0, 0, 0);
-                
+
                 // Compare only the date parts (year, month, day)
                 if (lastBillingDate.getFullYear() === today.getFullYear() &&
                     lastBillingDate.getMonth() === today.getMonth() &&
@@ -140,7 +140,7 @@ export class BillingRepository extends Repository<Billing> {
 
     async updateBill(id: number, updateBillingDto: CreateBillingDto, userId: number): Promise<Billing> {
         try {
-            const bill = await this.getBillById(id);
+            const bill = await Billing.findOne({ where: { id } });
             if (!bill) {
                 throw new NotFoundException(`Bill with ID ${id} not found`);
             }
@@ -169,16 +169,21 @@ export class BillingRepository extends Repository<Billing> {
             if (discount !== undefined) bill.discount = discount;
             if (deliveryBoyId !== undefined) bill.deliveryBoyId = deliveryBoyId;
             if (branchId !== undefined) bill.branch = { id: branchId } as any;
-            if (paymentMethodId !== undefined) bill.paymentMethodId = paymentMethodId;
+            if (paymentMethodId !== undefined) {
+
+                bill.paymentMethodId = paymentMethodId;
+            }
             if (tableNo !== undefined) bill.tableNo = tableNo;
             if (isPendingPayment !== undefined) bill.isPendingPayment = isPendingPayment;
             if (customerId !== undefined) bill.customerId = customerId;
             if (remarks !== undefined) bill.remarks = remarks;
             if (isVoid !== undefined) bill.isVoid = isVoid;
             bill.updatedBy = userId;
+            console.log("xxxxxxxxx", bill);
 
             await bill.save();
-            return bill;
+            const updatedBill = await this.getBillById(id);
+            return updatedBill;
         } catch (error) {
             if (error instanceof NotFoundException) {
                 throw error;

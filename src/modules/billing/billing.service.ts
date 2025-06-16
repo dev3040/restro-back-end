@@ -34,10 +34,10 @@ export class BillingService {
         return this.billingRepository.getBillById(id);
     }
 
-    async getAllBills(user: any, date?: string, isPendingPayment?: boolean, isVoid?: boolean): Promise<AppResponse> {
+    async getAllBills(user: any, date?: string, isPendingPayment?: boolean, isVoid?: boolean, branchId?: number): Promise<AppResponse> {
         return {
             message: "SUC_BILLING_LIST_FETCHED",
-            data: await this.billingRepository.getAllBills(date, isPendingPayment, user.branchId, isVoid)
+            data: await this.billingRepository.getAllBills(date, isPendingPayment, branchId, isVoid)
         };
     }
 
