@@ -83,14 +83,14 @@
 
 <body>
     <div class="header">
-        <h3>TAX INVOICE</h3>
         <% if (bill?.isTakeAway) { %>
-            <div>Takeaway</div>
+            <h3>********** Takeaway **********</h3>
             <% } else if (bill?.isHomeDelivery) { %>
-                <div>Home Delivery</div>
+                <h3>********** Home Delivery **********</h3>
                 <% } else { %>
-                    <div>Dine in</div>
+                    <h3>********** Dine in **********</h3>
                     <% } %>
+                        <h2>TAX INVOICE</h2>
                         <% if (bill?.branch?.logo) { %>
                             <img src="<%= bill?.branch?.logo %>" alt="Logo">
                             <% } %>
