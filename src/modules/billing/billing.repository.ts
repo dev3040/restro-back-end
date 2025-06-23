@@ -109,11 +109,14 @@ export class BillingRepository extends Repository<Billing> {
                 .where('billing.branchId = :branchId', { branchId });
 
             if (date) {
-                const startDate = new Date(date);
-                startDate.setHours(0, 0, 0, 0);
-                const endDate = new Date(date);
-                endDate.setHours(23, 59, 59, 999);
-
+                // Parse the date string and create UTC dates to avoid timezone issues
+                const [year, month, day] = date.split('-').map(Number);
+                const startDate = new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0));
+                const endDate = new Date(Date.UTC(year, month - 1, day, 23, 59, 59, 999));
+                
+                console.log("startDate", startDate.toISOString());
+                console.log("endDate", endDate.toISOString());
+                
                 queryBuilder.andWhere('billing.createdAt BETWEEN :startDate AND :endDate', {
                     startDate,
                     endDate
