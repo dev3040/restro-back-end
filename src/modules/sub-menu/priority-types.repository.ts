@@ -11,6 +11,8 @@ import { IsActive } from 'src/shared/enums/is-active.enum';
 import { commonDeleteHandler } from 'src/shared/utility/common-function.methods';
 import error from '../../i18n/en/error.json';
 import success from '../../i18n/en/success.json';
+import { SubItemBranchMapping } from 'src/shared/entity/sub-item-branch-mapping.entity';
+import { Branches } from 'src/shared/entity/branches.entity';
 
 
 @Injectable()
@@ -43,8 +45,41 @@ export class PriorityTypesRepository extends Repository<SubItems> {
             subItems_.categoryId = addPriorityTypes.categoryId;
             subItems_.isActive = addPriorityTypes.isActive;
             subItems_.createdBy = user.id;
-            const res = await subItems_.save();
-            return res;
+
+            // Save the sub item first to get the ID
+            const savedSubItem = await subItems_.save();
+
+            if (!addPriorityTypes.branchId) {
+                // If no specific branch ID, assign to all active branches
+                const allBranches = await this.manager.createQueryBuilder(Branches, "branches")
+                    .select(["branches.id"])
+                    .where("branches.isActive = true")
+                    .andWhere("branches.isDeleted = false")
+                    .getMany();
+
+                // Create sub-item-branch mappings for all branches
+                const branchMappings = allBranches.map(branch => {
+                    const subItemBranchMapping = new SubItemBranchMapping();
+                    subItemBranchMapping.branchId = branch.id;
+                    subItemBranchMapping.subItemId = savedSubItem.id;
+                    subItemBranchMapping.branchPrice = addPriorityTypes.price;
+                    subItemBranchMapping.branchOffer = addPriorityTypes.offer;
+                    return subItemBranchMapping;
+                });
+
+                // Save all branch mappings
+                await this.manager.save(SubItemBranchMapping, branchMappings);
+            } else {
+                // If specific branch ID is provided, create mapping for that branch only
+                const subItemBranchMapping = new SubItemBranchMapping();
+                subItemBranchMapping.branchId = addPriorityTypes.branchId;
+                subItemBranchMapping.subItemId = savedSubItem.id;
+                subItemBranchMapping.branchPrice = addPriorityTypes.price;
+                subItemBranchMapping.branchOffer = addPriorityTypes.offer;
+                await subItemBranchMapping.save();
+            }
+
+            return savedSubItem;
         } catch (error) {
             throwException(error);
         }
@@ -53,9 +88,10 @@ export class PriorityTypesRepository extends Repository<SubItems> {
     async fetchAllPriorityTypes(filterDto?: any): Promise<{ sub_items: SubItems[]; page: object }> {
         try {
             const listQuery = this.manager.createQueryBuilder(SubItems, "priority")
+                .innerJoinAndSelect("priority.subItemBranchMapping", "subItemBranchMapping", "subItemBranchMapping.branchId = :branchId", { branchId: 5 })
                 .leftJoinAndSelect("priority.outletMenu", "outletMenu")
                 .select(["priority.id", "priority.name", "priority.offer", "priority.price", "priority.isActive",
-                    "priority.isActive", "priority.createdAt", "priority.order", "priority.printer", "outletMenu"])
+                    "priority.isActive", "priority.createdAt", "priority.order", "priority.printer", "outletMenu", "subItemBranchMapping"])
                 .where(`(priority.isDeleted = false)`)
 
             if (filterDto?.search) {
@@ -108,11 +144,23 @@ export class PriorityTypesRepository extends Repository<SubItems> {
                 priorityTypesExist.name = updatePriorityTypes.name;
 
             }
-            priorityTypesExist.price = updatePriorityTypes.price;
             priorityTypesExist.printer = updatePriorityTypes.printer;
-            priorityTypesExist.offer = updatePriorityTypes.offer;
             priorityTypesExist.categoryId = updatePriorityTypes.categoryId;
             priorityTypesExist.isActive = updatePriorityTypes.isActive;
+            if (updatePriorityTypes.branchId) {
+                const subItemBranchMapping = await this.manager.createQueryBuilder(SubItemBranchMapping, "subItemBranchMapping")
+                    .where(`(subItemBranchMapping.subItemId = :subItemId)`, { subItemId: id })
+                    .getOne();
+                if (subItemBranchMapping) {
+                    subItemBranchMapping.branchId = updatePriorityTypes.branchId;
+                    subItemBranchMapping.branchPrice = updatePriorityTypes.price;
+                    subItemBranchMapping.branchOffer = updatePriorityTypes.offer;
+                    await subItemBranchMapping.save();
+                }
+            } else {
+                priorityTypesExist.price = updatePriorityTypes.price;
+                priorityTypesExist.offer = updatePriorityTypes.offer;
+            }
             await priorityTypesExist.save();
             return priorityTypesExist;
         } catch (error) {

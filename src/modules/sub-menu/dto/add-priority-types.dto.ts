@@ -46,6 +46,12 @@ export class AddPriorityTypesDto {
       example: 'true',
    })
    isActive: boolean;
+
+   @ApiProperty({
+      description: 'Please enter BranchId',
+      example: 1,
+   })
+   branchId: number;
 }
 
 export class UpdatePriorityTypesDto extends PartialType(AddPriorityTypesDto) { }

@@ -5,11 +5,13 @@ import {
     Entity,
     JoinColumn,
     ManyToOne,
+    OneToOne,
     PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from './user.entity';
 import { CommonConst } from '../constants/common.constant';
 import { OutletMenu } from './outlet-menu.entity';
+import { SubItemBranchMapping } from './sub-item-branch-mapping.entity';
 
 @Entity({ name: 'sub_items', schema: 'master' })
 export class SubItems extends BaseEntity {
@@ -63,4 +65,7 @@ export class SubItems extends BaseEntity {
     @ManyToOne(() => OutletMenu)
     @JoinColumn({ name: "category_id", referencedColumnName: "id" })
     outletMenu: OutletMenu;
+
+    @OneToOne(() => SubItemBranchMapping, (subItemBranchMapping) => subItemBranchMapping.subItem)
+    subItemBranchMapping: SubItemBranchMapping;
 }
