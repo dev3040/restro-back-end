@@ -67,4 +67,10 @@ export class DeletePriorityDto {
    @ArrayMinSize(1, { message: 'The list must contain at least one ID' })
    @IsInt({ each: true, message: 'Each ID must be an integer' })
    ids: number[];
+
+   @ApiProperty({
+      description: 'Please enter BranchId',
+      example: 1,
+   })
+   branchId: number;
 }

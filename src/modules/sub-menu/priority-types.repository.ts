@@ -1,5 +1,5 @@
 import { SubItems } from '../../shared/entity/sub-items.entity';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, In, Repository } from 'typeorm';
 import {
     ConflictException,
     Injectable, NotFoundException,
@@ -169,6 +169,20 @@ export class PriorityTypesRepository extends Repository<SubItems> {
     }
     async deletePriorityTypes(deletePriority, userId) {
         try {
+            if (deletePriority.branchId) {
+                const priorityTypesExist = await this.findOne({ where: { id: In(deletePriority.ids), isDeleted: false } });
+                if (!priorityTypesExist) throw new NotFoundException(`ERR_PRIORITY_NOT_FOUND`);
+                const subItemBranchMapping = await this.manager.createQueryBuilder(SubItemBranchMapping, "subItemBranchMapping")
+                    .where(`(subItemBranchMapping.subItemId = :subItemId)`, { subItemId: deletePriority.ids })
+                    .getOne();
+                if (subItemBranchMapping) {
+                    await subItemBranchMapping.remove();
+                }
+                return {
+                    message: success.SUC_PRIORITY_DELETED,
+                    data: {}
+                };
+            }
             const response = await commonDeleteHandler(
                 this.dataSource,  // dataSource
                 SubItems,
