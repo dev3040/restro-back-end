@@ -88,12 +88,13 @@ export class PriorityTypesRepository extends Repository<SubItems> {
     async fetchAllPriorityTypes(filterDto?: any): Promise<{ sub_items: SubItems[]; page: object }> {
         try {
             const listQuery = this.manager.createQueryBuilder(SubItems, "priority")
-                .innerJoinAndSelect("priority.subItemBranchMapping", "subItemBranchMapping", "subItemBranchMapping.branchId = :branchId", { branchId: 5 })
                 .leftJoinAndSelect("priority.outletMenu", "outletMenu")
                 .select(["priority.id", "priority.name", "priority.offer", "priority.price", "priority.isActive",
                     "priority.isActive", "priority.createdAt", "priority.order", "priority.printer", "outletMenu", "subItemBranchMapping"])
                 .where(`(priority.isDeleted = false)`)
-
+            if (filterDto?.branchId) {
+                listQuery.innerJoinAndSelect("priority.subItemBranchMapping", "subItemBranchMapping", "subItemBranchMapping.branchId = :branchId", { branchId: filterDto.branchId })
+            }
             if (filterDto?.search) {
                 listQuery.andWhere("(priority.name ilike :search)", { search: `%${filterDto.search}%` });
             }
