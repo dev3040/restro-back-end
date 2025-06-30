@@ -19,6 +19,7 @@ import { TidTypeModule } from "./modules/tid-type/tid-type.module";
 import { MasterListingModule } from "./modules/master-listing/master-listing.module";
 import { CustomerModule } from "./modules/customer/customer-management..module";
 import { BillingModule } from "./modules/billing/billing.module";
+import { CashierFormModule } from "./modules/cashier-form/cashier-form.module";
 
 
 @Module({
@@ -44,7 +45,8 @@ import { BillingModule } from "./modules/billing/billing.module";
         TidTypeModule,
         MasterListingModule,
         CustomerModule,
-        BillingModule
+        BillingModule,
+        CashierFormModule
     ],
     controllers: [],
     providers: [

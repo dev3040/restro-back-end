@@ -1,0 +1,113 @@
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, Between } from 'typeorm';
+import { CashierForm } from '../../shared/entity/cashier-form.entity';
+import { CreateCashierFormDto } from './dto/create-cashier-form.dto';
+import { UpdateCashierFormDto } from './dto/update-cashier-form.dto';
+import { FindByDateDto } from './dto/find-by-date.dto';
+
+@Injectable()
+export class CashierFormService {
+  constructor(
+    @InjectRepository(CashierForm)
+    private cashierFormRepository: Repository<CashierForm>,
+  ) {}
+
+  async create(createCashierFormDto: CreateCashierFormDto): Promise<CashierForm> {
+    const cashierForm = this.cashierFormRepository.create(createCashierFormDto);
+    
+    // If generated_date is provided, convert string to Date
+    if (createCashierFormDto.generated_date) {
+      cashierForm.generated_date = new Date(createCashierFormDto.generated_date);
+    }
+    
+    return await this.cashierFormRepository.save(cashierForm);
+  }
+
+  async findAll(): Promise<CashierForm[]> {
+    return await this.cashierFormRepository.find({
+      order: { generated_date: 'DESC' }
+    });
+  }
+
+  async findOne(id: number): Promise<CashierForm> {
+    const cashierForm = await this.cashierFormRepository.findOne({ where: { id } });
+    if (!cashierForm) {
+      throw new NotFoundException(`Cashier form with ID ${id} not found`);
+    }
+    return cashierForm;
+  }
+
+  async update(id: number, updateCashierFormDto: UpdateCashierFormDto): Promise<CashierForm> {
+    const cashierForm = await this.findOne(id);
+    
+    // Create a new object to avoid type issues
+    const updateData: any = { ...updateCashierFormDto };
+    
+    // If generated_date is provided, convert string to Date
+    if (updateCashierFormDto.generated_date) {
+      updateData.generated_date = new Date(updateCashierFormDto.generated_date);
+    }
+    
+    Object.assign(cashierForm, updateData);
+    return await this.cashierFormRepository.save(cashierForm);
+  }
+
+  async remove(id: number): Promise<void> {
+    const cashierForm = await this.findOne(id);
+    await this.cashierFormRepository.remove(cashierForm);
+  }
+
+  async findByDate(findByDateDto: FindByDateDto): Promise<CashierForm[]> {
+    const { startDate, endDate, date } = findByDateDto;
+    
+    if (date) {
+      // Find forms for a specific date
+      const startOfDay = new Date(date);
+      startOfDay.setHours(0, 0, 0, 0);
+      
+      const endOfDay = new Date(date);
+      endOfDay.setHours(23, 59, 59, 999);
+      
+      return await this.cashierFormRepository.find({
+        where: {
+          generated_date: Between(startOfDay, endOfDay)
+        },
+        order: { generated_date: 'DESC' }
+      });
+    }
+    
+    if (startDate && endDate) {
+      // Find forms within a date range
+      return await this.cashierFormRepository.find({
+        where: {
+          generated_date: Between(new Date(startDate), new Date(endDate))
+        },
+        order: { generated_date: 'DESC' }
+      });
+    }
+    
+    if (startDate) {
+      // Find forms from start date onwards
+      return await this.cashierFormRepository.find({
+        where: {
+          generated_date: Between(new Date(startDate), new Date())
+        },
+        order: { generated_date: 'DESC' }
+      });
+    }
+    
+    if (endDate) {
+      // Find forms up to end date
+      return await this.cashierFormRepository.find({
+        where: {
+          generated_date: Between(new Date(0), new Date(endDate))
+        },
+        order: { generated_date: 'DESC' }
+      });
+    }
+    
+    // If no date filters provided, return all forms
+    return await this.findAll();
+  }
+} 
