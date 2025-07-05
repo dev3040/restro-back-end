@@ -87,14 +87,22 @@ export class PriorityTypesRepository extends Repository<SubItems> {
 
     async fetchAllPriorityTypes(filterDto?: any): Promise<{ sub_items: SubItems[]; page: object }> {
         try {
-            const listQuery = this.manager.createQueryBuilder(SubItems, "priority")
-                .leftJoinAndSelect("priority.outletMenu", "outletMenu")
-                .select(["priority.id", "priority.name", "priority.offer", "priority.price", "priority.isActive",
-                    "priority.isActive", "priority.createdAt", "priority.order", "priority.printer", "outletMenu", "subItemBranchMapping"])
-                .where(`(priority.isDeleted = false)`)
+            let listQuery
             if (filterDto?.branchId) {
-                listQuery.innerJoinAndSelect("priority.subItemBranchMapping", "subItemBranchMapping", "subItemBranchMapping.branchId = :branchId", { branchId: filterDto.branchId })
+                listQuery = this.manager.createQueryBuilder(SubItems, "priority")
+                    .leftJoinAndSelect("priority.outletMenu", "outletMenu")
+                    .innerJoinAndSelect("priority.subItemBranchMapping", "subItemBranchMapping", "subItemBranchMapping.branchId = :branchId", { branchId: filterDto.branchId })
+                    .select(["priority.id", "priority.name", "priority.offer", "priority.price", "priority.isActive",
+                        "priority.isActive", "priority.createdAt", "priority.order", "priority.printer", "outletMenu", "subItemBranchMapping"])
+                    .where(`(priority.isDeleted = false)`)
+            } else {
+                listQuery = this.manager.createQueryBuilder(SubItems, "priority")
+                    .leftJoinAndSelect("priority.outletMenu", "outletMenu")
+                    .select(["priority.id", "priority.name", "priority.offer", "priority.price", "priority.isActive",
+                        "priority.isActive", "priority.createdAt", "priority.order", "priority.printer", "outletMenu"])
+                    .where(`(priority.isDeleted = false)`)
             }
+
             if (filterDto?.search) {
                 listQuery.andWhere("(priority.name ilike :search)", { search: `%${filterDto.search}%` });
             }
