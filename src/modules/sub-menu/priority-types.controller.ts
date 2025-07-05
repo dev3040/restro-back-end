@@ -71,7 +71,7 @@ export class PriorityTypesController {
     @ApiResponse({ status: 422, description: "Bad Request or API error message" })
     @ApiResponse({ status: 404, description: "Not found!" })
     @ApiResponse({ status: 500, description: "Internal server error!" })
-    getItemsByCategory(@Param("categoryId") categoryId: string): Promise<AppResponse> {
-        return this.priorityTypesService.getItemsByCategory(Number(categoryId));
+    getItemsByCategory(@Param("categoryId") categoryId: string, @Query("branchId") branchId: string): Promise<AppResponse> {
+        return this.priorityTypesService.getItemsByCategory(Number(categoryId), Number(branchId));
     }
 }

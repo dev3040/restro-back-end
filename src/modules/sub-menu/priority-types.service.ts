@@ -80,10 +80,14 @@ export class PriorityTypesService {
         }
     }
 
-    async getItemsByCategory(categoryId: number): Promise<AppResponse> {
+    async getItemsByCategory(categoryId: number, branchId: number): Promise<AppResponse> {
         try {
+            if (!branchId) {
+                throw new NotFoundException(`ERR_BRANCH_NOT_FOUND`);
+            }
             const items = await this.priorityTypesRepository.find({
-                where: { categoryId: categoryId, isDeleted: false },
+                where: { categoryId: categoryId, isDeleted: false, subItemBranchMapping: { branchId: branchId } },
+                relations: ["subItemBranchMapping"],
                 order: {
                     name: "ASC"
                 }
