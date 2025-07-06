@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsObject, IsOptional, IsDateString } from 'class-validator';
+import { IsNotEmpty, IsObject, IsOptional, IsDateString, IsBoolean } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateCashierFormDto {
@@ -18,4 +18,21 @@ export class CreateCashierFormDto {
   @IsOptional()
   @IsDateString({}, { message: 'Generated date must be a valid date string' })
   generated_date?: string;
+
+  @ApiProperty({
+    description: 'Generated date for the cashier form',
+    example: '2024-01-15T10:30:00.000Z',
+    required: false
+  })
+  @IsOptional()
+  @IsBoolean({ message: 'Is half day must be a valid boolean' })
+  isHalfDay?: boolean;
+
+  @ApiProperty({
+    description: 'Branch ID for the cashier form',
+    example: 1,
+    required: false
+  })
+  @IsOptional()
+  branchId?: number;
 } 

@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, BaseEntity } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, BaseEntity, ManyToOne, JoinColumn } from 'typeorm';
+import { Branches } from './branches.entity';
 
 @Entity('cashier_form')
 export class CashierForm extends BaseEntity {
@@ -10,4 +11,15 @@ export class CashierForm extends BaseEntity {
 
   @Column({ type: 'json', name: 'data' })
   data: any;
+
+  @Column({ type: 'boolean', name: 'is_half_day', default: false })
+  isHalfDay: boolean;
+
+  @Column({ type: 'int', name: 'branch_id' })
+  branchId: number;
+
+
+  @ManyToOne(() => Branches, branch => branch.id)
+  @JoinColumn({ name: 'branch_id' })
+  branch: Branches;
 }
