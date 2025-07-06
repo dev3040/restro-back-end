@@ -6,155 +6,222 @@
     body {
       font-family: Arial, sans-serif;
       font-size: 12px;
+      margin: 0;
+      padding: 0;
     }
-
-    table,
-    th,
-    td {
-      border: 1px solid black;
-      border-collapse: collapse;
+    .report-container {
+      width: 650px;
+      margin: 0 auto;
+      padding: 10px 0 0 0;
     }
-
-    th,
-    td {
-      padding: 4px;
-      text-align: center;
-    }
-
     .header {
       text-align: center;
       font-weight: bold;
-      font-size: 16px;
+      font-size: 18px;
+      letter-spacing: 0.5px;
+      margin-bottom: 0px;
     }
-
-    .sub-header {
+    .branch {
+      text-align: center;
+      font-size: 13px;
+      font-weight: bold;
+      margin-bottom: 0px;
+    }
+    .address {
       text-align: center;
       font-size: 12px;
+      margin-bottom: 0px;
     }
-
-    .section-title {
+    .phone {
+      text-align: center;
+      font-size: 12px;
+      margin-bottom: 0px;
+    }
+    .report-title {
+      text-align: center;
+      font-size: 14px;
       font-weight: bold;
+      margin: 10px 0 10px 0;
+      text-decoration: underline;
+    }
+    .date-row {
+      text-align: right;
+      font-size: 12px;
+      margin-bottom: 5px;
+    }
+    table.cash-table, .summary-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 10px;
+    }
+    table.cash-table th, table.cash-table td, .summary-table td {
+      border: 2px solid #000;
+      padding: 4px 6px;
+      font-size: 12px;
+    }
+    table.cash-table th {
+      background: #f8f8f8;
+      font-weight: bold;
+    }
+    table.cash-table td.notes-col {
+      text-align: left;
+      font-weight: normal;
+    }
+    table.cash-table td, .summary-table td {
+      text-align: center;
+    }
+    .summary-table td.section-title {
+      font-weight: bold;
+      text-align: left;
+    }
+    .summary-table td {
+      height: 22px;
+    }
+    .signature-row {
+      width: 100%;
+      margin-top: 30px;
+      display: flex;
+      justify-content: flex-end;
+    }
+    .signature-label {
+      margin-right: 40px;
+      font-size: 12px;
+    }
+    .signature-line {
+      display: inline-block;
+      border-bottom: 1px solid #000;
+      width: 120px;
+      height: 14px;
+      vertical-align: bottom;
+      margin-left: 10px;
     }
   </style>
 </head>
 
 <body>
-  <div class="header">
-    <%= branchName %>
-  </div>
-  <div class="sub-header">
-    <br>
-    <%= branchAddress %><br>Tel No : <%= branchPhone %>
-  </div>
-  <div class="header">Daily Final Report from Cashier</div>
-  <div>Date: <%= new Date(generated_date).toLocaleDateString('en-CA') || '' %>
-  </div>
-  <table width="100%">
-    <tr>
-      <th>Notes</th>
-      <th>Nos</th>
-      <th>Dhs.</th>
-      <th>Fills</th>
-    </tr>
-    <% if (Array.isArray(cashDetails) && cashDetails.length) { %>
-      <% cashDetails.forEach(function(item) { %>
-        <tr>
-          <td>
-            <%= item && item.note !=null ? item.note : '' %>
-          </td>
-          <td>
-            <%= item && item.nos !=null ? item.nos : '' %>
-          </td>
-          <td>
-            <%= item && item.dhs !=null ? item.dhs : '' %>
-          </td>
-          <td>
-            <%= item && item.fills !=null ? item.fills : '' %>
-          </td>
-        </tr>
+  <div class="report-container">
+    <div class="header">
+      <%= branchName %>
+    </div>
+    <div class="branch">
+      VEGETARIAN (BR2 Khalifa)
+    </div>
+    <div class="address">
+      P.O. BOX : 47156, Al Nasr Tower-3, Hamdan Street, Abu Dhabi
+    </div>
+    <div class="phone">
+      Tel No : <%= branchPhone %>
+    </div>
+    <div class="report-title">Daily Final Report from Cashier</div>
+    <div class="date-row">Date: <%= new Date(generated_date).toLocaleDateString('en-CA') || '' %></div>
+    <table class="cash-table">
+      <tr>
+        <th>Notes</th>
+        <th>Nos</th>
+        <th>Dhs.</th>
+        <th>Fills</th>
+      </tr>
+      <% if (Array.isArray(cashDetails) && cashDetails.length) { %>
+        <% cashDetails.forEach(function(item) { %>
+          <tr>
+            <td class="notes-col">
+              <%= item && item.note !=null ? item.note : '' %>
+            </td>
+            <td>
+              <%= item && item.nos !=null ? item.nos : '' %>
+            </td>
+            <td>
+              <%= item && item.dhs !=null ? item.dhs : '' %>
+            </td>
+            <td>
+              <%= item && item.fills !=null ? item.fills : '' %>
+            </td>
+          </tr>
         <% }); %>
-          <% } else { %>
-            <tr>
-              <td colspan="4">No cash details available</td>
-            </tr>
-            <% } %>
-  </table>
-  <br>
-  <table width="100%">
-    <tr>
-      <td class="section-title">Total Cash</td>
-      <td>
-        <%= totalCash && totalCash.dhs !=null ? totalCash.dhs : 0 %>
-      </td>
-      <td>
-        <%= totalCash && totalCash.fills !=null ? totalCash.fills : 0 %>
-      </td>
-    </tr>
-    <tr>
-      <td>Daily Cash Expenses</td>
-      <td>
-        <%= dailyCashExpenses && dailyCashExpenses.dhs !=null ? dailyCashExpenses.dhs : 0 %>
-      </td>
-      <td>
-        <%= dailyCashExpenses && dailyCashExpenses.fills !=null ? dailyCashExpenses.fills : 0 %>
-      </td>
-    </tr>
-    <tr>
-      <td>Total Daily Cash Sales</td>
-      <td>
-        <%= totalDailyCashSales && totalDailyCashSales.dhs !=null ? totalDailyCashSales.dhs : 0 %>
-      </td>
-      <td>
-        <%= totalDailyCashSales && totalDailyCashSales.fills !=null ? totalDailyCashSales.fills : 0 %>
-      </td>
-    </tr>
-    <% if (Array.isArray(foodAggregators) && foodAggregators.length) { %>
-      <% foodAggregators.forEach(function(agg) { %>
+      <% } else { %>
         <tr>
-          <td>
-            <%= agg && agg.name ? agg.name : '' %> Online Paid Sale
-          </td>
-          <td>
-            <%= agg && agg.dhs !=null ? agg.dhs : 0 %>
-          </td>
-          <td>
-            <%= agg && agg.fills !=null ? agg.fills : 0 %>
-          </td>
+          <td colspan="4">No cash details available</td>
         </tr>
+      <% } %>
+    </table>
+    <table class="summary-table">
+      <tr>
+        <td class="section-title">Total Cash</td>
+        <td>
+          <%= totalCash && totalCash.dhs !=null ? totalCash.dhs : 0 %>
+        </td>
+        <td>
+          <%= totalCash && totalCash.fills !=null ? totalCash.fills : 0 %>
+        </td>
+      </tr>
+      <tr>
+        <td>Daily Cash Expenses</td>
+        <td>
+          <%= dailyCashExpenses && dailyCashExpenses.dhs !=null ? dailyCashExpenses.dhs : 0 %>
+        </td>
+        <td>
+          <%= dailyCashExpenses && dailyCashExpenses.fills !=null ? dailyCashExpenses.fills : 0 %>
+        </td>
+      </tr>
+      <tr>
+        <td>Total Daily Cash Sales</td>
+        <td>
+          <%= totalDailyCashSales && totalDailyCashSales.dhs !=null ? totalDailyCashSales.dhs : 0 %>
+        </td>
+        <td>
+          <%= totalDailyCashSales && totalDailyCashSales.fills !=null ? totalDailyCashSales.fills : 0 %>
+        </td>
+      </tr>
+      <% if (Array.isArray(foodAggregators) && foodAggregators.length) { %>
+        <% foodAggregators.forEach(function(agg) { %>
+          <tr>
+            <td>
+              <%= agg && agg.name ? agg.name : '' %> Online Paid Sale
+            </td>
+            <td>
+              <%= agg && agg.dhs !=null ? agg.dhs : 0 %>
+            </td>
+            <td>
+              <%= agg && agg.fills !=null ? agg.fills : 0 %>
+            </td>
+          </tr>
         <% }); %>
-          <% } else { %>
-            <tr>
-              <td colspan="3">No aggregator sales</td>
-            </tr>
-            <% } %>
-              <tr>
-                <td class="section-title">Total Daily Sale with VAT</td>
-                <td>
-                  <%= totalDailySaleWithVAT && totalDailySaleWithVAT.dhs !=null ? totalDailySaleWithVAT.dhs : 0 %>
-                </td>
-                <td>
-                  <%= totalDailySaleWithVAT && totalDailySaleWithVAT.fills !=null ? totalDailySaleWithVAT.fills : 0 %>
-                </td>
-              </tr>
-              <tr>
-                <td>Total VAT 5%</td>
-                <td>
-                  <%= totalVAT && totalVAT.dhs !=null ? totalVAT.dhs : 0 %>
-                </td>
-                <td>
-                  <%= totalVAT && totalVAT.fills !=null ? totalVAT.fills : 0 %>
-                </td>
-              </tr>
-              <tr>
-                <td>Closing Petty cash</td>
-                <td>
-                  <%= closingPettyCash && closingPettyCash.dhs !=null ? closingPettyCash.dhs : 0 %>
-                </td>
-                <td></td>
-              </tr>
-  </table>
-  <br>
-  <div>Signature: ____________________</div>
+      <% } else { %>
+        <tr>
+          <td colspan="3">No aggregator sales</td>
+        </tr>
+      <% } %>
+      <tr>
+        <td class="section-title">Total Daily Sale with VAT</td>
+        <td>
+          <%= totalDailySaleWithVAT && totalDailySaleWithVAT.dhs !=null ? totalDailySaleWithVAT.dhs : 0 %>
+        </td>
+        <td>
+          <%= totalDailySaleWithVAT && totalDailySaleWithVAT.fills !=null ? totalDailySaleWithVAT.fills : 0 %>
+        </td>
+      </tr>
+      <tr>
+        <td>Total VAT 5%</td>
+        <td>
+          <%= totalVAT && totalVAT.dhs !=null ? totalVAT.dhs : 0 %>
+        </td>
+        <td>
+          <%= totalVAT && totalVAT.fills !=null ? totalVAT.fills : 0 %>
+        </td>
+      </tr>
+      <tr>
+        <td>Closing Petty cash</td>
+        <td>
+          <%= closingPettyCash && closingPettyCash.dhs !=null ? closingPettyCash.dhs : 0 %>
+        </td>
+        <td></td>
+      </tr>
+    </table>
+    <div class="signature-row">
+      <span class="signature-label">Signature:</span>
+      <span class="signature-line"></span>
+    </div>
+  </div>
 </body>
 
 </html>
