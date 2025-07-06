@@ -118,18 +118,45 @@ export class CashierFormService {
     return await this.findAll();
   }
 
-  async generatePdf(data: any): Promise<Buffer> {
+  async generatePdf(payload: any): Promise<Buffer> {
+    // Fetch the cashier form record by generated_date and isHalfDay
+    const { generated_date, isHalfDay, branchId } = payload;
+    if (!generated_date || typeof isHalfDay === 'undefined' || !branchId) {
+      throw new NotFoundException('generated_date, isHalfDay, and branchId are required');
+    }
+    const startOfDay = new Date(generated_date);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(generated_date);
+    endOfDay.setHours(23, 59, 59, 999);
+    const cashierForm = await this.cashierFormRepository.findOne({
+      where: {
+        generated_date: Between(startOfDay, endOfDay),
+        isHalfDay: isHalfDay,
+        branchId: branchId,
+      },
+    });
+    if (!cashierForm) {
+      throw new NotFoundException('No cashier form found for the given date, isHalfDay, and branchId');
+    }
     // Fetch branch name dynamically
     let branchName = '';
-    if (data.branchId) {
-      const branch = await this.branchesRepository.findOne({ where: { id: data.branchId } });
-      branchName = branch ? branch.name : '';
-    }
-    data.branchName = branchName;
+    const branch = await this.branchesRepository.findOne({ where: { id: branchId } });
+    branchName = branch ? branch.name : '';
+    const branchAddress = branch ? branch.address : '';
+    const branchPhone = branch ? branch.prnNum : '';
+    // Prepare data for the template
+    const templateData = {
+      ...cashierForm.data,
+      branchName,
+      branchAddress,
+      branchPhone,
+      generated_date: cashierForm.generated_date.toISOString().split('T')[0],
+      isHalfDay: cashierForm.isHalfDay,
+    };
 
     // Render EJS template
-    const templatePath = path.join(__dirname, '../../shared/templates/cashier-form-report.ejs');
-    let html = await ejs.renderFile(templatePath, data) as string;
+    const templatePath = path.join(process.cwd(), 'src', 'shared', 'templates', 'cashier-form-report.ejs');
+    let html = await ejs.renderFile(templatePath, templateData) as string;
     if (typeof html !== 'string') html = '';
 
     // Launch Puppeteer and generate PDF

@@ -21,7 +21,7 @@ import { Response } from 'express';
 @ApiTags('Cashier Form')
 @Controller('cashier-form')
 export class CashierFormController {
-  constructor(private readonly cashierFormService: CashierFormService) {}
+  constructor(private readonly cashierFormService: CashierFormService) { }
 
   @Post()
   @ApiOperation({ summary: 'Create a new cashier form' })
@@ -88,5 +88,5 @@ export class CashierFormController {
   }
 
 
-  
+
 } 

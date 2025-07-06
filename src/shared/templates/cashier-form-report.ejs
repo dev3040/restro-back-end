@@ -1,46 +1,160 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <style>
-    body { font-family: Arial, sans-serif; font-size: 12px; }
-    table, th, td { border: 1px solid black; border-collapse: collapse; }
-    th, td { padding: 4px; text-align: center; }
-    .header { text-align: center; font-weight: bold; font-size: 16px; }
-    .sub-header { text-align: center; font-size: 12px; }
-    .section-title { font-weight: bold; }
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 12px;
+    }
+
+    table,
+    th,
+    td {
+      border: 1px solid black;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 4px;
+      text-align: center;
+    }
+
+    .header {
+      text-align: center;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .sub-header {
+      text-align: center;
+      font-size: 12px;
+    }
+
+    .section-title {
+      font-weight: bold;
+    }
   </style>
 </head>
+
 <body>
-  <div class="header">BHAVNA RESTAURANT LLC BRANCH</div>
-  <div class="sub-header"><%= branchName %><br>P.O. BOX: 47156, Al Nasr Tower-3, Hamdan Street, Abu Dhabi<br>Tel No : 02 5553006</div>
+  <div class="header">
+    <%= branchName %>
+  </div>
+  <div class="sub-header">
+    <br>
+    <%= branchAddress %><br>Tel No : <%= branchPhone %>
+  </div>
   <div class="header">Daily Final Report from Cashier</div>
-  <div>Date: <%= reportDate %></div>
+  <div>Date: <%= new Date(generated_date).toLocaleDateString('en-CA') || '' %>
+  </div>
   <table width="100%">
     <tr>
-      <th>Notes</th><th>Nos</th><th>Dhs.</th><th>Fills</th>
+      <th>Notes</th>
+      <th>Nos</th>
+      <th>Dhs.</th>
+      <th>Fills</th>
     </tr>
-    <% cashDetails.forEach(function(item) { %>
-    <tr>
-      <td><%= item.note %></td>
-      <td><%= item.nos %></td>
-      <td><%= item.dhs %></td>
-      <td><%= item.fills %></td>
-    </tr>
-    <% }); %>
+    <% if (Array.isArray(cashDetails) && cashDetails.length) { %>
+      <% cashDetails.forEach(function(item) { %>
+        <tr>
+          <td>
+            <%= item && item.note !=null ? item.note : '' %>
+          </td>
+          <td>
+            <%= item && item.nos !=null ? item.nos : '' %>
+          </td>
+          <td>
+            <%= item && item.dhs !=null ? item.dhs : '' %>
+          </td>
+          <td>
+            <%= item && item.fills !=null ? item.fills : '' %>
+          </td>
+        </tr>
+        <% }); %>
+          <% } else { %>
+            <tr>
+              <td colspan="4">No cash details available</td>
+            </tr>
+            <% } %>
   </table>
   <br>
   <table width="100%">
-    <tr><td class="section-title">Total Cash</td><td><%= totalCash.dhs %></td><td><%= totalCash.fills %></td></tr>
-    <tr><td>Daily Cash Expenses</td><td><%= dailyCashExpenses.dhs %></td><td><%= dailyCashExpenses.fills %></td></tr>
-    <tr><td>Total Daily Cash Sales</td><td><%= totalDailyCashSales.dhs %></td><td><%= totalDailyCashSales.fills %></td></tr>
-    <% foodAggregators.forEach(function(agg) { %>
-    <tr><td><%= agg.name %> Online Paid Sale</td><td><%= agg.dhs %></td><td><%= agg.fills %></td></tr>
-    <% }); %>
-    <tr><td class="section-title">Total Daily Sale with VAT</td><td><%= totalDailySaleWithVAT.dhs %></td><td><%= totalDailySaleWithVAT.fills %></td></tr>
-    <tr><td>Total VAT 5%</td><td><%= totalVAT.dhs %></td><td><%= totalVAT.fills %></td></tr>
-    <tr><td>Closing Petty cash</td><td><%= closingPettyCash.dhs %></td><td></td></tr>
+    <tr>
+      <td class="section-title">Total Cash</td>
+      <td>
+        <%= totalCash && totalCash.dhs !=null ? totalCash.dhs : 0 %>
+      </td>
+      <td>
+        <%= totalCash && totalCash.fills !=null ? totalCash.fills : 0 %>
+      </td>
+    </tr>
+    <tr>
+      <td>Daily Cash Expenses</td>
+      <td>
+        <%= dailyCashExpenses && dailyCashExpenses.dhs !=null ? dailyCashExpenses.dhs : 0 %>
+      </td>
+      <td>
+        <%= dailyCashExpenses && dailyCashExpenses.fills !=null ? dailyCashExpenses.fills : 0 %>
+      </td>
+    </tr>
+    <tr>
+      <td>Total Daily Cash Sales</td>
+      <td>
+        <%= totalDailyCashSales && totalDailyCashSales.dhs !=null ? totalDailyCashSales.dhs : 0 %>
+      </td>
+      <td>
+        <%= totalDailyCashSales && totalDailyCashSales.fills !=null ? totalDailyCashSales.fills : 0 %>
+      </td>
+    </tr>
+    <% if (Array.isArray(foodAggregators) && foodAggregators.length) { %>
+      <% foodAggregators.forEach(function(agg) { %>
+        <tr>
+          <td>
+            <%= agg && agg.name ? agg.name : '' %> Online Paid Sale
+          </td>
+          <td>
+            <%= agg && agg.dhs !=null ? agg.dhs : 0 %>
+          </td>
+          <td>
+            <%= agg && agg.fills !=null ? agg.fills : 0 %>
+          </td>
+        </tr>
+        <% }); %>
+          <% } else { %>
+            <tr>
+              <td colspan="3">No aggregator sales</td>
+            </tr>
+            <% } %>
+              <tr>
+                <td class="section-title">Total Daily Sale with VAT</td>
+                <td>
+                  <%= totalDailySaleWithVAT && totalDailySaleWithVAT.dhs !=null ? totalDailySaleWithVAT.dhs : 0 %>
+                </td>
+                <td>
+                  <%= totalDailySaleWithVAT && totalDailySaleWithVAT.fills !=null ? totalDailySaleWithVAT.fills : 0 %>
+                </td>
+              </tr>
+              <tr>
+                <td>Total VAT 5%</td>
+                <td>
+                  <%= totalVAT && totalVAT.dhs !=null ? totalVAT.dhs : 0 %>
+                </td>
+                <td>
+                  <%= totalVAT && totalVAT.fills !=null ? totalVAT.fills : 0 %>
+                </td>
+              </tr>
+              <tr>
+                <td>Closing Petty cash</td>
+                <td>
+                  <%= closingPettyCash && closingPettyCash.dhs !=null ? closingPettyCash.dhs : 0 %>
+                </td>
+                <td></td>
+              </tr>
   </table>
   <br>
   <div>Signature: ____________________</div>
 </body>
+
 </html>
