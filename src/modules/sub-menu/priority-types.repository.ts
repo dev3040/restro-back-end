@@ -158,7 +158,7 @@ export class PriorityTypesRepository extends Repository<SubItems> {
             priorityTypesExist.isActive = updatePriorityTypes.isActive;
             if (updatePriorityTypes.branchId) {
                 const subItemBranchMapping = await this.manager.createQueryBuilder(SubItemBranchMapping, "subItemBranchMapping")
-                    .where(`(subItemBranchMapping.subItemId = :subItemId)`, { subItemId: id })
+                    .where(`(subItemBranchMapping.subItemId = :subItemId and subItemBranchMapping.branchId = :branchId)`, { subItemId: id, branchId: updatePriorityTypes.branchId })
                     .getOne();
                 if (subItemBranchMapping) {
                     subItemBranchMapping.branchId = updatePriorityTypes.branchId;
