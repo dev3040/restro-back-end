@@ -152,7 +152,7 @@ export class CashierFormService {
         branchName,
         branchAddress,
         branchPhone,
-        generated_date: cashierForm.generated_date.toISOString().split('T')[0],
+        generated_date: cashierForm.generated_date.toLocaleDateString('en-CA'),
         isHalfDay: cashierForm.isHalfDay,
       };
 

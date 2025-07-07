@@ -9,11 +9,13 @@
       margin: 0;
       padding: 0;
     }
+
     .report-container {
       width: 650px;
       margin: 0 auto;
       padding: 10px 0 0 0;
     }
+
     .header {
       text-align: center;
       font-weight: bold;
@@ -21,22 +23,26 @@
       letter-spacing: 0.5px;
       margin-bottom: 0px;
     }
+
     .branch {
       text-align: center;
       font-size: 13px;
       font-weight: bold;
       margin-bottom: 0px;
     }
+
     .address {
       text-align: center;
       font-size: 12px;
       margin-bottom: 0px;
     }
+
     .phone {
       text-align: center;
       font-size: 12px;
       margin-bottom: 0px;
     }
+
     .report-title {
       text-align: center;
       font-size: 14px;
@@ -44,49 +50,64 @@
       margin: 10px 0 10px 0;
       text-decoration: underline;
     }
+
     .date-row {
       text-align: right;
       font-size: 12px;
       margin-bottom: 5px;
     }
-    table.cash-table, .summary-table {
+
+    table.cash-table,
+    .summary-table {
       width: 100%;
       border-collapse: collapse;
       margin-bottom: 10px;
     }
-    table.cash-table th, table.cash-table td, .summary-table td {
+
+    table.cash-table th,
+    table.cash-table td,
+    .summary-table td {
       border: 2px solid #000;
       padding: 4px 6px;
       font-size: 12px;
     }
+
     table.cash-table th {
       background: #f8f8f8;
       font-weight: bold;
     }
+
     table.cash-table td.notes-col {
       text-align: left;
       font-weight: normal;
     }
-    table.cash-table td, .summary-table td {
+
+    table.cash-table td,
+    .summary-table td {
       text-align: center;
     }
+
     .summary-table td.section-title {
       font-weight: bold;
       text-align: left;
     }
+
     .summary-table td {
       height: 22px;
     }
+
     .signature-row {
       width: 100%;
       margin-top: 30px;
       display: flex;
       justify-content: flex-end;
     }
+
     .signature-label {
       margin-right: 40px;
       font-size: 12px;
     }
+
     .signature-line {
       display: inline-block;
       border-bottom: 1px solid #000;
@@ -107,13 +128,16 @@
       VEGETARIAN (BR2 Khalifa)
     </div>
     <div class="address">
-      P.O. BOX : 47156, Al Nasr Tower-3, Hamdan Street, Abu Dhabi
+      P.O. BOX : <%= branchAddress %>
     </div>
     <div class="phone">
       Tel No : <%= branchPhone %>
     </div>
-    <div class="report-title">Daily Final Report from Cashier</div>
-    <div class="date-row">Date: <%= new Date(generated_date).toLocaleDateString('en-CA') || '' %></div>
+    <div class="report-title">
+      <%= isHalfDay ? 'Half Day Report' : 'Full Day Report' %>
+    </div>
+    <div class="date-row">Date: <%= generated_date || '' %>
+    </div>
     <table class="cash-table">
       <tr>
         <th>Notes</th>
@@ -137,12 +161,12 @@
               <%= item && item.fills !=null ? item.fills : '' %>
             </td>
           </tr>
-        <% }); %>
-      <% } else { %>
-        <tr>
-          <td colspan="4">No cash details available</td>
-        </tr>
-      <% } %>
+          <% }); %>
+            <% } else { %>
+              <tr>
+                <td colspan="4">No cash details available</td>
+              </tr>
+              <% } %>
     </table>
     <table class="summary-table">
       <tr>
@@ -185,37 +209,37 @@
               <%= agg && agg.fills !=null ? agg.fills : 0 %>
             </td>
           </tr>
-        <% }); %>
-      <% } else { %>
-        <tr>
-          <td colspan="3">No aggregator sales</td>
-        </tr>
-      <% } %>
-      <tr>
-        <td class="section-title">Total Daily Sale with VAT</td>
-        <td>
-          <%= totalDailySaleWithVAT && totalDailySaleWithVAT.dhs !=null ? totalDailySaleWithVAT.dhs : 0 %>
-        </td>
-        <td>
-          <%= totalDailySaleWithVAT && totalDailySaleWithVAT.fills !=null ? totalDailySaleWithVAT.fills : 0 %>
-        </td>
-      </tr>
-      <tr>
-        <td>Total VAT 5%</td>
-        <td>
-          <%= totalVAT && totalVAT.dhs !=null ? totalVAT.dhs : 0 %>
-        </td>
-        <td>
-          <%= totalVAT && totalVAT.fills !=null ? totalVAT.fills : 0 %>
-        </td>
-      </tr>
-      <tr>
-        <td>Closing Petty cash</td>
-        <td>
-          <%= closingPettyCash && closingPettyCash.dhs !=null ? closingPettyCash.dhs : 0 %>
-        </td>
-        <td></td>
-      </tr>
+          <% }); %>
+            <% } else { %>
+              <tr>
+                <td colspan="3">No aggregator sales</td>
+              </tr>
+              <% } %>
+                <tr>
+                  <td class="section-title">Total Daily Sale with VAT</td>
+                  <td>
+                    <%= totalDailySaleWithVAT && totalDailySaleWithVAT.dhs !=null ? totalDailySaleWithVAT.dhs : 0 %>
+                  </td>
+                  <td>
+                    <%= totalDailySaleWithVAT && totalDailySaleWithVAT.fills !=null ? totalDailySaleWithVAT.fills : 0 %>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Total VAT 5%</td>
+                  <td>
+                    <%= totalVAT && totalVAT.dhs !=null ? totalVAT.dhs : 0 %>
+                  </td>
+                  <td>
+                    <%= totalVAT && totalVAT.fills !=null ? totalVAT.fills : 0 %>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Closing Petty cash</td>
+                  <td>
+                    <%= closingPettyCash && closingPettyCash.dhs !=null ? closingPettyCash.dhs : 0 %>
+                  </td>
+                  <td></td>
+                </tr>
     </table>
     <div class="signature-row">
       <span class="signature-label">Signature:</span>
