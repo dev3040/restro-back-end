@@ -136,6 +136,7 @@ export class CashierFormService {
           isHalfDay: isHalfDay,
           branchId: branchId,
         },
+        order: { id: 'DESC' }
       });
       if (!cashierForm) {
         throw new NotFoundException('No cashier form found for the given date, isHalfDay, and branchId');
@@ -162,7 +163,7 @@ export class CashierFormService {
       if (typeof html !== 'string') html = '';
 
       // Launch Puppeteer and generate PDF
-      const browser = await puppeteer.launch({ 
+      const browser = await puppeteer.launch({
         headless: true,
         args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
       });
