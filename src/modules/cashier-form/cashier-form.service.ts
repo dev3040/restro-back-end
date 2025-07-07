@@ -10,6 +10,7 @@ import * as puppeteer from 'puppeteer';
 import { Branches } from '../../shared/entity/branches.entity';
 import { Repository as TypeOrmRepository } from 'typeorm';
 import * as ejs from 'ejs';
+import { throwException } from 'src/shared/utility/throw-exception';
 
 @Injectable()
 export class CashierFormService {
@@ -119,60 +120,65 @@ export class CashierFormService {
   }
 
   async generatePdf(payload: any): Promise<Buffer> {
-    // Fetch the cashier form record by generated_date and isHalfDay
-    const { generated_date, isHalfDay, branchId } = payload;
-    if (!generated_date || typeof isHalfDay === 'undefined' || !branchId) {
-      throw new NotFoundException('generated_date, isHalfDay, and branchId are required');
-    }
-    const startOfDay = new Date(generated_date);
-    startOfDay.setHours(0, 0, 0, 0);
-    const endOfDay = new Date(generated_date);
-    endOfDay.setHours(23, 59, 59, 999);
-    const cashierForm = await this.cashierFormRepository.findOne({
-      where: {
-        generated_date: Between(startOfDay, endOfDay),
-        isHalfDay: isHalfDay,
-        branchId: branchId,
-      },
-    });
-    if (!cashierForm) {
-      throw new NotFoundException('No cashier form found for the given date, isHalfDay, and branchId');
-    }
-    // Fetch branch name dynamically
-    let branchName = '';
-    const branch = await this.branchesRepository.findOne({ where: { id: branchId } });
-    branchName = branch ? branch.name : '';
-    const branchAddress = branch ? branch.address : '';
-    const branchPhone = branch ? branch.prnNum : '';
-    // Prepare data for the template
-    const templateData = {
-      ...cashierForm.data,
-      branchName,
-      branchAddress,
-      branchPhone,
-      generated_date: cashierForm.generated_date.toISOString().split('T')[0],
-      isHalfDay: cashierForm.isHalfDay,
-    };
-
-    // Render EJS template
-    const templatePath = path.join(process.cwd(), 'src', 'shared', 'templates', 'cashier-form-report.ejs');
-    let html = await ejs.renderFile(templatePath, templateData) as string;
-    if (typeof html !== 'string') html = '';
-
-    // Launch Puppeteer and generate PDF
-    const browser = await puppeteer.launch({ headless: true });
-    const page = await browser.newPage();
-    await page.setContent(html, { waitUntil: 'networkidle0' });
-    let pdfBuffer: any = await page.pdf({ format: 'A4', printBackground: true });
-    await browser.close();
-    // Ensure Buffer type
-    if (!(pdfBuffer instanceof Buffer)) {
-      if (ArrayBuffer.isView(pdfBuffer)) {
-        pdfBuffer = Buffer.from(pdfBuffer.buffer);
-      } else if (pdfBuffer instanceof ArrayBuffer) {
-        pdfBuffer = Buffer.from(new Uint8Array(pdfBuffer));
+    try {
+      // Fetch the cashier form record by generated_date and isHalfDay
+      const { generated_date, isHalfDay, branchId } = payload;
+      if (!generated_date || typeof isHalfDay === 'undefined' || !branchId) {
+        throw new NotFoundException('generated_date, isHalfDay, and branchId are required');
       }
+      const startOfDay = new Date(generated_date);
+      startOfDay.setHours(0, 0, 0, 0);
+      const endOfDay = new Date(generated_date);
+      endOfDay.setHours(23, 59, 59, 999);
+      const cashierForm = await this.cashierFormRepository.findOne({
+        where: {
+          generated_date: Between(startOfDay, endOfDay),
+          isHalfDay: isHalfDay,
+          branchId: branchId,
+        },
+      });
+      if (!cashierForm) {
+        throw new NotFoundException('No cashier form found for the given date, isHalfDay, and branchId');
+      }
+      // Fetch branch name dynamically
+      let branchName = '';
+      const branch = await this.branchesRepository.findOne({ where: { id: branchId } });
+      branchName = branch ? branch.name : '';
+      const branchAddress = branch ? branch.address : '';
+      const branchPhone = branch ? branch.prnNum : '';
+      // Prepare data for the template
+      const templateData = {
+        ...cashierForm.data,
+        branchName,
+        branchAddress,
+        branchPhone,
+        generated_date: cashierForm.generated_date.toISOString().split('T')[0],
+        isHalfDay: cashierForm.isHalfDay,
+      };
+
+      // Render EJS template
+      const templatePath = path.join(process.cwd(), 'src', 'shared', 'templates', 'cashier-form-report.ejs');
+      let html = await ejs.renderFile(templatePath, templateData) as string;
+      if (typeof html !== 'string') html = '';
+
+      // Launch Puppeteer and generate PDF
+      const browser = await puppeteer.launch({ headless: true });
+      const page = await browser.newPage();
+      await page.setContent(html, { waitUntil: 'networkidle0' });
+      let pdfBuffer: any = await page.pdf({ format: 'A4', printBackground: true });
+      await browser.close();
+      // Ensure Buffer type
+      if (!(pdfBuffer instanceof Buffer)) {
+        if (ArrayBuffer.isView(pdfBuffer)) {
+          pdfBuffer = Buffer.from(pdfBuffer.buffer);
+        } else if (pdfBuffer instanceof ArrayBuffer) {
+          pdfBuffer = Buffer.from(new Uint8Array(pdfBuffer));
+        }
+      }
+      return pdfBuffer;
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      throwException(error);
     }
-    return pdfBuffer;
   }
 } 
