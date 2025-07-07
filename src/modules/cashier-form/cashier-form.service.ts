@@ -162,7 +162,10 @@ export class CashierFormService {
       if (typeof html !== 'string') html = '';
 
       // Launch Puppeteer and generate PDF
-      const browser = await puppeteer.launch({ headless: true });
+      const browser = await puppeteer.launch({ 
+        headless: true,
+        args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
+      });
       const page = await browser.newPage();
       await page.setContent(html, { waitUntil: 'networkidle0' });
       let pdfBuffer: any = await page.pdf({ format: 'A4', printBackground: true });
