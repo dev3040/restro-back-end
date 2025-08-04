@@ -4,10 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bill <%= bill?.billingId %>
     </title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;700&display=swap');
 
         /* TMT-20 Receipt Printer Optimizations */
         @media print {
@@ -33,7 +35,7 @@
         }
 
         body {
-            font-family: 'Roboto Mono', 'Courier New', monospace;
+            font-family: 'Roboto Mono', 'Courier New', 'Noto Sans Arabic', monospace;
             width: 72mm; /* TMT-20 standard width */
             margin: 0 auto;
             background: #fff;
@@ -69,6 +71,8 @@
             line-height: 1.2;
             direction: rtl;
             text-align: right;
+            font-family: 'Noto Sans Arabic', 'Arial Unicode MS', 'Tahoma', sans-serif;
+            unicode-bidi: bidi-override;
         }
 
         .items-table {
@@ -184,7 +188,7 @@
                                     <div>TRN: <%= bill?.branch?.prnNum || 'XXXXXXXXXXXXXXX' %>
                                     </div>
                                     <div class="address">
-                                        <%= bill?.branch?.address || 'Address not available' %>
+                                        <span lang="ar" dir="rtl"><%= bill?.branch?.address || 'Address not available' %></span>
                                     </div>
                                 </div>
                                 <div class="info">

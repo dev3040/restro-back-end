@@ -1,12 +1,11 @@
 # FROM node:20.14.0-alpine
-FROM node:20.14.0-buster-slim
+FROM node:20.14.0-bullseye-slim
 
 # Install necessary packages for headless Chrome/Chromium
 RUN apt-get update && apt-get install -y \
   chromium \
   ca-certificates \
   fonts-liberation \
-  libappindicator3-1 \
   libasound2 \
   libatk-bridge2.0-0 \
   libatk1.0-0 \
@@ -19,9 +18,14 @@ RUN apt-get update && apt-get install -y \
   libxdamage1 \
   libxrandr2 \
   xdg-utils \
-  libreoffice \
-  --no-install-recommends
+  wget \
+  gnupg \
+  --no-install-recommends \
+  && rm -rf /var/lib/apt/lists/*
 
+# Set environment variables for Chromium
+ENV CHROME_BIN=/usr/bin/chromium
+ENV CHROME_PATH=/usr/lib/chromium/
 
 # Set the working directory inside the container
 WORKDIR /usr/src/app
