@@ -8,7 +8,6 @@
     </title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;700&display=swap');
 
         /* TMT-20 Receipt Printer Optimizations */
         @media print {
@@ -70,8 +69,6 @@
             line-height: 1.2;
             direction: rtl;
             text-align: right;
-            font-family: 'Noto Sans Arabic', 'Arial Unicode MS', 'Tahoma', sans-serif;
-            unicode-bidi: bidi-override;
         }
 
         .items-table {
@@ -187,7 +184,7 @@
                                     <div>TRN: <%= bill?.branch?.prnNum || 'XXXXXXXXXXXXXXX' %>
                                     </div>
                                     <div class="address">
-                                        <span lang="ar" dir="rtl"><%= bill?.branch?.address || 'Address not available' %></span>
+                                        <%= bill?.branch?.address || 'Address not available' %>
                                     </div>
                                 </div>
                                 <div class="info">
