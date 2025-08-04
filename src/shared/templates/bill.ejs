@@ -251,7 +251,7 @@
             <% if (bill?.remarks) { %>
                 <div>Remarks: <%= bill?.remarks %></div>
             <% } %>
-            <% if (bill?.customer?.address) { %>
+            <% if (bill?.customer?.address && bill?.isHomeDelivery === true) { %>
                 <div>Address: <%= bill?.customer?.address %></div>
             <% } %>
         </div>
