@@ -251,6 +251,9 @@
             <% if (bill?.remarks) { %>
                 <div>Remarks: <%= bill?.remarks %></div>
             <% } %>
+            <% if (bill?.customer?.address) { %>
+                <div>Address: <%= bill?.customer?.address %></div>
+            <% } %>
         </div>
     <% } %>
 </body>
