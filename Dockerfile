@@ -1,5 +1,5 @@
 # FROM node:20.14.0-alpine
-FROM node:20.14.0-buster-slim
+FROM node:20.14.0-bullseye-slim
 
 # Install necessary packages for headless Chrome/Chromium
 RUN apt-get update && apt-get install -y \
@@ -18,7 +18,6 @@ RUN apt-get update && apt-get install -y \
   libxdamage1 \
   libxrandr2 \
   xdg-utils \
-  libreoffice \
   wget \
   gnupg \
   --no-install-recommends \
