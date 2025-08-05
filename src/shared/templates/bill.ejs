@@ -186,11 +186,11 @@
 <body>
     <div class="header">
         <% if (bill?.isTakeAway) { %>
-            <h3>********** Takeaway **********</h3>
+            <h3>**** Takeaway ****</h3>
             <% } else if (bill?.isHomeDelivery) { %>
-                <h3>********** Home Delivery **********</h3>
+                <h3>**** Home Delivery ****</h3>
                 <% } else { %>
-                    <h3>********** Dine in **********</h3>
+                    <h3>**** Dine in ****</h3>
                     <% } %>
                         <h2>TAX INVOICE</h2>
                         <% if (bill?.branch?.logo) { %>
