@@ -266,7 +266,12 @@
     <% if (bill?.customer?.name || bill?.remarks) { %>
         <div class="customer-info">
             <% if (bill?.customer?.name) { %>
-                <div>Customer: <%= bill?.customer?.name %></div>
+                <div>
+                    Customer: <%= bill?.customer?.name %>
+                    <% if (bill?.customer?.phone) { %>
+                        (<%= bill?.customer?.phone %>)
+                    <% } %>
+                </div>
             <% } %>
             <% if (bill?.remarks) { %>
                 <div>Remarks: <%= bill?.remarks %></div>
