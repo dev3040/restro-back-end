@@ -45,8 +45,20 @@ export class BillingService {
     async generateBillPdf(bill: any): Promise<Buffer> {
         try {
             // Always resolve from project root
-            const templatePath = path.join(process.cwd(), 'src', 'shared', 'templates', 'bill.ejs');
-            const html = await ejs.renderFile(templatePath, { bill });
+            const billTemplatePath = path.join(process.cwd(), 'src', 'shared', 'templates', 'bill.ejs');
+            const k1TemplatePath = path.join(process.cwd(), 'src', 'shared', 'templates', 'k1.ejs');
+            
+            // Render bill template
+            const billHtml = await ejs.renderFile(billTemplatePath, { bill });
+            
+            // Check if order type is Take Away or Home Delivery
+            const shouldIncludeK1 = bill?.isTakeAway || bill?.isHomeDelivery;
+            
+            let k1Html = '';
+            if (shouldIncludeK1) {
+                // Render K1 template
+                k1Html = await ejs.renderFile(k1TemplatePath, { bill });
+            }
 
             // Launch puppeteer
             const browser = await puppeteer.launch({
@@ -57,8 +69,15 @@ export class BillingService {
             // Create a new page
             const page = await browser.newPage();
 
+            // Combine HTML content
+            let combinedHtml = billHtml;
+            if (shouldIncludeK1) {
+                // Add page break and K1 content
+                combinedHtml = billHtml + '<div style="page-break-before: always;"></div>' + k1Html;
+            }
+
             // Set content
-            await page.setContent(html, {
+            await page.setContent(combinedHtml, {
                 waitUntil: 'networkidle0'
             });
 

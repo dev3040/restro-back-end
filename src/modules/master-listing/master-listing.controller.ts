@@ -3,6 +3,7 @@ import {
     UseGuards,
     Get,
     Put,
+    Post,
     ValidationPipe,
     Body
 } from "@nestjs/common";
@@ -73,4 +74,16 @@ export class ConfigController {
     saveConfigDetails(@Body(ValidationPipe) payload: ConfigMasterDto, @GetUser() user: User): Promise<AppResponse> {
         return this.listingService.saveConfigDetails(payload, user);
     }
+
+    @Post("/reset-menu")
+    @ApiOperation({ summary: "Reset menu - truncate sub-item-branch mappings and create new entries" })
+    @ApiResponse({ status: 200, description: "Menu reset successful" })
+    @ApiResponse({ status: 404, description: "No active sub-items or branches found" })
+    @ApiResponse({ status: 422, description: "Bad Request or API error message" })
+    @ApiResponse({ status: 500, description: "Internal server error!" })
+    resetMenu(@GetUser() user: User): Promise<AppResponse> {
+        return this.listingService.resetMenu(user);
+    }
+
+    
 }

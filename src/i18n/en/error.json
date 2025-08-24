@@ -141,5 +141,7 @@
     "ERR_CSV_GENERATE": "Error generating CSV.",
     "ERR_ADD_PROCESSING_DATE": "At least one of the dates (dropDateProcessing, walkDateProcessing, mailDateProcessing) must be provided.",
     "ERR_UPLOAD_CSV": "Please upload a valid CSV file.",
-    "ERR_RUNNER_NOTE_MAX_LENGTH": "Maximum 300 Characters are allowed for Runner note."
+    "ERR_RUNNER_NOTE_MAX_LENGTH": "Maximum 300 Characters are allowed for Runner note.",
+    "ERR_NO_ACTIVE_SUB_ITEMS_FOUND": "No active sub-items found.",
+    "ERR_NO_ACTIVE_BRANCHES_FOUND": "No active branches found."
 }

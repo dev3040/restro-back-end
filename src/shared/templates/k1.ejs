@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>K1 - <%= bill?.billingId %></title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;700&display=swap');
+
+        /* TMT-20 Receipt Printer Optimizations */
+        @media print {
+            body {
+                width: 72mm !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                font-size: 12px !important;
+            }
+            
+            .header img {
+                max-width: 60px !important;
+            }
+            
+            .items-table {
+                font-size: 11px !important;
+            }
+            
+            .items-table th,
+            .items-table td {
+                padding: 3px 2px !important;
+            }
+            
+            .info, .summary, .footer {
+                font-size: 11px !important;
+            }
+            
+            h2 {
+                font-size: 16px !important;
+            }
+            
+            h3 {
+                font-size: 14px !important;
+            }
+        }
+
+        body {
+            font-family: 'Roboto Mono', 'Courier New', 'Noto Sans Arabic', monospace;
+            width: 72mm;
+            margin: 0 auto;
+            background: #fff;
+            color: #000;
+            font-size: 12px;
+            line-height: 1.3;
+            -webkit-font-smoothing: none;
+            -moz-osx-font-smoothing: none;
+        }
+
+        .header,
+        .footer {
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .header img {
+            max-width: 60px;
+            margin-bottom: 4px;
+        }
+
+        .info {
+            font-size: 11px;
+            margin-bottom: 8px;
+        }
+
+        .address {
+            font-size: 11px;
+            margin-bottom: 8px;
+            word-wrap: break-word;
+            white-space: normal;
+            line-height: 1.3;
+            direction: rtl;
+            text-align: right;
+            font-family: 'Noto Sans Arabic', 'Arial Unicode MS', 'Tahoma', sans-serif;
+            unicode-bidi: bidi-override;
+        }
+
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+            margin-bottom: 10px;
+        }
+
+        .items-table th,
+        .items-table td {
+            border-bottom: 1px dashed #000;
+            padding: 3px 2px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .items-table th {
+            border-top: 1px solid #000;
+            border-bottom: 1px solid #000;
+            background: #f8f8f8;
+            font-weight: bold;
+        }
+
+        .items-table td:nth-child(1) { /* Name */
+            width: 70%;
+        }
+        
+        .items-table td:nth-child(2) { /* Qty */
+            width: 30%;
+            text-align: center;
+        }
+
+        .summary {
+            border-top: 1px solid #000;
+            padding-top: 8px;
+            font-size: 11px;
+        }
+
+        .summary > div {
+            margin-bottom: 3px;
+        }
+
+        .footer {
+            margin-top: 15px;
+            font-size: 11px;
+            border-top: 1px dashed #000;
+            padding-top: 8px;
+        }
+
+        h2, h3 {
+            margin: 6px 0;
+            font-size: 16px;
+        }
+
+        h3 {
+            font-size: 14px;
+        }
+
+        .no-wrap {
+            white-space: nowrap;
+        }
+
+        .kot-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            margin-bottom: 8px;
+        }
+
+        .kot-info > div {
+            flex: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <h2>K1</h2>
+        <% if (bill?.branch?.logo) { %>
+            <img src="<%= bill?.branch?.logo %>" alt="Logo">
+        <% } %>
+        
+        <div><strong><%= bill?.branch?.name || 'RESTAURANT NAME' %></strong></div>
+        <div class="info">
+            <div>TRN: <%= bill?.branch?.prnNum || 'XXXXXXXXXXXXXXX' %></div>
+            <div class="address">
+                <span lang="ar" dir="rtl"><%= bill?.branch?.address || 'Address not available' %></span>
+            </div>
+        </div>
+        
+        <div class="kot-info">
+            <div>KOT No.: <%= bill?.billingId %></div>
+            <div>Bill No.: <%= bill?.billingId %></div>
+        </div>
+        
+        <div class="kot-info">
+            <div>Dt: <%= bill?.createdAt ? new Date(bill.createdAt).toLocaleDateString('en-GB') : '' %></div>
+            <div>Time: <%= bill?.createdAt ? new Date(bill.createdAt).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: false, timeZone: 'Asia/Dubai' }) : '' %></div>
+        </div>
+        
+        <div class="kot-info">
+            <div>Table No.: <%= bill?.tableNo || '' %></div>
+            <div></div>
+        </div>
+    </div>
+    
+    <table class="items-table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Qty</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% bill?.billingCalc?.items?.forEach((item, idx)=> { %>
+                <tr>
+                    <td><%= item?.name %></td>
+                    <td><%= item?.quantity %></td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+    
+    <div class="summary">
+        <div>Total Items: <%= bill?.billingCalc?.items?.length || 0 %></div>
+    </div>
+    
+    <div class="footer">
+        <div>Waiter:</div>
+    </div>
+</body>
+
+</html>
