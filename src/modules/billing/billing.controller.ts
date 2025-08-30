@@ -81,6 +81,7 @@ export class BillingController {
         @Query('from') from: string,
         @Query('to') to: string,
         @Query('isHalfDay') isHalfDay: string,
+        @Query('branchId') branchId: string,
         @Res() res: any,
         @GetUser() user: User,
     ) {
@@ -88,7 +89,7 @@ export class BillingController {
             from,
             to,
             isHalfDay: isHalfDay === 'true',
-            branchId: user.branchId
+            branchId: branchId
         });
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Disposition', `inline; filename="mode_wise_report.pdf"`);
