@@ -118,8 +118,22 @@ export class ListingService {
         }
     }
 
-    async resetMenu(user: any): Promise<AppResponse> {
+    async resetMenu(branchId: number, user: any): Promise<AppResponse> {
         try {
+            // Verify the branch exists and is active
+            const branch = await Branches.findOne({
+                where: { 
+                    id: branchId,
+                    isDeleted: false, 
+                    isActive: true 
+                },
+                select: ['id', 'name']
+            });
+
+            if (!branch) {
+                throw new NotFoundException('ERR_BRANCH_NOT_FOUND');
+            }
+
             // Get all active sub-items
             const subItems = await SubItems.find({
                 where: { 
@@ -133,40 +147,25 @@ export class ListingService {
                 throw new NotFoundException('ERR_NO_ACTIVE_SUB_ITEMS_FOUND');
             }
 
-            // Get all active branches
-            const branches = await Branches.find({
-                where: { 
-                    isDeleted: false, 
-                    isActive: true 
-                },
-                select: ['id', 'name']
-            });
-
-            if (!branches || branches.length === 0) {
-                throw new NotFoundException('ERR_NO_ACTIVE_BRANCHES_FOUND');
-            }
-
             // Start transaction
             const queryRunner = this.dataSource.createQueryRunner();
             await queryRunner.connect();
             await queryRunner.startTransaction();
 
             try {
-                // Truncate existing sub-item-branch mappings
-                await queryRunner.manager.query('TRUNCATE TABLE master.sub_item_branch_mapping RESTART IDENTITY CASCADE');
+                // Delete existing sub-item-branch mappings for the specific branch
+                await queryRunner.manager.delete(SubItemBranchMapping, { branchId: branch.id });
 
-                // Create new mappings for each sub-item with each branch
+                // Create new mappings for each sub-item with the specific branch
                 const newMappings: SubItemBranchMapping[] = [];
 
                 for (const subItem of subItems) {
-                    for (const branch of branches) {
-                        const mapping = new SubItemBranchMapping();
-                        mapping.subItemId = subItem.id;
-                        mapping.branchId = branch.id;
-                        mapping.branchPrice = subItem.price || null;
-                        mapping.branchOffer = subItem.offer || null;
-                        newMappings.push(mapping);
-                    }
+                    const mapping = new SubItemBranchMapping();
+                    mapping.subItemId = subItem.id;
+                    mapping.branchId = branch.id;
+                    mapping.branchPrice = subItem.price || null;
+                    mapping.branchOffer = subItem.offer || null;
+                    newMappings.push(mapping);
                 }
 
                 // Save all new mappings
@@ -178,8 +177,9 @@ export class ListingService {
                 return {
                     message: "SUC_MENU_RESET_SUCCESSFUL",
                     data: {
+                        branchId: branch.id,
+                        branchName: branch.name,
                         subItemsCount: subItems.length,
-                        branchesCount: branches.length,
                         mappingsCreated: newMappings.length
                     }
                 };

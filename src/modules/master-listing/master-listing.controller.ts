@@ -5,15 +5,17 @@ import {
     Put,
     Post,
     ValidationPipe,
-    Body
+    Body,
+    Query
 } from "@nestjs/common";
-import { ApiOperation, ApiResponse, ApiTags, ApiBearerAuth } from "@nestjs/swagger";
+import { ApiOperation, ApiResponse, ApiTags, ApiBearerAuth, ApiQuery } from "@nestjs/swagger";
 import { AuthGuard } from "@nestjs/passport";
 import { ListingService } from "./master-listing.service";
 import { AppResponse } from "../../shared/interfaces/app-response.interface";
 import { GetUser } from "src/shared/decorators/get-user.decorator";
 import { User } from "src/shared/entity/user.entity";
 import { ConfigMasterDto } from "./dto/config-master.dto";
+import { ResetMenuQueryDto } from "./dto/reset-menu.dto";
 
 @ApiTags("Master Listing")
 @Controller("list")
@@ -76,13 +78,17 @@ export class ConfigController {
     }
 
     @Post("/reset-menu")
-    @ApiOperation({ summary: "Reset menu - truncate sub-item-branch mappings and create new entries" })
+    @ApiOperation({ summary: "Reset menu for a specific branch - truncate sub-item-branch mappings and create new entries" })
+    @ApiQuery({ name: 'branchId', required: true, type: Number, description: 'Branch ID for which to reset the menu' })
     @ApiResponse({ status: 200, description: "Menu reset successful" })
-    @ApiResponse({ status: 404, description: "No active sub-items or branches found" })
+    @ApiResponse({ status: 404, description: "No active sub-items or branch not found" })
     @ApiResponse({ status: 422, description: "Bad Request or API error message" })
     @ApiResponse({ status: 500, description: "Internal server error!" })
-    resetMenu(@GetUser() user: User): Promise<AppResponse> {
-        return this.listingService.resetMenu(user);
+    resetMenu(
+        @Query(ValidationPipe) query: ResetMenuQueryDto,
+        @GetUser() user: User
+    ): Promise<AppResponse> {
+        return this.listingService.resetMenu(query.branchId, user);
     }
 
     
