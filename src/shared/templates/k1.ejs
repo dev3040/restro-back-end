@@ -156,6 +156,17 @@
         .kot-info > div {
             flex: 1;
         }
+
+        .customer-info {
+            margin-top: 10px;
+            font-size: 11px;
+            border-top: 1px dashed #000;
+            padding-top: 8px;
+        }
+
+        .customer-info > div {
+            margin-bottom: 3px;
+        }
     </style>
 </head>
 
@@ -210,10 +221,18 @@
     <div class="summary">
         <div>Total Items: <%= bill?.billingCalc?.items?.length || 0 %></div>
     </div>
-    
+<!--     
     <div class="footer">
         <div>Waiter:</div>
     </div>
+     -->
+    <% if (bill?.customer?.name || bill?.remarks) { %>
+        <div class="customer-info">
+            <% if (bill?.remarks) { %>
+                <div>Remarks: <%= bill?.remarks %></div>
+            <% } %>
+        </div>
+    <% } %>
 </body>
 
 </html>
