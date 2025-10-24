@@ -202,24 +202,24 @@
                             <td><%= row.billNo %></td>
                             <td><%= row.covers %></td>
                             <td><%= row.billDate %></td>
-                            <td><%= row.discount?.toFixed(3) || '0.000' %></td>
-                            <td><%= row.vat?.toFixed(3) || '0.000' %></td>
-                            <td><%= row.total?.toFixed(3) || '0.000' %></td>
+                            <td><%= row.discount?.toFixed(2) || '0.00' %></td>
+                            <td><%= row.vat?.toFixed(2) || '0.00' %></td>
+                            <td><%= row.total?.toFixed(2) || '0.00' %></td>
                         </tr>
                     <% }) %>
                     <tr class="subtotal-row">
                         <td colspan="4">Sub Total</td>
-                        <td><%= group.subTotals.discount?.toFixed(3) || '0.000' %></td>
-                        <td><%= group.subTotals.vat?.toFixed(3) || '0.000' %></td>
-                        <td><%= group.subTotals.total?.toFixed(3) || '0.000' %></td>
+                        <td><%= group.subTotals.discount?.toFixed(2) || '0.00' %></td>
+                        <td><%= group.subTotals.vat?.toFixed(2) || '0.00' %></td>
+                        <td><%= group.subTotals.total?.toFixed(2) || '0.00' %></td>
                     </tr>
                 <% } %>
             <% }) %>
             <tr class="grandtotal-row">
                 <td colspan="4">Grand Total</td>
-                <td><%= grandDiscount?.toFixed(3) || '0.000' %></td>
-                <td><%= grandVat?.toFixed(3) || '0.000' %></td>
-                <td><%= grandTotal?.toFixed(3) || '0.000' %></td>
+                <td><%= grandDiscount?.toFixed(2) || '0.00' %></td>
+                <td><%= grandVat?.toFixed(2) || '0.00' %></td>
+                <td><%= grandTotal?.toFixed(2) || '0.00' %></td>
             </tr>
             </tbody>
         </table>

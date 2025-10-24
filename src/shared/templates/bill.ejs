@@ -255,6 +255,8 @@
         </div>
         <div>Incl. VAT 5%: <%= bill?.billingCalc?.vat?.toFixed(2) || '0.00' %>
         </div>
+        <div>Discount: <%= bill?.discount || '0.00' %>
+        </div>
         <div class="totals">Total Amt (AED): <%= bill?.subTotal || '0.00' %>
         </div>
         <div>Payment Method: <%= bill?.paymentMethod?.name || '' %>
