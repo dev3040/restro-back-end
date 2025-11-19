@@ -35,7 +35,8 @@ export class BillingRepository extends Repository<Billing> {
             // Find the last billing ID for today
             const lastBilling = await this.findOne({
                 where: {
-                    createdAt: Between(today, tomorrow)
+                    createdAt: Between(today, tomorrow),
+                    branchId: branchId
                 },
                 order: {
                     billingId: 'DESC'

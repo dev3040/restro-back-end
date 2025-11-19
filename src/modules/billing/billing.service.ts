@@ -253,6 +253,9 @@ export class BillingService {
                     branchId: branchId,
                     isVoid: true
                 },
+                order: {
+                    billingId: 'ASC'
+                },
                 relations: ['paymentMethod']
             });
             console.log("bills", bills.length);
