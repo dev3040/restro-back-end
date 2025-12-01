@@ -165,7 +165,8 @@ export class CashierFormService {
       // Launch Puppeteer and generate PDF
       const browser = await puppeteer.launch({
         headless: true,
-        args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
+        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/chromium',
+        args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu']
       });
       const page = await browser.newPage();
       await page.setContent(html, { waitUntil: 'networkidle0' });
