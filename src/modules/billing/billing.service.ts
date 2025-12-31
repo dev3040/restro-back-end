@@ -7,7 +7,7 @@ import { AppResponse } from 'src/shared/interfaces/app-response.interface';
 import { throwException } from 'src/shared/utility/throw-exception';
 import * as ejs from 'ejs';
 import * as path from 'path';
-import * as puppeteer from 'puppeteer';
+import * as pdf from 'html-pdf-node';
 import { Between } from 'typeorm';
 import { Payment } from 'src/shared/entity/payment.entity';
 
@@ -60,16 +60,6 @@ export class BillingService {
                 k1Html = await ejs.renderFile(k1TemplatePath, { bill });
             }
 
-            // Launch puppeteer
-            const browser = await puppeteer.launch({
-                headless: true,
-                executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/chromium',
-                args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu']
-            });
-
-            // Create a new page
-            const page = await browser.newPage();
-
             // Combine HTML content
             let combinedHtml = billHtml;
             if (shouldIncludeK1) {
@@ -77,13 +67,9 @@ export class BillingService {
                 combinedHtml = billHtml + '<div style="page-break-before: always;"></div>' + k1Html;
             }
 
-            // Set content
-            await page.setContent(combinedHtml, {
-                waitUntil: 'networkidle0'
-            });
-
-            // Generate PDF
-            const pdfBuffer = await page.pdf({
+            // Generate PDF with html-pdf-node
+            const file = { content: combinedHtml };
+            const options = {
                 format: 'A4',
                 printBackground: true,
                 margin: {
@@ -92,10 +78,9 @@ export class BillingService {
                     bottom: '10px',
                     left: '10px'
                 }
-            });
-
-            // Close browser
-            await browser.close();
+            };
+            console.log("options", file);
+            const pdfBuffer = await pdf.generatePdf(file, options);
 
             return Buffer.from(pdfBuffer);
         } catch (error) {
@@ -220,20 +205,14 @@ export class BillingService {
             const templatePath = path.join(process.cwd(), 'src', 'shared', 'templates', 'final-report.ejs');
             const html = await ejs.renderFile(templatePath, reportData);
 
-            // 6. Generate PDF with puppeteer
-            const browser = await puppeteer.launch({
-                headless: true,
-                executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/chromium',
-                args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu']
-            });
-            const page = await browser.newPage();
-            await page.setContent(html, { waitUntil: 'networkidle0' });
-            const pdfBuffer = await page.pdf({
+            // 6. Generate PDF with html-pdf-node
+            const file = { content: html };
+            const options = {
                 format: 'A4',
                 printBackground: true,
                 margin: { top: '10px', right: '10px', bottom: '10px', left: '10px' }
-            });
-            await browser.close();
+            };
+            const pdfBuffer = await pdf.generatePdf(file, options);
             return Buffer.from(pdfBuffer);
         } catch (error) {
             console.error('Error generating final report PDF:', error);
@@ -330,19 +309,14 @@ export class BillingService {
             const templatePath = path.join(process.cwd(), 'src', 'shared', 'templates', 'mode-wise-report.ejs');
             const html = await ejs.renderFile(templatePath, reportData);
 
-            const browser = await puppeteer.launch({
-                headless: true,
-                executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/chromium',
-                args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu']
-            });
-            const page = await browser.newPage();
-            await page.setContent(html, { waitUntil: 'networkidle0' });
-            const pdfBuffer = await page.pdf({
+            // Generate PDF with html-pdf-node
+            const file = { content: html };
+            const options = {
                 format: 'A4',
                 printBackground: true,
                 margin: { top: '10px', right: '10px', bottom: '10px', left: '10px' }
-            });
-            await browser.close();
+            };
+            const pdfBuffer = await pdf.generatePdf(file, options);
             return Buffer.from(pdfBuffer);
         } catch (error) {
             console.error('Error generating mode wise report PDF:', error);

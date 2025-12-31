@@ -1,248 +1,178 @@
-<!DOCTYPE html>
-<html>
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, Between } from 'typeorm';
+import { CashierForm } from '../../shared/entity/cashier-form.entity';
+import { CreateCashierFormDto } from './dto/create-cashier-form.dto';
+import { UpdateCashierFormDto } from './dto/update-cashier-form.dto';
+import { FindByDateDto } from './dto/find-by-date.dto';
+import * as path from 'path';
+import * as pdf from 'html-pdf-node';
+import { Branches } from '../../shared/entity/branches.entity';
+import { Repository as TypeOrmRepository } from 'typeorm';
+import * as ejs from 'ejs';
+import { throwException } from 'src/shared/utility/throw-exception';
 
-<head>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      font-size: 12px;
-      margin: 0;
-      padding: 0;
+@Injectable()
+export class CashierFormService {
+  constructor(
+    @InjectRepository(CashierForm)
+    private cashierFormRepository: Repository<CashierForm>,
+    @InjectRepository(Branches)
+    private branchesRepository: TypeOrmRepository<Branches>,
+  ) { }
+
+  async create(createCashierFormDto: CreateCashierFormDto): Promise<CashierForm> {
+    const cashierForm = this.cashierFormRepository.create(createCashierFormDto);
+
+    // If generated_date is provided, convert string to Date
+    if (createCashierFormDto.generated_date) {
+      cashierForm.generated_date = new Date(createCashierFormDto.generated_date);
     }
 
-    .report-container {
-      width: 650px;
-      margin: 0 auto;
-      padding: 10px 0 0 0;
+    return await this.cashierFormRepository.save(cashierForm);
+  }
+
+  async findAll(): Promise<CashierForm[]> {
+    return await this.cashierFormRepository.find({
+      order: { generated_date: 'DESC' }
+    });
+  }
+
+  async findOne(id: number): Promise<CashierForm> {
+    const cashierForm = await this.cashierFormRepository.findOne({ where: { id } });
+    if (!cashierForm) {
+      throw new NotFoundException(`Cashier form with ID ${id} not found`);
+    }
+    return cashierForm;
+  }
+
+  async update(id: number, updateCashierFormDto: UpdateCashierFormDto): Promise<CashierForm> {
+    const cashierForm = await this.findOne(id);
+
+    // Create a new object to avoid type issues
+    const updateData: any = { ...updateCashierFormDto };
+
+    // If generated_date is provided, convert string to Date
+    if (updateCashierFormDto.generated_date) {
+      updateData.generated_date = new Date(updateCashierFormDto.generated_date);
     }
 
-    .header {
-      text-align: center;
-      font-weight: bold;
-      font-size: 18px;
-      letter-spacing: 0.5px;
-      margin-bottom: 0px;
+    Object.assign(cashierForm, updateData);
+    return await this.cashierFormRepository.save(cashierForm);
+  }
+
+  async remove(id: number): Promise<void> {
+    const cashierForm = await this.findOne(id);
+    await this.cashierFormRepository.remove(cashierForm);
+  }
+
+  async findByDate(findByDateDto: FindByDateDto): Promise<CashierForm[]> {
+    const { startDate, endDate, date } = findByDateDto;
+
+    if (date) {
+      // Find forms for a specific date
+      const startOfDay = new Date(date);
+      startOfDay.setHours(0, 0, 0, 0);
+
+      const endOfDay = new Date(date);
+      endOfDay.setHours(23, 59, 59, 999);
+
+      return await this.cashierFormRepository.find({
+        where: {
+          generated_date: Between(startOfDay, endOfDay)
+        },
+        order: { generated_date: 'DESC' }
+      });
     }
 
-    .branch {
-      text-align: center;
-      font-size: 13px;
-      font-weight: bold;
-      margin-bottom: 0px;
+    if (startDate && endDate) {
+      // Find forms within a date range
+      return await this.cashierFormRepository.find({
+        where: {
+          generated_date: Between(new Date(startDate), new Date(endDate))
+        },
+        order: { generated_date: 'DESC' }
+      });
     }
 
-    .address {
-      text-align: center;
-      font-size: 12px;
-      margin-bottom: 0px;
+    if (startDate) {
+      // Find forms from start date onwards
+      return await this.cashierFormRepository.find({
+        where: {
+          generated_date: Between(new Date(startDate), new Date())
+        },
+        order: { generated_date: 'DESC' }
+      });
     }
 
-    .phone {
-      text-align: center;
-      font-size: 12px;
-      margin-bottom: 0px;
+    if (endDate) {
+      // Find forms up to end date
+      return await this.cashierFormRepository.find({
+        where: {
+          generated_date: Between(new Date(0), new Date(endDate))
+        },
+        order: { generated_date: 'DESC' }
+      });
     }
 
-    .report-title {
-      text-align: center;
-      font-size: 14px;
-      font-weight: bold;
-      margin: 10px 0 10px 0;
-      text-decoration: underline;
+    // If no date filters provided, return all forms
+    return await this.findAll();
+  }
+
+  async generatePdf(payload: any): Promise<Buffer> {
+    try {
+      // Fetch the cashier form record by generated_date and isHalfDay
+      const { generated_date, isHalfDay, branchId } = payload;
+      if (!generated_date || typeof isHalfDay === 'undefined' || !branchId) {
+        throw new NotFoundException('generated_date, isHalfDay, and branchId are required');
+      }
+      const startOfDay = new Date(generated_date);
+      startOfDay.setHours(0, 0, 0, 0);
+      const endOfDay = new Date(generated_date);
+      endOfDay.setHours(23, 59, 59, 999);
+      const cashierForm = await this.cashierFormRepository.findOne({
+        where: {
+          generated_date: Between(startOfDay, endOfDay),
+          isHalfDay: isHalfDay,
+          branchId: branchId,
+        },
+        order: { id: 'DESC' }
+      });
+      if (!cashierForm) {
+        throw new NotFoundException('No cashier form found for the given date, isHalfDay, and branchId');
+      }
+      // Fetch branch name dynamically
+      let branchName = '';
+      const branch = await this.branchesRepository.findOne({ where: { id: branchId } });
+      branchName = branch ? branch.name : '';
+      const branchAddress = branch ? branch.address : '';
+      const branchPhone = branch ? branch.prnNum : '';
+      // Prepare data for the template
+      const templateData = {
+        ...cashierForm.data,
+        branchName,
+        branchAddress,
+        branchPhone,
+        generated_date: cashierForm.generated_date.toLocaleDateString('en-CA'),
+        isHalfDay: cashierForm.isHalfDay,
+      };
+
+      // Render EJS template
+      const templatePath = path.join(process.cwd(), 'src', 'shared', 'templates', 'cashier-form-report.ejs');
+      let html = await ejs.renderFile(templatePath, templateData) as string;
+      if (typeof html !== 'string') html = '';
+
+      // Generate PDF with html-pdf-node
+      const file = { content: html };
+      const options = {
+        format: 'A4',
+        printBackground: true
+      };
+      const pdfBuffer = await pdf.generatePdf(file, options);
+      return Buffer.from(pdfBuffer);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      throwException(error);
     }
-
-    .date-row {
-      text-align: right;
-      font-size: 12px;
-      margin-bottom: 5px;
-    }
-
-    table.cash-table,
-    .summary-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 10px;
-    }
-
-    table.cash-table th,
-    table.cash-table td,
-    .summary-table td {
-      border: 2px solid #000;
-      padding: 4px 6px;
-      font-size: 12px;
-    }
-
-    table.cash-table th {
-      background: #f8f8f8;
-      font-weight: bold;
-    }
-
-    table.cash-table td.notes-col {
-      text-align: left;
-      font-weight: normal;
-    }
-
-    table.cash-table td,
-    .summary-table td {
-      text-align: center;
-    }
-
-    .summary-table td.section-title {
-      font-weight: bold;
-      text-align: left;
-    }
-
-    .summary-table td {
-      height: 22px;
-    }
-
-    .signature-row {
-      width: 100%;
-      margin-top: 30px;
-      display: flex;
-      justify-content: flex-end;
-    }
-
-    .signature-label {
-      margin-right: 40px;
-      font-size: 12px;
-    }
-
-    .signature-line {
-      display: inline-block;
-      border-bottom: 1px solid #000;
-      width: 120px;
-      height: 14px;
-      vertical-align: bottom;
-      margin-left: 10px;
-    }
-  </style>
-</head>
-
-<body>
-  <div class="report-container">
-    <div class="header">
-      <%= branchName %>
-    </div>
-    <div class="address">
-      P.O. BOX : <%= branchAddress %>
-    </div>
-    <div class="phone">
-      Tel No : <%= branchPhone %>
-    </div>
-    <div class="report-title">
-      <%= isHalfDay ? 'Half Day Report' : 'Full Day Report' %>
-    </div>
-    <div class="date-row">Date: <%= generated_date || '' %>
-    </div>
-    <table class="cash-table">
-      <tr>
-        <th>Notes</th>
-        <th>Nos</th>
-        <th>Dhs.</th>
-        <th>Fills</th>
-      </tr>
-      <% if (Array.isArray(cashDetails) && cashDetails.length) { %>
-        <% cashDetails.forEach(function(item) { %>
-          <tr>
-            <td class="notes-col">
-              <%= item && item.note !=null ? item.note : '' %>
-            </td>
-            <td>
-              <%= item && item.nos !=null ? item.nos : '' %>
-            </td>
-            <td>
-              <%= item && item.dhs !=null ? item.dhs : '' %>
-            </td>
-            <td>
-              <%= item && item.fills !=null ? item.fills : '' %>
-            </td>
-          </tr>
-          <% }); %>
-            <% } else { %>
-              <tr>
-                <td colspan="4">No cash details available</td>
-              </tr>
-              <% } %>
-    </table>
-    <table class="summary-table">
-      <tr>
-        <td class="section-title">Total Cash</td>
-        <td>
-          <%= totalCash && totalCash.dhs !=null ? totalCash.dhs : 0 %>
-        </td>
-        <td>
-          <%= totalCash && totalCash.fills !=null ? totalCash.fills : 0 %>
-        </td>
-      </tr>
-      <tr>
-        <td>Daily Cash Expenses</td>
-        <td>
-          <%= dailyCashExpenses && dailyCashExpenses.dhs !=null ? dailyCashExpenses.dhs : 0 %>
-        </td>
-        <td>
-          <%= dailyCashExpenses && dailyCashExpenses.fills !=null ? dailyCashExpenses.fills : 0 %>
-        </td>
-      </tr>
-      <tr>
-        <td>Total Daily Cash Sales</td>
-        <td>
-          <%= totalDailyCashSales && totalDailyCashSales.dhs !=null ? totalDailyCashSales.dhs : 0 %>
-        </td>
-        <td>
-          <%= totalDailyCashSales && totalDailyCashSales.fills !=null ? totalDailyCashSales.fills : 0 %>
-        </td>
-      </tr>
-      <% if (Array.isArray(foodAggregators) && foodAggregators.length) { %>
-        <% foodAggregators.forEach(function(agg) { %>
-          <tr>
-            <td>
-              <%= agg && agg.name ? agg.name : '' %> Online Paid Sale
-            </td>
-            <td>
-              <%= agg && agg.dhs !=null ? agg.dhs : 0 %>
-            </td>
-            <td>
-              <%= agg && agg.fills !=null ? agg.fills : 0 %>
-            </td>
-          </tr>
-          <% }); %>
-            <% } else { %>
-              <tr>
-                <td colspan="3">No aggregator sales</td>
-              </tr>
-              <% } %>
-                <tr>
-                  <td class="section-title">Total Daily Sale with VAT</td>
-                  <td>
-                    <%= totalDailySaleWithVAT && totalDailySaleWithVAT.dhs !=null ? totalDailySaleWithVAT.dhs : 0 %>
-                  </td>
-                  <td>
-                    <%= totalDailySaleWithVAT && totalDailySaleWithVAT.fills !=null ? totalDailySaleWithVAT.fills : 0 %>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Total VAT 5%</td>
-                  <td>
-                    <%= totalVAT && totalVAT.dhs !=null ? totalVAT.dhs : 0 %>
-                  </td>
-                  <td>
-                    <%= totalVAT && totalVAT.fills !=null ? totalVAT.fills : 0 %>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Closing Petty cash</td>
-                  <td>
-                    <%= closingPettyCash && closingPettyCash.dhs !=null ? closingPettyCash.dhs : 0 %>
-                  </td>
-                  <td></td>
-                </tr>
-    </table>
-    <div class="signature-row">
-      <span class="signature-label">Signature:</span>
-      <span class="signature-line"></span>
-    </div>
-  </div>
-</body>
-
-</html>
+  }
+} 
