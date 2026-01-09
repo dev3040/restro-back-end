@@ -107,7 +107,8 @@ export class BillingRepository extends Repository<Billing> {
             const queryBuilder = this.createQueryBuilder('billing')
                 .leftJoinAndSelect('billing.branch', 'branch')
                 .leftJoinAndSelect('billing.paymentMethod', 'paymentMethod')
-                .where('billing.branchId = :branchId', { branchId });
+                .where('billing.branchId = :branchId', { branchId })
+                .orderBy('billing.billingId', 'DESC');
 
             if (date) {
                 // Parse the date string and create UTC dates to avoid timezone issues
