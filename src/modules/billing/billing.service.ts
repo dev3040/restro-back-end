@@ -149,6 +149,7 @@ export class BillingService {
             let totalPayments = +payments?.totalAmount || 0; // You may want to fetch actual payments
             let totalCheque = 0;   // If you have cheque payments
             let zomotoSales = 0;
+            let keetaSales = 0;
 
             bills.forEach(bill => {
                 const amount = Number(bill.subTotal || 0);
@@ -167,11 +168,13 @@ export class BillingService {
                 if (slug === 'deliveroo') deliverooSales += amount;
                 if (slug === 'instashop') instashopSales += amount;
                 if (slug === 'cheque') totalCheque += amount;
+                if (slug === 'keeta') keetaSales += amount;
+                if (slug === 'zomoto') zomotoSales += amount;
             });
 
             // Calculate total after online sales (excluding all online platforms)
             const totalAfterOnline = totalSales - (
-                creditCardSales + talabatSales + noonSales + smilesSales + careemSales + deliverooSales + instashopSales + zomotoSales
+                creditCardSales + talabatSales + noonSales + smilesSales + careemSales + deliverooSales + instashopSales + zomotoSales + keetaSales
             );
 
             // Cash in hand (example calculation, adjust as needed)
@@ -199,7 +202,8 @@ export class BillingService {
                 totalPayments,
                 cashInHand,
                 totalCheque,
-                zomotoSales
+                zomotoSales,
+                keetaSales
             };
 
             const templatePath = path.join(process.cwd(), 'src', 'shared', 'templates', 'final-report.ejs');
