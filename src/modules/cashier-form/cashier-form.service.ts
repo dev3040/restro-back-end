@@ -170,7 +170,7 @@ export class CashierFormService {
       });
       const page = await browser.newPage();
       await page.setContent(html, { waitUntil: 'networkidle0' });
-      let pdfBuffer: any = await page.pdf({ format: 'A4', printBackground: true });
+      let pdfBuffer: any = await page.pdf({ format: 'a4', printBackground: true });
       await browser.close();
       // Ensure Buffer type
       if (!(pdfBuffer instanceof Buffer)) {
