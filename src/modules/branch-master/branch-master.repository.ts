@@ -35,6 +35,9 @@ export class AddOnPricesRepository extends Repository<Branches> {
             branches.name = addAddOnPrices.name;
             branches.address = addAddOnPrices.address;
             branches.prnNum = addAddOnPrices.prnNum;
+            branches.telNum = addAddOnPrices.telNum ?? null;
+            branches.mobNum = addAddOnPrices.mobNum ?? null;
+            branches.freeLine = addAddOnPrices.freeLine ?? null;
             branches.isActive = addAddOnPrices.isActive;
             branches.code = addAddOnPrices.code;
             branches.createdBy = user.id;
@@ -49,7 +52,7 @@ export class AddOnPricesRepository extends Repository<Branches> {
         try {
             const listQuery = this.manager
                 .createQueryBuilder(Branches, "addOnPrice")
-                .select(["addOnPrice.id", "addOnPrice.name", "addOnPrice.code", "addOnPrice.isActive", "addOnPrice.address", "addOnPrice.prnNum", "addOnPrice.logo"])
+                .select(["addOnPrice.id", "addOnPrice.name", "addOnPrice.code", "addOnPrice.isActive", "addOnPrice.address", "addOnPrice.prnNum", "addOnPrice.logo", "addOnPrice.telNum", "addOnPrice.mobNum", "addOnPrice.freeLine"])
                 .where("(addOnPrice.is_deleted = false)")
 
             if (filterDto) {
@@ -104,9 +107,12 @@ export class AddOnPricesRepository extends Repository<Branches> {
             }
 
             checkAddOnPrice.isActive = updateAddOnPrices.isActive;
-            checkAddOnPrice.code = updateAddOnPrices.code
+            checkAddOnPrice.code = updateAddOnPrices.code;
             checkAddOnPrice.address = updateAddOnPrices.address;
             checkAddOnPrice.prnNum = updateAddOnPrices.prnNum;
+            if (updateAddOnPrices.telNum !== undefined) checkAddOnPrice.telNum = updateAddOnPrices.telNum ?? null;
+            if (updateAddOnPrices.mobNum !== undefined) checkAddOnPrice.mobNum = updateAddOnPrices.mobNum ?? null;
+            if (updateAddOnPrices.freeLine !== undefined) checkAddOnPrice.freeLine = updateAddOnPrices.freeLine ?? null;
             await checkAddOnPrice.save();
             return checkAddOnPrice;
         } catch (error) {

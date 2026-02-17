@@ -37,6 +37,21 @@ export class BranchesDTO {
    })
    prnNum: string;
 
+   @MaxLength(50)
+   @ApiPropertyOptional({ description: 'Telephone number', example: '022-12345678' })
+   @IsOptional()
+   telNum?: string;
+
+   @MaxLength(50)
+   @ApiPropertyOptional({ description: 'Mobile number', example: '9876543210' })
+   @IsOptional()
+   mobNum?: string;
+
+   @MaxLength(255)
+   @ApiPropertyOptional({ description: 'Free line / additional line', example: '1800-xxx-xxxx' })
+   @IsOptional()
+   freeLine?: string;
+
 }
 
 export class UpdateBranchesDTO extends PartialType(BranchesDTO) { }
