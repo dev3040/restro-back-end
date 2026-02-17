@@ -6,7 +6,7 @@ import { CreateCashierFormDto } from './dto/create-cashier-form.dto';
 import { UpdateCashierFormDto } from './dto/update-cashier-form.dto';
 import { FindByDateDto } from './dto/find-by-date.dto';
 import * as path from 'path';
-import * as puppeteer from 'puppeteer';
+import * as pdf from 'html-pdf-node';
 import { Branches } from '../../shared/entity/branches.entity';
 import { Repository as TypeOrmRepository } from 'typeorm';
 import * as ejs from 'ejs';
@@ -156,31 +156,28 @@ export class CashierFormService {
         generated_date: cashierForm.generated_date.toLocaleDateString('en-CA'),
         isHalfDay: cashierForm.isHalfDay,
       };
-
+      
       // Render EJS template
       const templatePath = path.join(process.cwd(), 'src', 'shared', 'templates', 'cashier-form-report.ejs');
-      let html = await ejs.renderFile(templatePath, templateData) as string;
-      if (typeof html !== 'string') html = '';
-
-      // Launch Puppeteer and generate PDF
-      const browser = await puppeteer.launch({
-        headless: true,
-        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/chromium',
-        args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu']
-      });
-      const page = await browser.newPage();
-      await page.setContent(html, { waitUntil: 'networkidle0' });
-      let pdfBuffer: any = await page.pdf({ format: 'a4', printBackground: true });
-      await browser.close();
-      // Ensure Buffer type
-      if (!(pdfBuffer instanceof Buffer)) {
-        if (ArrayBuffer.isView(pdfBuffer)) {
-          pdfBuffer = Buffer.from(pdfBuffer.buffer);
-        } else if (pdfBuffer instanceof ArrayBuffer) {
-          pdfBuffer = Buffer.from(new Uint8Array(pdfBuffer));
+      console.log("templatePath", templatePath);
+      const html = await ejs.renderFile(templatePath, templateData);
+      console.log("templateData", templateData);
+      console.log("html", html);
+      // Generate PDF with html-pdf-node
+      const file = { content: html };
+      const options = {
+        format: 'A4',
+        printBackground: true,
+        margin: {
+          top: '10px',
+          right: '10px',
+          bottom: '10px',
+          left: '10px'
         }
-      }
-      return pdfBuffer;
+      };
+      const pdfBuffer = await pdf.generatePdf(file, options);
+
+      return Buffer.from(pdfBuffer);
     } catch (error) {
       console.error('Error generating PDF:', error);
       throwException(error);
